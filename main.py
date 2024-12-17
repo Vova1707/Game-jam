@@ -1,6 +1,7 @@
 import pygame
 import pygame_widgets
 from pygame_widgets.button import ButtonArray, Button
+from pygame_widgets.textbox import TextBox
 import numpy as np
 
 from menu import Menu
@@ -9,7 +10,11 @@ from final import Final
 from settings import Settings
 from refer import Refer
 
-# 35% моего ЦП при запуске игры сьедает виджеты библиотеки pygame_widgets, в дальнейшем это может стать проблемой оптимизации
+
+from databases import Database_With_Users
+from avtorize import Avtorize
+
+
 class Main:
     def __init__(self):
         pygame.init()
@@ -17,9 +22,16 @@ class Main:
 
         self.display_w, self.display_h = pygame.display.Info().current_w-10,pygame.display.Info().current_h-50
         self.FPS = 60
+
+        # Добавил класс который отслеживает базу данных
+        self.database_users = Database_With_Users()
+        self.user = None
+
+
         self.running = 1
-        self.type_display, self.flag_type_display = "menu", 1 # 0 - None | 1 - menu | 2 - game | 3 - final
-        self.list_type_display = np.array([None, "menu", "game", "final", "settings", "refer"])
+        #self.type_display, self.flag_type_display = "menu", 1 # 0 - None | 1 - menu | 2 - game | 3 - final
+        self.type_display, self.flag_type_display = "avtorize", 6
+        self.list_type_display = np.array([None, "menu", "game", "final", "settings", "refer", "avtorize"])
         self.colors = {
             "light": (187, 148, 87),
             "base1": (153, 88, 42),
@@ -35,7 +47,8 @@ class Main:
         self.final = Final(self, self.colors)
         self.sett = Settings(self, self.colors)
         self.refer = Refer(self, self.colors)
-        self.list_displays = [self.menu, self.game, self.final, self.sett, self.refer]
+        self.avtorize = Avtorize(self, self.colors)
+        self.list_displays = [self.menu, self.game, self.final, self.sett, self.refer, self.avtorize]
 
         self.display.fill(self.colors["dark"])
         pygame.display.set_caption("Office Nightmare")
@@ -85,6 +98,20 @@ class Main:
         pygame.display.update()
         return res_label
 
+    def create_textbox(self, coords, size, border_colour=(0, 0, 0), text_colour=(0, 0, 0), r=10, bd=5):
+        textbox = TextBox(
+        self.display,
+        x=coords[0],
+        y=coords[1],
+        width=size[0],
+        height=size[1],
+        fontSize=50,
+        borderColour=border_colour,
+        textColour=text_colour,
+        radius=r,
+        borderThickness=bd)
+        return textbox
+
     def align(self, obj, coords, inacurr=(0, 0), type_blit=False, type_align="center"):
         # Это будет общая функция централизации любого объекта
         if type(coords) == tuple: coords = list(coords)
@@ -133,6 +160,20 @@ class Main:
         if type_display == "final": self.final.set_final(dop_type)
         self.type_display = type_display
 
+    def log_in(self, login, passoword):
+        print(login, passoword)
+        if len(login) > 8 and len(passoword) > 8:
+            if self.database_users.add_user("Новый пользователь", login, passoword):
+                self.user = self.database_users.find_user(login, passoword)
+                self.display_change("menu")
+
+
+    def log_up(self, login, passoword):
+        if len(login) > 8 and len(passoword) > 8:
+            self.user = self.database_users.find_user(login, passoword)
+            if self.user:
+                self.display_change("menu")
+
     def show(self):
         while self.running:
             events = pygame.event.get()
@@ -157,6 +198,12 @@ class Main:
                 for disp in self.list_displays: disp.reinstall("hide")
                 self.refer.reinstall("show")
                 self.flag_type_display = 0
+
+            elif self.type_display == "avtorize" and self.flag_type_display == 6:
+                for disp in self.list_displays:disp.reinstall("hide")
+                self.avtorize.reinstall("show")
+                self.flag_type_display = 0
+
             if self.flag_type_display != 0:
                 print(self.type_display, self.flag_type_display)
                 self.flag_type_display = 0

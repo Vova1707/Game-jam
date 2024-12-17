@@ -19,6 +19,7 @@ class Menu:
         param_button_quit = {"text": "выход", "func":self.parent.display_quit}
         array_buttons = [param_button_start, param_button_sett, param_button_refer, param_button_quit]
         self.buttons_general["layout"][1] = len(array_buttons)
+
         for key in array_buttons[0].keys(): self.buttons_general[key+"s"] = list(map(lambda b: b[key], array_buttons))
         print("\nINIT MENU GENERAL BUTTONS" + "-"*200)
         print(*list(map(lambda x: f"{x[0]}: {x[1]}", self.buttons_general.items())), sep="\n") # ({len(x[1]) if type(x[1]) not in (int, pygame.font.Font, None) else None})
