@@ -7,6 +7,8 @@ class Avtorize:
         self.parent = parent
         self.init_textbox()
         self.init_buttons_general()
+        self.labels = []
+        self.init_label_title()
 
     def init_buttons_general(self):
         self.buttons_general = {
@@ -26,12 +28,44 @@ class Avtorize:
                                                               fonts=[self.buttons_general["font"]] * len(array_buttons),
                                                               texts=self.buttons_general["texts"],
                                                               funcs=self.buttons_general["funcs"])
-        print(self.buttons_general["buttons"])
 
     def init_textbox(self):
         self.textboxs = []
         self.textboxs.append(self.parent.create_textbox((300, 150), (400, 80)))
         self.textboxs.append(self.parent.create_textbox((300, 250), (400, 80)))
+
+    def init_label_title(self):
+
+        label = {
+            "coords": (375, 80),
+            "text":"Авторизация",
+            "font": pygame.font.SysFont("Century Gothic", 40)
+        }
+        label['label'] = self.parent.label_text(coords=label["coords"],
+                                        text=label["text"],
+                                        font=label["font"])
+        self.labels.append(label)
+
+        label = {
+            "coords": (150, 150),
+            "text": "Логин",
+            "font": pygame.font.SysFont("Century Gothic", 40)
+        }
+        label['label'] = self.parent.label_text(coords=label["coords"],
+                                                text=label["text"],
+                                                font=label["font"])
+        self.labels.append(label)
+
+        label = {
+            "coords": (150, 250),
+            "text": "Пароль",
+            "font": pygame.font.SysFont("Century Gothic", 40)
+        }
+        label['label'] = self.parent.label_text(coords=label["coords"],
+                                                text=label["text"],
+                                                font=label["font"])
+        self.labels.append(label)
+
 
     def reinstall(self, _type):
         if _type == "hide":
@@ -41,4 +75,4 @@ class Avtorize:
             self.parent.display.fill(self.base_color["dark"])
             self.buttons_general["buttons"].show()
             for i in self.textboxs: i.show()
-            #self.parent.display.blit(self.label_title["label"], self.label_title["coords"])
+            for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
