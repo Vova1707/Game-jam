@@ -4,6 +4,7 @@ class Menu:
     def __init__(self, parent, base_color):
         self.base_color = base_color
         self.parent = parent
+        self.labels = []
         self.init_buttons_general()
         self.init_label_title()
 
@@ -32,14 +33,24 @@ class Menu:
 
     def init_label_title(self):
         # !!! Если нужно будет создавать много label -> сделай init_label_title общей для всех и возвращай label_title
-        self.label_title = {
+        label_title = {
             "coords": (600, 200),
             "text":"Office Nightmare",
             "font": pygame.font.SysFont("Century Gothic", 80)
         }
-        self.label_title["label"] = self.parent.label_text(coords=self.label_title["coords"],
-                                                           text=self.label_title["text"],
-                                                           font=self.label_title["font"])
+        label_title["label"] = self.parent.label_text(coords=label_title["coords"],
+                                                           text=label_title["text"],
+                                                           font=label_title["font"])
+        self.labels.append(label_title)
+        label_title = {
+            "coords": (100, 80),
+            "text": f"Здравствуйте (Здесь будет имя пользователя)",
+            "font": pygame.font.SysFont("Century Gothic", 80)
+        }
+        label_title["label"] = self.parent.label_text(coords=label_title["coords"],
+                                                      text=label_title["text"],
+                                                      font=label_title["font"])
+        self.labels.append(label_title)
 
 
     def reinstall(self, _type):
@@ -48,5 +59,5 @@ class Menu:
         elif _type == "show":
             self.parent.display.fill(self.base_color["dark"])
             self.buttons_general["buttons"].show()
-            self.parent.display.blit(self.label_title["label"], self.label_title["coords"])
+            for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
 
