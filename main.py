@@ -155,20 +155,17 @@ class Main:
 
     def show(self):
         self.view_logo()
-        self.list_active_surface = {'menu': Menu(self, self.colors),
-                                    'game': Game(self, self.colors),
-                                    'refer': Refer(self, self.colors),
-                                    'settings': Settings(self, self.colors)}
-        self.holst = Menu(self, self.colors)
-        self.holst.initing()
+        self.list_active_surface = {'menu': Menu,
+                                    'game': Game,
+                                    'refer': Refer,
+                                    'settings': Settings}
+        self.holst = self.list_active_surface[self.type_display](self, self.colors)
         self.changes_holst = 0
         while self.running:
             events = pygame.event.get()
             if self.changes_holst:
                 self.holst.delete_all()
-                self.holst = self.list_active_surface[self.type_display]
-                self.holst.initing()
-                print(self.type_display)
+                self.holst = self.list_active_surface[self.type_display](self, self.colors)
                 self.changes_holst = 0
             self.holst.draw()
             for event in events:

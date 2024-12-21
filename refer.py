@@ -5,8 +5,6 @@ class Refer:
         self.base_color = base_color
         self.parent = parent
         self.buttons = []
-
-    def initing(self):
         self.init_label_title()
         self.init_button_menu()
 
@@ -43,7 +41,7 @@ class Refer:
 
     def delete_all(self):
         print(self.buttons)
-        for i in self.buttons: del i
+        for i in range(len(self.buttons)): del self.buttons[i]
         for i in self.labels: del i
 
     def draw(self):

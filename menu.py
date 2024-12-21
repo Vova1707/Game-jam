@@ -6,8 +6,6 @@ class Menu:
         self.parent = parent
         self.labels = []
         self.buttons = []
-
-    def initing(self):
         self.init_buttons_general()
         self.init_label_title()
 

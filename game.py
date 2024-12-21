@@ -196,8 +196,6 @@ class Game:
         self.commands = self.parent.format_commands(self.commands)
         print("GAME: ", self.commands)
         self.list_comands = [self.commands, self.character.commands]
-
-    def initing(self):
         self.init_button_menu()
 
     def init_button_menu(self):
@@ -216,9 +214,6 @@ class Game:
                                                               inv_clr=button_ToMenu["inv_clr"])
         self.buttons.append(button_ToMenu)
 
-    def delete_all(self):
-        for i in self.buttons: del i
-
     def draw(self):
         self.parent.display.fill((0, 0, 0))
         self.parent.display.blit(pygame.image.load('sprites/floor/floor.png'), (0, 0))
@@ -228,3 +223,6 @@ class Game:
         for commands in self.list_comands:
             if event.type in commands.keys() and event.key in commands[event.type].keys():
                 commands[event.type][event.key]()
+
+    def delete_all(self):
+        for j in range(len(self.buttons)): del self.buttons[j]
