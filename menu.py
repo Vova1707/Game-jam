@@ -33,18 +33,17 @@ class Menu:
 
     def init_label_title(self):
         # !!! Если нужно будет создавать много label -> сделай init_label_title общей для всех и возвращай label_title
-        label_title = {
+        """label_title = {
             "coords": (600, 200),
             "text":"Office Nightmare",
             "font": pygame.font.SysFont("Century Gothic", 80)
         }
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                            text=label_title["text"],
-                                                           font=label_title["font"])
-        self.labels.append(label_title)
+                                                           font=label_title["font"])"""
         label_title = {
             "coords": (100, 80),
-            "text": f"Здравствуйте (Здесь будет имя пользователя)",
+            "text": f"Ultimate",
             "font": pygame.font.SysFont("Century Gothic", 80)
         }
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
