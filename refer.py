@@ -4,6 +4,7 @@ class Refer:
     def __init__(self, parent, base_color):
         self.base_color = base_color
         self.parent = parent
+        self.buttons = []
 
     def initing(self):
         self.init_label_title()
@@ -21,14 +22,13 @@ class Refer:
                                                            font=label_title["font"])
         label_title["label"], label_title["coords"] = self.parent.align(label_title["label"], label_title["coords"],
                                                             inacurr=-20, type_blit=False, type_align="horizontal")
-        self.labels.append(label_title["label"])
+        self.labels.append(label_title)
 
     def init_button_menu(self):
         w, h = 80, 50
-        self.buttons = []
         button_ToMenu = {
             "font": pygame.font.SysFont("Century Gothic", 30),
-            "coords": (self.parent.display_w - w, 0, w, h),
+            "coords": (100, 100, w, h),
             "text": "...",
             "func": lambda: self.parent.display_change("menu"),
             "inv_clr": 1
@@ -42,8 +42,11 @@ class Refer:
 
 
     def delete_all(self):
+        print(self.buttons)
         del self.buttons
         del self.labels
 
     def draw(self):
         self.parent.display.fill((255, 200, 100))
+        for i in self.buttons: i.show()
+        for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
