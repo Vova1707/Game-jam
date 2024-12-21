@@ -1,8 +1,8 @@
 import pygame
 
 class Final:
-    def __init__(self, parent, base_color):
-        self.base_color = base_color
+    def __init__(self, parent, base_style):
+        self.base_style = base_style
         self.parent = parent
         self.commands = {
             pygame.KEYDOWN: {
@@ -57,10 +57,9 @@ class Final:
 
     def reinstall(self, _type):
         if _type == "hide":
-            print("hide final")
             self.button_OK["button"].hide()
         elif _type == "show":
             print("show final")
-            self.parent.display.fill(self.base_color["dark"])
+            self.parent.display.fill(self.base_style["colors"]["dark"])
             self.button_OK["button"].show()
             self.parent.display.blit(self.label_title["label"], self.label_title["coords"])

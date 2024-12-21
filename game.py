@@ -15,10 +15,10 @@ class Map:
 
 
 class Character:
-    def __init__(self, parent, base_color, container_flags):
+    def __init__(self, parent, base_style, container_flags):
         self.container_flags = container_flags
         self.parent = parent
-        self.base_color = base_color
+        self.base_style = base_style
 
         self.init_shell()
         self.container_flags["character"] = 0
@@ -179,12 +179,12 @@ class Character:
 
 
 class Game:
-    def __init__(self, parent, base_color):
-        self.base_color = base_color
+    def __init__(self, parent, base_style):
+        self.base_style = base_style
         self.parent = parent
         self.container_flags = {}
         self.buttons = []
-        self.character = Character(self.parent, self.base_color, self.container_flags)
+        self.character = Character(self.parent, self.base_style, self.container_flags)
 
         self.commands = {
             pygame.KEYDOWN: {
@@ -201,17 +201,22 @@ class Game:
     def init_button_menu(self):
         w, h = 80, 50
         button_ToMenu = {
-            "font": pygame.font.SysFont("Century Gothic", 30),
+            "font": pygame.font.Font(self.base_style["font_path"], 30),
             "coords": (self.parent.display_w-w, 0, w, h),
             "text": "...",
-            "func": lambda: self.parent.display_change("menu"),
-            "inv_clr":1
+            "color": {
+                "inactive": self.base_style["colors"]["base2"],
+                "hover": self.base_style["colors"]["base1"],
+                "pressed": self.base_style["colors"]["light"],
+                "text": self.base_style["colors"]["light"]
+            },
+            "func": lambda: self.parent.display_change("menu")
         }
         button_ToMenu["button"] = self.parent.button(coords=button_ToMenu["coords"],
                                                               text=button_ToMenu["text"],
+                                                              color=button_ToMenu["color"],
                                                               font=button_ToMenu["font"],
-                                                              func=button_ToMenu["func"],
-                                                              inv_clr=button_ToMenu["inv_clr"])
+                                                              func=button_ToMenu["func"])
         self.buttons.append(button_ToMenu)
 
     def draw(self):

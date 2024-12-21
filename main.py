@@ -30,22 +30,36 @@ class Main:
         #self.type_display, self.flag_type_display = "menu", 1 # 0 - None | 1 - menu | 2 - game | 3 - final
         self.type_display = "menu"
         self.list_type_display = np.array([None, "menu", "game", "final", "settings", "refer",])
-        self.colors = {
-            "light": (187, 148, 87),
-            "base1": (153, 88, 42),
-            "base2": (111, 29, 27),
-            "dark": (67, 40, 24),
-            "black": (0, 0, 0)
+        self.style = {
+            "colors": {
+                "light": (200, 208, 200),
+                "base1": (0, 32, 214),
+                "base2": (0, 119, 0),
+                "dark": (10, 10, 10),
+                "black": (0, 0, 0)
+            },
+            "font_path": "fonts/pixel/DotGothic16-Regular.ttf"
+            # "fonts/pixel/DotGothic16-Regular.ttf" - для латиницы слишком растянутый шрифт
+            # fonts/pixel/EpilepsySans.ttf - слишком сжатый текст, особенно при большом масштабе
         }
 
         self.display = pygame.display.set_mode((self.display_w, self.display_h))
 
-        self.display.fill(self.colors["dark"])
+        self.display.fill(self.style["colors"]["dark"])
         pygame.display.set_caption("Office Nightmare")
         self.clock = pygame.time.Clock()
 
 
-    def buttons(self, coords, layout, texts, fonts, funcs):
+    def buttons(self, coords, layout, texts, color, fonts, funcs):
+        check_keys = {
+            "inactive": self.style["colors"]["base1"],
+            "hover": self.style["colors"]["base2"],
+            "pressed": self.style["colors"]["light"],
+            "text": self.style["colors"]["light"]
+        }
+        for k, v in check_keys.items():
+            if k not in color.keys():
+                color[k] = v
         return ButtonArray(
             self.display,  # Surface to place button array on
             coords[0], coords[1], coords[2]*layout[0], coords[3]*layout[1],
@@ -53,35 +67,41 @@ class Main:
             # border=100,  # Distance between buttons and edge of array
             texts=texts,
             fonts=fonts,
-            colour=self.colors["base2"],
-            inactiveColours=[self.colors["base1"]]*len(texts),  # Colour of button when not being interacted with
-            hoverColours=[self.colors["base2"]]*len(texts),  # Colour of button when being hovered over
-            pressedColours=[self.colors["light"]]*len(texts),  # Colour of button when being clicked
-            textColours=[self.colors["light"]]*len(texts),
+            # colour=color["colour"],
+            inactiveColours=[color["inactive"]]*len(texts),  # Colour of button when not being interacted with
+            hoverColours=[color["hover"]]*len(texts),  # Colour of button when being hovered over
+            pressedColours=[color["pressed"]]*len(texts),  # Colour of button when being clicked
+            textColours=[color["text"]]*len(texts),
             onClicks=funcs
         )
 
-    def button(self, coords, text, font, func, inv_clr=0):
-        if inv_clr == 1:
-            colour, hoverColour = self.colors["base2"], self.colors["base1"]
-        else:
-            colour, hoverColour = self.colors["base1"], self.colors["base2"]
+    def button(self, coords, text, color, font, func):
+        check_keys = {
+            "inactive": self.style["colors"]["base1"],
+            "hover": self.style["colors"]["base2"],
+            "pressed": self.style["colors"]["light"],
+            "text": self.style["colors"]["light"]
+        }
+        for k, v in check_keys.items():
+            if k not in color.keys():
+                color[k] = v
         return Button(
             self.display,  # Surface to place button array on
             coords[0], coords[1], coords[2], coords[3],
             # border=100,  # Distance between buttons and edge of array
             text=text,
             font=font,
-            colour=colour,
-            hoverColour=hoverColour,  # Colour of button when being hovered over
-            pressedColour=self.colors["light"],  # Colour of button when being clicked
-            textColour=self.colors["light"],
+            # colour=colour,
+            inactiveColour=color["inactive"],
+            hoverColour=color["hover"],  # Colour of button when being hovered over
+            pressedColour=color["pressed"],  # Colour of button when being clicked
+            textColour=color["hover"],
             onClick=func
         )
 
     def label_text(self, coords, text, font):
         f = font
-        res_label = f.render(text, True, self.colors["light"])
+        res_label = f.render(text, True, self.style["colors"]["light"])
         self.display.blit(res_label, coords)
         pygame.display.update()
         return res_label
@@ -159,13 +179,13 @@ class Main:
                                     'game': Game,
                                     'refer': Refer,
                                     'settings': Settings}
-        self.holst = self.list_active_surface[self.type_display](self, self.colors)
+        self.holst = self.list_active_surface[self.type_display](self, self.style)
         self.changes_holst = 0
         while self.running:
             events = pygame.event.get()
             if self.changes_holst:
                 self.holst.delete_all()
-                self.holst = self.list_active_surface[self.type_display](self, self.colors)
+                self.holst = self.list_active_surface[self.type_display](self, self.style)
                 self.changes_holst = 0
             self.holst.draw()
             for event in events:
