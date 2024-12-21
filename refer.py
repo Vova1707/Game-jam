@@ -43,8 +43,8 @@ class Refer:
 
     def delete_all(self):
         print(self.buttons)
-        del self.buttons
-        del self.labels
+        for i in self.buttons: del i
+        for i in self.labels: del i
 
     def draw(self):
         self.parent.display.fill((255, 200, 100))
