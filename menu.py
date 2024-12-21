@@ -5,28 +5,30 @@ class Menu:
         self.base_color = base_color
         self.parent = parent
         self.labels = []
+        self.buttons = []
+
+    def initing(self):
         self.init_buttons_general()
         self.init_label_title()
 
     def init_buttons_general(self):
-        self.buttons_general = {
+        self.buttons = {
             "font": pygame.font.SysFont("Century Gothic", 40),
                 "coords": (375, 200, 250, 100),
-            "layout": [1, 4],
+            "layout": [1, 3],
         }
         param_button_start = {"text": "играть", "func":lambda: self.parent.display_change("game")}
-        param_button_sett = {"text": "настройки", "func":lambda: self.parent.display_change("settings")}
         param_button_refer = {"text": "справка", "func":lambda: self.parent.display_change("refer")}
         param_button_quit = {"text": "выход", "func":self.parent.display_quit}
-        array_buttons = [param_button_start, param_button_sett, param_button_refer, param_button_quit]
-        self.buttons_general["layout"][1] = len(array_buttons)
+        array_buttons = [param_button_start, param_button_refer, param_button_quit]
+        self.buttons["layout"][1] = len(array_buttons)
 
-        for key in array_buttons[0].keys(): self.buttons_general[key+"s"] = list(map(lambda b: b[key], array_buttons))
-        self.buttons_general["buttons"] = self.parent.buttons(coords=self.buttons_general["coords"],
-                                                          layout=self.buttons_general["layout"],
-                                                          fonts=[self.buttons_general["font"]] * len(array_buttons),
-                                                          texts=self.buttons_general["texts"],
-                                                          funcs=self.buttons_general["funcs"])
+        for key in array_buttons[0].keys(): self.buttons[key+"s"] = list(map(lambda b: b[key], array_buttons))
+        self.buttons["buttons"] = self.parent.buttons(coords=self.buttons["coords"],
+                                                          layout=self.buttons["layout"],
+                                                          fonts=[self.buttons["font"]] * len(array_buttons),
+                                                          texts=self.buttons["texts"],
+                                                          funcs=self.buttons["funcs"])
 
     def init_label_title(self):
         label_title = {
@@ -40,11 +42,11 @@ class Menu:
         self.labels.append(label_title)
 
 
-    def reinstall(self, _type):
-        if _type == "hide":
-            self.buttons_general["buttons"].hide()
-        elif _type == "show":
-            self.parent.display.fill(self.base_color["dark"])
-            self.buttons_general["buttons"].show()
-            for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
+    def delete_all(self):
+        del self.buttons
+
+
+    def draw(self):
+        self.parent.display.fill((255, 255, 255))
+        for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
 

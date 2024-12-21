@@ -183,9 +183,7 @@ class Game:
         self.base_color = base_color
         self.parent = parent
         self.container_flags = {}
-
-        self.init_button_menu()
-
+        self.buttons = []
         self.character = Character(self.parent, self.base_color, self.container_flags)
 
         self.commands = {
@@ -199,28 +197,27 @@ class Game:
         print("GAME: ", self.commands)
         self.list_comands = [self.commands, self.character.commands]
 
+    def initing(self):
+        self.init_button_menu()
+
     def init_button_menu(self):
         w, h = 80, 50
-        self.button_ToMenu = {
+        button_ToMenu = {
             "font": pygame.font.SysFont("Century Gothic", 30),
             "coords": (self.parent.display_w-w, 0, w, h),
             "text": "...",
             "func": lambda: self.parent.display_change("menu"),
             "inv_clr":1
         }
-        self.button_ToMenu["button"] = self.parent.button(coords=self.button_ToMenu["coords"],
-                                                              text=self.button_ToMenu["text"],
-                                                              font=self.button_ToMenu["font"],
-                                                              func=self.button_ToMenu["func"],
-                                                              inv_clr=self.button_ToMenu["inv_clr"])
+        button_ToMenu["button"] = self.parent.button(coords=button_ToMenu["coords"],
+                                                              text=button_ToMenu["text"],
+                                                              font=button_ToMenu["font"],
+                                                              func=button_ToMenu["func"],
+                                                              inv_clr=button_ToMenu["inv_clr"])
+        self.buttons.append(button_ToMenu)
 
-    def reinstall(self, _type):
-        if _type == "hide":
-            self.button_ToMenu["button"].hide()
-        elif _type == "show":
-            self.parent.display.fill(self.base_color["black"])
-            self.draw()
-            self.button_ToMenu["button"].show()
+    def delete_all(self):
+        for i in self.buttons: del i
 
     def draw(self):
         self.parent.display.fill((0, 0, 0))
