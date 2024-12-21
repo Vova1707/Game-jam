@@ -11,7 +11,7 @@ class Menu:
     def init_buttons_general(self):
         self.buttons_general = {
             "font": pygame.font.SysFont("Century Gothic", 40),
-                "coords": (200, 200, 250, 100),
+                "coords": (375, 200, 250, 100),
             "layout": [1, 4],
         }
         param_button_start = {"text": "играть", "func":lambda: self.parent.display_change("game")}
@@ -22,9 +22,6 @@ class Menu:
         self.buttons_general["layout"][1] = len(array_buttons)
 
         for key in array_buttons[0].keys(): self.buttons_general[key+"s"] = list(map(lambda b: b[key], array_buttons))
-        print("\nINIT MENU GENERAL BUTTONS" + "-"*200)
-        print(*list(map(lambda x: f"{x[0]}: {x[1]}", self.buttons_general.items())), sep="\n") # ({len(x[1]) if type(x[1]) not in (int, pygame.font.Font, None) else None})
-        print("-"*200 + "\n")
         self.buttons_general["buttons"] = self.parent.buttons(coords=self.buttons_general["coords"],
                                                           layout=self.buttons_general["layout"],
                                                           fonts=[self.buttons_general["font"]] * len(array_buttons),
@@ -32,19 +29,9 @@ class Menu:
                                                           funcs=self.buttons_general["funcs"])
 
     def init_label_title(self):
-        # !!! Если нужно будет создавать много label -> сделай init_label_title общей для всех и возвращай label_title
         label_title = {
-            "coords": (600, 200),
-            "text":"Office Nightmare",
-            "font": pygame.font.SysFont("Century Gothic", 80)
-        }
-        label_title["label"] = self.parent.label_text(coords=label_title["coords"],
-                                                           text=label_title["text"],
-                                                           font=label_title["font"])
-        self.labels.append(label_title)
-        label_title = {
-            "coords": (100, 80),
-            "text": f"Здравствуйте (Здесь будет имя пользователя)",
+            "coords": (350, 80),
+            "text": f"Ultimate",
             "font": pygame.font.SysFont("Century Gothic", 80)
         }
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],

@@ -94,7 +94,8 @@ class Character:
         # print(self.character["dir"], type_move)
 
     def init_shell(self):
-        part_file_path = r"C:\Users\maxim\Desktop\SASHA\PROJECTS\Office_Nightmare_versions\PyGame\sprites\character\base_choice"+"\\"
+        part_file_path = r"sprites\character\base_choice" + '\\'
+        print(part_file_path)
         self.character = {
             "type_cond": {
                 # "move": {
@@ -163,10 +164,10 @@ class Character:
             "val_speed": 4,
             "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140] # 50, 70
         }
+        print(self.character)
         self.character["coords"][0] -= self.character["coords"][2] / 2
         self.character["coords"][1] -= self.character["coords"][3] / 2
         self.set_sprite()
-        self.draw()
 
     def draw(self):
         self.character["rect"] = pygame.Rect(self.character["coords"])
@@ -177,8 +178,6 @@ class Character:
 
 
 
-# !!! При создание объектов игре мы добавляем под них флаг состояния в контейнер (np.array)
-# И мы будем обновлять экран, только если хотя бы 1 объект изменился в контейнер
 class Game:
     def __init__(self, parent, base_color):
         self.base_color = base_color
@@ -224,7 +223,8 @@ class Game:
             self.button_ToMenu["button"].show()
 
     def draw(self):
-        self.parent.display.fill(self.base_color["black"])
+        self.parent.display.fill((0, 0, 0))
+        self.parent.display.blit(pygame.image.load('sprites/floor/floor.png'), (0, 0))
         self.character.udpate()
 
     def check_event(self, event):

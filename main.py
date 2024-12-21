@@ -12,7 +12,6 @@ from refer import Refer
 
 
 from databases import Database_With_Users
-from avtorize import Avtorize
 
 
 class Main:
@@ -20,17 +19,16 @@ class Main:
         pygame.init()
         pygame.mixer.init()
 
-        self.display_w, self.display_h = pygame.display.Info().current_w-10,pygame.display.Info().current_h-50
+        self.display_w, self.display_h = 1000, 800
         self.FPS = 60
 
-        # Добавил класс который отслеживает базу данных
         self.database_users = Database_With_Users()
         self.user = None
 
 
         self.running = 1
         #self.type_display, self.flag_type_display = "menu", 1 # 0 - None | 1 - menu | 2 - game | 3 - final
-        self.type_display, self.flag_type_display = "avtorize", 6
+        self.type_display, self.flag_type_display = "menu", 1
         self.list_type_display = np.array([None, "menu", "game", "final", "settings", "refer", "avtorize"])
         self.colors = {
             "light": (187, 148, 87),
@@ -47,8 +45,7 @@ class Main:
         self.final = Final(self, self.colors)
         self.sett = Settings(self, self.colors)
         self.refer = Refer(self, self.colors)
-        self.avtorize = Avtorize(self, self.colors)
-        self.list_displays = [self.menu, self.game, self.final, self.sett, self.refer, self.avtorize]
+        self.list_displays = [self.menu, self.game, self.final, self.sett, self.refer]
 
         self.display.fill(self.colors["dark"])
         pygame.display.set_caption("Office Nightmare")
@@ -174,7 +171,15 @@ class Main:
             if self.user:
                 self.display_change("menu")
 
+    def view_logo(self):
+        logo = pygame.image.load('sprites/floor/previe.png')
+        self.display.fill((255, 255, 255))
+        self.display.blit(logo, (0, 0))
+        pygame.display.flip()
+        pygame.time.wait(3000)
+
     def show(self):
+        self.view_logo()
         while self.running:
             events = pygame.event.get()
 
@@ -197,11 +202,6 @@ class Main:
             elif self.type_display == "refer" and self.flag_type_display == 5:
                 for disp in self.list_displays: disp.reinstall("hide")
                 self.refer.reinstall("show")
-                self.flag_type_display = 0
-
-            elif self.type_display == "avtorize" and self.flag_type_display == 6:
-                for disp in self.list_displays:disp.reinstall("hide")
-                self.avtorize.reinstall("show")
                 self.flag_type_display = 0
 
             if self.flag_type_display != 0:
