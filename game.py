@@ -9,6 +9,8 @@ class Character:
         self.parent = parent
         self.game = game
         self.base_style = base_style
+        self.flag_idle = 0
+        self.flag_walk = 1
 
         self.init_shell()
         self.commands = { # если val - list тогда, [(f1, flag1), (f2, flag2)], где 0-ой элемент на нажатие а 1-ый на отпускание,
@@ -17,30 +19,31 @@ class Character:
                 (pygame.K_UP, pygame.K_w): lambda: self.set_flag("key_up", 1), # lambda: print("character - back"),
                 (pygame.K_LEFT, pygame.K_a): lambda: self.set_flag("key_left", 1), # lambda: print("character - left"),
                 (pygame.K_RIGHT, pygame.K_d): lambda: self.set_flag("key_right", 1), # lambda: print("character - right")
-                (pygame.K_RCTRL, pygame.K_LCTRL): lambda: self.set_speed_move(self.character["speed"]["sneak"]),
-                (pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_speed_move(self.character["speed"]["run"])
+                (pygame.K_RCTRL, pygame.K_LCTRL): lambda: self.set_speed_move("sneak"),
+                (pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_speed_move("run")
             },
             pygame.KEYUP: {
                 (pygame.K_DOWN, pygame.K_s): lambda: self.set_flag("key_down", 0),
                 (pygame.K_UP, pygame.K_w): lambda: self.set_flag("key_up", 0),
                 (pygame.K_LEFT, pygame.K_a): lambda: self.set_flag("key_left", 0),
                 (pygame.K_RIGHT, pygame.K_d): lambda: self.set_flag("key_right", 0),
-                (pygame.K_RCTRL, pygame.K_LCTRL, pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_speed_move(self.character["speed"]["walk"])
+                (pygame.K_RCTRL, pygame.K_LCTRL, pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_speed_move("walk")
             }
         }
         self.commands = self.parent.format_commands(self.commands)
         print("CHARACTER: ", self.commands)
 
     def set_flag(self, key, val):
-        # self.character["val_speed"] = self.character[key][]
         self.character["flags"][key] = val
+        if self.flag_walk == 1:
+            self.set_speed_move("walk")
+            self.flag_walk = 0
 
-    def set_speed_move(self, speed):
-        # print(delta)
-        self.character["val_speed"] = speed
-        self.character["cond"] = list(self.character["speed"].keys())[list(self.character["speed"].values()).index(speed)]
-        self.character["freq_sprite"] = self.character["speed_TO_freq"][self.character["cond"]]
-        # print(self.character["freq_sprite"], speed, self.character["cond"])
+    def set_speed_move(self, cond):
+        self.character["val_speed"] = self.character["speed"][cond]
+        self.character["cond"] = cond
+        # print(self.character["cond"])
+        self.character["freq_sprite"] = self.character["speed_TO_freq"][cond]
 
     def respawn(self, coords):
         if coords[0] != None: self.character["coords"][0] = coords[0]
@@ -62,6 +65,7 @@ class Character:
         # pygame.draw.rect(self.parent.display, (255, 255, 255), self.game.room_now.rect_objs[0])
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
         dir_collides = []
+        # print(self.game.room_now.rect_objs)
         for obj_rect in self.game.room_now.rect_objs:
             if self.character["rect"].colliderect(obj_rect):
                 collision_area = self.character["rect"].clip(obj_rect)
@@ -78,7 +82,7 @@ class Character:
                 self.character["type_render"] = 0
 
         if dir_collides == []: dir_collides = [None]
-        print(self.character["type_render"])
+        # print(self.character["type_render"])
         # print(set(dir_collides))
         flag_changes = {"down": 1, "up": 1, "right": 1, "left": 1}
         for dir_collide in set(dir_collides):
@@ -86,27 +90,28 @@ class Character:
                 self.character["coords"][1] += self.character["val_speed"]
                 self.character["dir"] = "front"
                 flag_changes["down"] = 0
-                flag_change = 1
+                flag_change, self.flag_idle = 1, 1
             if dir_collide != "up" and self.character["flags"]["key_up"] and flag_changes["up"] == 1:
                 self.character["coords"][1] -= self.character["val_speed"]
                 self.character["dir"] = "back"
                 flag_changes["up"] = 0
-                flag_change = 1
+                flag_change, self.flag_idle = 1, 1
             if dir_collide != "left" and self.character["flags"]["key_left"] and flag_changes["left"] == 1:
                 self.character["coords"][0] -= self.character["val_speed"]
                 self.character["dir"] = "left"
-                flag_changes["right"] = 0
-                flag_change = 1
+                flag_changes["left"] = 0
+                flag_change, self.flag_idle = 1, 1
             if dir_collide != "right" and self.character["flags"]["key_right"] and flag_changes["right"] == 1:
                 self.character["coords"][0] += self.character["val_speed"]
                 self.character["dir"] = "right"
-                flag_changes["left"] = 0
-                flag_change = 1
-        if flag_change == 0:
-            self.character["cond"] = "idle"
-            self.character["dir"] = "front"
-        else:
-            self.set_speed_move(self.character["val_speed"])
+                flag_changes["right"] = 0
+                flag_change, self.flag_idle = 1, 1
+        if flag_change == 0 and self.flag_idle == 1:
+            self.set_speed_move("idle")
+            self.flag_idle = 0
+            self.flag_walk = 1
+            # print(self.character["flags"], self.character["cond"])
+        # print(flag_changes)
         if self.character["counter_sprite"] >= self.character["freq_sprite"]:
             if self.character["number_sprite"] >= len(self.character["type_cond"][self.character["cond"]][self.character["dir"]])-1:
                 self.character["number_sprite"] = 0
@@ -115,11 +120,9 @@ class Character:
             self.character["counter_sprite"] = 0
         self.character["counter_sprite"] += 1
         self.character["number_sprite"] = min(self.character["number_sprite"], len(self.character["type_cond"][self.character["cond"]][self.character["dir"]]) - 1)
-        # print(self.character["cond"], self.character["dir"])
         self.set_sprite()
         self.draw() # !!! Для оптиммизации можно добавить основной флаг, который будет отслеживать изменился ли персонаж
-        # print(*self.character["flags"].items())
-        # print(self.character["dir"], type_move)
+        # print(flag_change, self.character["cond"], self.character["freq_sprite"])
 
     def init_shell(self):
         part_file_path = r"sprites\character\base_choice" + '\\'
@@ -162,10 +165,10 @@ class Character:
             "dir" : "front",
             "cond": "idle",
             "number_sprite": 0,
-            "freq_sprite": 3,
+            "freq_sprite": 20,
             "counter_sprite": 0,
             "speed": {"idle": 0, "sneak": 2, "walk": 4, "run": 6},
-            "speed_TO_freq": {"idle": 9, "sneak": 8, "walk": 7, "run": 4},
+            "speed_TO_freq": {"idle": 20, "sneak": 8, "walk": 7, "run": 4},
             "coord_rect": 20,
             # "key_press_TO_": {[0, 0, 0, 0]: "", "key_up": 0, "key_left": 0, "key_right": 0},
             "val_speed": 4,

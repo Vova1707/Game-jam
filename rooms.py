@@ -15,7 +15,8 @@ class Object:
         self.data_obj = {
             "color": self.base_style["colors"]["light"],
             "coords": [self.coords[0], self.coords[1], self.size[0], self.size[1]],  # 50, 70
-            "coord_rect": 20
+            "coord_rect": 20,
+            "type_render": 1
         }
         self.data_obj["sprite"] = pygame.image.load(self.img).convert_alpha()
         self.data_obj["rect"] = self.data_obj["sprite"].get_rect()
@@ -93,7 +94,7 @@ class Computer_room:
         wal_2 = Object(self.parent, self.game, self.base_style, [0, 0],
                        (30, 800), 'sprites/walls/side_blue_wall.png')
         self.objects = [avtomat, wall, wal_1, wal_2]
-        self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
+        self.rect_objs = [avtomat.data_obj["rect"]] # wall.data_obj["rect"] # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
         self.game.character.respawn([None, 600])
@@ -125,7 +126,7 @@ class PS_room:
         wal_2 = Object(self.parent, self.game, self.base_style, [0, 0],
                        (30, 800), 'sprites/walls/side_blue_wall.png')
         self.objects = [avtomat, wall, wal_1, wal_2]
-        self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
+        self.rect_objs = [avtomat.data_obj["rect"]] #, wall.data_obj["rect"]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
         self.game.character.respawn([750, None])
@@ -158,7 +159,7 @@ class VR_room:
         wal_2 = Object(self.parent, self.game, self.base_style, [0, 0],
                        (30, 800), 'sprites/walls/side_blue_wall.png')
         self.objects = [avtomat, wall, wal_1, wal_2]
-        self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
+        self.rect_objs = [avtomat.data_obj["rect"]] # , wall.data_obj["rect"] # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
         self.game.character.respawn([50, None])
