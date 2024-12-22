@@ -15,12 +15,15 @@ class Map:
 
 
 class Character:
-    def __init__(self, parent, base_style, container_flags):
+    def __init__(self, parent, base_style, container_flags, floor):
         self.container_flags = container_flags
         self.parent = parent
         self.base_style = base_style
 
         self.room = 'main_room' # ['main_room', 'vr_room', 'ps_room']
+        self.floor = floor
+        self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
+
         self.init_shell()
         self.container_flags["character"] = 0
         self.commands = { # если val - list тогда, [(f1, flag1), (f2, flag2)], где 0-ой элемент на нажатие а 1-ый на отпускание,
@@ -187,27 +190,34 @@ class Character:
 
         if self.character["coords"][0] == 1000 - self.character["coords"][2] and 200 < self.character["coords"][1] < 500 and  self.room == 'main_room':
             self.room = 'vr_room'
-            self.character["coords"][0] = 700
+            self.default_floor = pygame.Surface((1000, 800))
+            self.default_floor.fill((200, 100, 150))
+            self.character["coords"][0] = 50
 
         if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and  self.room == 'main_room':
             self.room = 'ps_room'
-            self.character["coords"][0] = 700
+            self.default_floor = pygame.Surface((1000, 800))
+            self.default_floor.fill((200, 20, 150))
+            self.character["coords"][0] = 750
 
 
 
 
         if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and  self.room == 'vr_room':
             self.room = 'main_room'
+            self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
             self.character["coords"][0] = 450
             self.character["coords"][1] = 300
 
         if self.character["coords"][0] == 1000 - self.character["coords"][2] and 200 < self.character["coords"][1] < 500 and  self.room == 'ps_room':
             self.room = 'main_room'
+            self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
             self.character["coords"][0] = 100
             self.character["coords"][1] = 330
 
         #
-        self.parent.display.blit(sprite, self.character["coords"])
+        self.floor.blit(self.default_floor, (0, 0))
+        self.floor.blit(sprite, self.character["coords"])
         # pygame.draw.rect(self.parent.display, self.character["type_cond"][self.character["cond"]][self.character["dir"]], self.character["rect"])
 
 
@@ -219,7 +229,8 @@ class Game:
         self.parent = parent
         self.container_flags = {}
         self.buttons = []
-        self.character = Character(self.parent, self.base_style, self.container_flags)
+        self.floor = pygame.Surface((1000, 800))
+        self.character = Character(self.parent, self.base_style, self.container_flags, self.floor)
 
         self.commands = {
             pygame.KEYDOWN: {
@@ -262,6 +273,7 @@ class Game:
 
         if self.character.room == 'ps_room':
             self.parent.display.fill((200, 255, 100))
+        self.parent.display.blit(self.floor, (0, 0))
         self.character.udpate()
 
     def check_event(self, event):
