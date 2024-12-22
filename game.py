@@ -1,7 +1,8 @@
-import time
-
 import pygame
 import numpy as np
+import time
+
+from rooms import Reception, Computer_room, PS_room, VR_room
 
 class Map:
     def __init__(self):
@@ -57,6 +58,10 @@ class Character:
         self.character["freq_sprite"] = self.character["speed_TO_freq"][self.character["cond"]]
         # print(self.character["freq_sprite"], speed, self.character["cond"])
 
+    def respawn(self, coords):
+        self.character["coords"][0] = coords[0]
+        self.character["coords"][1] = coords[1]
+
     def set_sprite(self):
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
 
@@ -102,27 +107,6 @@ class Character:
         print(part_file_path)
         self.character = {
             "type_cond": {
-                # "move": {
-                #     "front": (150, 0, 0),
-                #     "back": (150, 150, 0),
-                #     "left": (0, 150, 0),
-                #     "right": (70, 150, 70)
-                # },
-                # "run": {
-                #     "front": (255, 0, 0),
-                #     "back": (255, 255, 0),
-                #     "left": (0, 255, 0),
-                #     "right": (100, 255, 150)
-                # },
-                # "sneak": {
-                #     "front": (80, 0, 0),
-                #     "back": (80, 80, 0),
-                #     "left": (0, 80, 0),
-                #     "right": (40, 80, 40)
-                # },
-                # "stand": {
-                #     "base": (255, 255, 255)
-                # }
                 # !!! Написать позже отдельную функцию загрузку спрайтов под нужны направления (dir) и cond
                 "walk": {
                     "front": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_front_{x}.png").convert_alpha(), range(6))),
@@ -171,12 +155,12 @@ class Character:
         print(self.character)
         self.character["coords"][0] -= self.character["coords"][2] / 2
         self.character["coords"][1] -= self.character["coords"][3] / 2
-        self.set_sprite()
+        # self.set_sprite()
 
     def draw(self):
-        print(self.character["coords"])
-        self.character["rect"] = pygame.Rect(self.character["coords"])
-        sprite = pygame.transform.scale(self.character["sprite"], (self.character["coords"][2], self.character["coords"][3]))
+        # print(self.character["coords"])
+        # self.character["rect"] = pygame.Rect(self.character["coords"])
+        self.character["sprite"] = pygame.transform.scale(self.character["sprite"], (self.character["coords"][2], self.character["coords"][3]))
         # Максимально плохая проверка на то что спрайт на вышел за границы
         if self.character["coords"][0] + self.character["coords"][2] > 1000:
             self.character["coords"][0] = 1000 - self.character["coords"][2]
@@ -186,49 +170,9 @@ class Character:
             self.character["coords"][0] = 0
         if self.character["coords"][1] < 0:
             self.character["coords"][1] = 0
-        # Проверка в какой комнате персонаж
 
-        if self.character["coords"][0] == 1000 - self.character["coords"][2] and 200 < self.character["coords"][1] < 500 and  self.room == 'main_room':
-            self.room = 'vr_room'
-            self.default_floor = pygame.Surface((1000, 800))
-            self.default_floor.fill((200, 100, 150))
-            self.character["coords"][0] = 50
-
-        if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and self.room == 'main_room':
-            self.room = 'ps_room'
-            self.default_floor = pygame.Surface((1000, 800))
-            self.default_floor.fill((200, 20, 150))
-            self.character["coords"][0] = 750
-
-        if self.character["coords"][1] == 0 and 200 < self.character["coords"][0] < 500 and self.room == 'main_room':
-            self.room = 'computer_room'
-            self.default_floor = pygame.Surface((1000, 800))
-            self.default_floor.fill((100, 120, 150))
-            self.character["coords"][1] = 600
-
-
-
-
-        if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and  self.room == 'vr_room':
-            self.room = 'main_room'
-            self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
-            self.character["coords"][0] = 450
-            self.character["coords"][1] = 300
-
-        if self.character["coords"][0] == 1000 - self.character["coords"][2] and 200 < self.character["coords"][1] < 500 and  self.room == 'ps_room':
-            self.room = 'main_room'
-            self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
-            self.character["coords"][0] = 100
-            self.character["coords"][1] = 330
-
-
-        if self.character["coords"][1] == 800 - self.character["coords"][3] and 300 < self.character["coords"][0] < 700 and self.room == 'computer_room':
-            self.room = 'main_room'
-            self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
-            self.character["coords"][1] = 150
-
-        self.floor.blit(self.default_floor, (0, 0))
-        self.floor.blit(sprite, self.character["coords"])
+        # self.floor.blit(self.default_floor, (0, 0))
+        self.parent.display.blit(self.character["sprite"], self.character["coords"])
         # pygame.draw.rect(self.parent.display, self.character["type_cond"][self.character["cond"]][self.character["dir"]], self.character["rect"])
 
 
@@ -242,6 +186,8 @@ class Game:
         self.buttons = []
         self.floor = pygame.Surface((1000, 800))
         self.character = Character(self.parent, self.base_style, self.container_flags, self.floor)
+        self.type_room = "reception"
+        self.flag_change_room = 0
 
         self.commands = {
             pygame.KEYDOWN: {
@@ -254,6 +200,14 @@ class Game:
         print("GAME: ", self.commands)
         self.list_comands = [self.commands, self.character.commands]
         self.init_button_menu()
+
+        self.list_rooms = {'reception': Reception,
+                           'comp_room': Computer_room,
+                           'ps_room': PS_room,
+                           'vr_room': VR_room}
+        self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
+        self.room_now.draw()
+        self.parent.display.fill(self.base_style["colors"]["black"])
 
     def init_button_menu(self):
         w, h = 80, 50
@@ -276,16 +230,31 @@ class Game:
                                                               func=button_ToMenu["func"])
         self.buttons.append(button_ToMenu)
 
-    def draw(self):
-        if self.character.room == 'main_room':
-            self.parent.display.fill((255, 255, 255))
-        if self.character.room == 'vr_room':
-            self.parent.display.fill((255, 200, 100))
 
-        if self.character.room == 'ps_room':
-            self.parent.display.fill((200, 255, 100))
+    def room_change(self, type_room):
+        self.type_room = type_room
+        self.flag_change_room = 1
+
+    def draw(self):
+        if self.flag_change_room:
+            self.flag_change_room = 0
+            self.room_now.delete_all()
+            self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
+            self.room_now.draw()
         self.parent.display.blit(self.floor, (0, 0))
+        # self.parent.display.fill(self.base_style["colors"]["black"])
         self.character.udpate()
+        self.room_now.enter_rooms()
+        # -------------------------------------------------------------------------------
+        # if self.character.room == 'main_room':
+        #     self.parent.display.fill((255, 255, 255))
+        # if self.character.room == 'vr_room':
+        #     self.parent.display.fill((255, 200, 100))
+        #
+        # if self.character.room == 'ps_room':
+        #     self.parent.display.fill((200, 255, 100))
+        # self.parent.display.blit(self.floor, (0, 0))
+        # self.character.udpate()
 
     def check_event(self, event):
         for commands in self.list_comands:
