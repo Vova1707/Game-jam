@@ -53,10 +53,13 @@ class Character:
         self.character["rect"].y = self.character["coords"][1] + self.character["coords"][3] - self.character["coord_rect"]
         self.character["rect"].w = self.character["coords"][2]
         self.character["rect"].h = self.character["coord_rect"] # self.character["coords"][3]
+        self.character["other_rect"].x, self.character["other_rect"].y, self.character["other_rect"].w, self.character["other_rect"].h = self.character["coords"]
 
     def udpate(self):
         flag_change = 0
+        # pygame.draw.rect(self.parent.display, (255, 0, 0), self.character["other_rect"])
         # pygame.draw.rect(self.parent.display, (255, 255, 255), self.character["rect"])
+        # pygame.draw.rect(self.parent.display, (255, 255, 255), self.game.room_now.rect_objs[0])
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
         dir_collides = []
         for obj_rect in self.game.room_now.rect_objs:
@@ -68,22 +71,26 @@ class Character:
                 else:
                     if self.character["rect"].centerx < obj_rect.centerx: dir_collides.append("right")
                     else: dir_collides.append("left")
-                break
+
+            if self.character["rect"].centery > obj_rect.centery:
+                self.character["type_render"] = 1
+            else:
+                self.character["type_render"] = 0
+
         if dir_collides == []: dir_collides = [None]
-        # print(dir_collides)
+        print(self.character["type_render"])
+        # print(set(dir_collides))
         flag_changes = {"down": 1, "up": 1, "right": 1, "left": 1}
         for dir_collide in set(dir_collides):
             if dir_collide != "down" and self.character["flags"]["key_down"] and flag_changes["down"] == 1:
                 self.character["coords"][1] += self.character["val_speed"]
                 self.character["dir"] = "front"
                 flag_changes["down"] = 0
-                self.character["type_collide"] = 0
                 flag_change = 1
             if dir_collide != "up" and self.character["flags"]["key_up"] and flag_changes["up"] == 1:
                 self.character["coords"][1] -= self.character["val_speed"]
                 self.character["dir"] = "back"
                 flag_changes["up"] = 0
-                self.character["type_collide"] = 1
                 flag_change = 1
             if dir_collide != "left" and self.character["flags"]["key_left"] and flag_changes["left"] == 1:
                 self.character["coords"][0] -= self.character["val_speed"]
@@ -162,11 +169,11 @@ class Character:
             "coord_rect": 20,
             # "key_press_TO_": {[0, 0, 0, 0]: "", "key_up": 0, "key_left": 0, "key_right": 0},
             "val_speed": 4,
-            "type_collide": 0,
+            "type_render": 1,
             "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140] # 50, 70
         }
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
-        self.character["rect"] = self.character["sprite"].get_rect()
+        self.character["rect"], self.character["other_rect"] = self.character["sprite"].get_rect(), pygame.Rect(self.character["coords"])
         self.set_sprite()
         print(self.character)
         self.character["coords"][0] -= self.character["coords"][2] / 2
@@ -260,7 +267,7 @@ class Game:
             self.room_now.enter_rooms()
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
-        if self.character.character["type_collide"] == 1:
+        if self.character.character["type_render"] == 1:
             self.room_now.draw()
             self.character.udpate()
         else:
