@@ -46,14 +46,14 @@ class Reception:
 
         self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj['rect']] # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
-    def draw(self):
-        self.game.floor.fill((255, 255, 255))
+    def enter_rooms(self):
+        # self.game.floor.fill((255, 255, 255))
         self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
         pass
 
-    def enter_rooms(self):
+    def draw(self):
         for i in self.objects: i.draw()
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             # self.game.character.respawn([450, 300])
@@ -80,14 +80,14 @@ class Computer_room:
         self.objects = [avtomat]
         self.rect_objs = [avtomat.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
-    def draw(self):
+    def enter_rooms(self):
         self.game.character.respawn([None, 600])
         self.game.floor.fill((100, 120, 150))
 
     def delete_all(self):
         pass
 
-    def enter_rooms(self):
+    def draw(self):
         for i in self.objects: i.draw()
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
             self.game.character.respawn([None, 150])
@@ -104,14 +104,14 @@ class PS_room:
         self.test_obj = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150), 'images/avtomat_1.png')
         self.rect_objs = [self.test_obj.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
-    def draw(self):
+    def enter_rooms(self):
         self.game.character.respawn([750, None])
         self.game.floor.fill((200, 20, 150))
 
     def delete_all(self):
         pass
 
-    def enter_rooms(self):
+    def draw(self):
         self.test_obj.draw()
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([100, 330])
@@ -128,14 +128,14 @@ class VR_room:
         self.test_obj = Object(self.parent, self.game, self.base_style, [self.parent.display_w-300, self.parent.display_h // 2], (100, 150), 'images/avtomat_1.png')
         self.rect_objs = [self.test_obj.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
-    def draw(self):
+    def enter_rooms(self):
         self.game.character.respawn([50, None])
         self.game.floor.fill((200, 100, 150))
 
     def delete_all(self):
         pass
 
-    def enter_rooms(self):
+    def draw(self):
         self.test_obj.draw()
         if self.game.character.character["coords"][0] == 0 and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([800, 300])

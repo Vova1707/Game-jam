@@ -54,33 +54,40 @@ class Character:
     def udpate(self):
         flag_change = 0
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
-        type_collide = None
+        dir_collides = []
         for obj_rect in self.game.room_now.rect_objs:
             if self.character["rect"].colliderect(obj_rect):
                 collision_area = self.character["rect"].clip(obj_rect)
                 if collision_area.width > collision_area.height:
-                    if self.character["rect"].centery < obj_rect.centery: type_collide = "down"
-                    else: type_collide = "up"
+                    if self.character["rect"].centery < obj_rect.centery: dir_collides.append("down")
+                    else: dir_collides.append("up")
                 else:
-                    if self.character["rect"].centerx < obj_rect.centerx: type_collide = "right"
-                    else: type_collide = "left"
+                    if self.character["rect"].centerx < obj_rect.centerx: dir_collides.append("right")
+                    else: dir_collides.append("left")
                 break
-        for obj_rect in self.game.room_now.rect_objs:
-            if type_collide != "down" and self.character["flags"]["key_down"]:
+        if dir_collides == []: dir_collides = [None]
+        # print(dir_collides)
+        flag_changes = {"down": 1, "up": 1, "right": 1, "left": 1}
+        for dir_collide in set(dir_collides):
+            if dir_collide != "down" and self.character["flags"]["key_down"] and flag_changes["down"] == 1:
                 self.character["coords"][1] += self.character["val_speed"]
                 self.character["dir"] = "front"
+                flag_changes["down"] = 0
                 flag_change = 1
-            if type_collide != "up" and self.character["flags"]["key_up"]:
+            if dir_collide != "up" and self.character["flags"]["key_up"] and flag_changes["up"] == 1:
                 self.character["coords"][1] -= self.character["val_speed"]
                 self.character["dir"] = "back"
+                flag_changes["up"] = 0
                 flag_change = 1
-            if type_collide != "left" and self.character["flags"]["key_left"]:
+            if dir_collide != "left" and self.character["flags"]["key_left"] and flag_changes["left"] == 1:
                 self.character["coords"][0] -= self.character["val_speed"]
                 self.character["dir"] = "left"
+                flag_changes["right"] = 0
                 flag_change = 1
-            if type_collide != "right" and self.character["flags"]["key_right"]:
+            if dir_collide != "right" and self.character["flags"]["key_right"] and flag_changes["right"] == 1:
                 self.character["coords"][0] += self.character["val_speed"]
                 self.character["dir"] = "right"
+                flag_changes["left"] = 0
                 flag_change = 1
         if flag_change == 0:
             self.character["cond"] = "idle"
@@ -208,7 +215,7 @@ class Game:
                            'vr_room': VR_room}
         self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
         self.room_now.draw()
-        self.parent.display.fill(self.base_style["colors"]["black"])
+        self.room_now.enter_rooms()
 
     def init_button_menu(self):
         w, h = 80, 50
@@ -242,10 +249,10 @@ class Game:
             self.flag_change_room = 0
             self.room_now.delete_all()
             self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
-            self.room_now.draw()
+            self.room_now.enter_rooms()
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
-        self.room_now.enter_rooms()
+        self.room_now.draw()
         self.character.udpate()
         # -------------------------------------------------------------------------------
         # if self.character.room == 'main_room':
