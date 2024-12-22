@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 import time
 
-from rooms import Reception, Computer_room, PS_room, VR_room
+from rooms import Reception, Computer_room, PS_room, VR_room, Object
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -19,15 +19,15 @@ class Character:
                 (pygame.K_UP, pygame.K_w): lambda: self.set_flag("key_up", 1), # lambda: print("character - back"),
                 (pygame.K_LEFT, pygame.K_a): lambda: self.set_flag("key_left", 1), # lambda: print("character - left"),
                 (pygame.K_RIGHT, pygame.K_d): lambda: self.set_flag("key_right", 1), # lambda: print("character - right")
-                (pygame.K_RCTRL, pygame.K_LCTRL): lambda: self.set_speed_move("sneak"),
-                (pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_speed_move("run")
+                (pygame.K_RCTRL, pygame.K_LCTRL): lambda: self.set_move("sneak"),
+                (pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_move("run")
             },
             pygame.KEYUP: {
                 (pygame.K_DOWN, pygame.K_s): lambda: self.set_flag("key_down", 0),
                 (pygame.K_UP, pygame.K_w): lambda: self.set_flag("key_up", 0),
                 (pygame.K_LEFT, pygame.K_a): lambda: self.set_flag("key_left", 0),
                 (pygame.K_RIGHT, pygame.K_d): lambda: self.set_flag("key_right", 0),
-                (pygame.K_RCTRL, pygame.K_LCTRL, pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_speed_move("walk")
+                (pygame.K_RCTRL, pygame.K_LCTRL, pygame.K_RSHIFT, pygame.K_LSHIFT): lambda: self.set_move("walk")
             }
         }
         self.commands = self.parent.format_commands(self.commands)
@@ -36,14 +36,15 @@ class Character:
     def set_flag(self, key, val):
         self.character["flags"][key] = val
         if self.flag_walk == 1:
-            self.set_speed_move("walk")
+            self.set_move("walk")
             self.flag_walk = 0
 
-    def set_speed_move(self, cond):
-        self.character["val_speed"] = self.character["speed"][cond]
-        self.character["cond"] = cond
-        # print(self.character["cond"])
-        self.character["freq_sprite"] = self.character["speed_TO_freq"][cond]
+    def set_move(self, cond):
+        if list(self.character["flags"].values()) != [0, 0, 0, 0] or cond == "idle":
+            self.character["val_speed"] = self.character["speed"][cond]
+            self.character["cond"] = cond
+            # print(self.character["cond"])
+            self.character["freq_sprite"] = self.character["speed_TO_freq"][cond]
 
     def respawn(self, coords):
         if coords[0] != None: self.character["coords"][0] = coords[0]
@@ -65,8 +66,7 @@ class Character:
         # pygame.draw.rect(self.parent.display, (255, 255, 255), self.game.room_now.rect_objs[0])
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
         dir_collides = []
-        # print(self.game.room_now.rect_objs)
-        for obj_rect in self.game.room_now.rect_objs:
+        for obj_rect in list(map(lambda x: x.data["rect"], self.game.room_now.objects)):
             if self.character["rect"].colliderect(obj_rect):
                 collision_area = self.character["rect"].clip(obj_rect)
                 if collision_area.width > collision_area.height:
@@ -76,13 +76,7 @@ class Character:
                     if self.character["rect"].centerx < obj_rect.centerx: dir_collides.append("right")
                     else: dir_collides.append("left")
 
-            if self.character["rect"].centery > obj_rect.centery:
-                self.character["type_render"] = 1
-            else:
-                self.character["type_render"] = 0
-
         if dir_collides == []: dir_collides = [None]
-        # print(self.character["type_render"])
         # print(set(dir_collides))
         flag_changes = {"down": 1, "up": 1, "right": 1, "left": 1}
         for dir_collide in set(dir_collides):
@@ -107,7 +101,7 @@ class Character:
                 flag_changes["right"] = 0
                 flag_change, self.flag_idle = 1, 1
         if flag_change == 0 and self.flag_idle == 1:
-            self.set_speed_move("idle")
+            self.set_move("idle")
             self.flag_idle = 0
             self.flag_walk = 1
             # print(self.character["flags"], self.character["cond"])
@@ -172,7 +166,6 @@ class Character:
             "coord_rect": 20,
             # "key_press_TO_": {[0, 0, 0, 0]: "", "key_up": 0, "key_left": 0, "key_right": 0},
             "val_speed": 4,
-            "type_render": 1,
             "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140] # 50, 70
         }
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
@@ -270,12 +263,7 @@ class Game:
             self.room_now.enter_rooms()
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
-        if self.character.character["type_render"] == 1:
-            self.room_now.draw()
-            self.character.udpate()
-        else:
-            self.character.udpate()
-            self.room_now.draw()
+        self.room_now.draw()
         # -------------------------------------------------------------------------------
         # if self.character.room == 'main_room':
         #     self.parent.display.fill((255, 255, 255))
@@ -286,6 +274,28 @@ class Game:
         #     self.parent.display.fill((200, 255, 100))
         # self.parent.display.blit(self.floor, (0, 0))
         # self.character.udpate()
+
+    def render_objects(self, objects):
+        for obj in objects:
+            obj.draw()
+            if self.character.character["rect"].centery > obj.data["rect"].centery:
+                obj.data["type_render"] = 1
+            else:
+                obj.data["type_render"] = 0
+        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: obj.data["rect"].y):
+            obj.draw()
+        self.character.udpate()
+        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: obj.data["rect"].y):
+            obj.draw()
+
+    def draw_walls(self, colors, thinkess, height):
+        wal_left = Object(self.parent, self, self.base_style, [0, 0],
+                          (thinkess, self.parent.display_h), f'sprites/walls/side_{colors[0]}_wall.png')
+        wall_up = Object(self.parent, self, self.base_style, [0, 0],
+                      (self.parent.display_w, height), f'sprites/walls/front_{colors[1]}_wall.png')
+        wal_right = Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
+                       (thinkess, self.parent.display_h), f'sprites/walls/side_{colors[2]}_wall.png')
+        return wall_up, wal_left, wal_right
 
     def check_event(self, event):
         for commands in self.list_comands:

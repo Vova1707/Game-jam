@@ -49,7 +49,6 @@ class Main:
         pygame.display.set_caption("Ultimate")
         self.clock = pygame.time.Clock()
 
-
     def buttons(self, coords, layout, texts, color, fonts, funcs):
         check_keys = {
             "inactive": self.style["colors"]["base1"],
