@@ -49,10 +49,14 @@ class Character:
     def set_sprite(self):
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
         self.character["sprite"] = pygame.transform.scale(self.character["sprite"],(self.character["coords"][2], self.character["coords"][3]))
-        self.character["rect"].x, self.character["rect"].y, self.character["rect"].w, self.character["rect"].h = self.character["coords"]
+        self.character["rect"].x = self.character["coords"][0]
+        self.character["rect"].y = self.character["coords"][1] + self.character["coords"][3] - self.character["coord_rect"]
+        self.character["rect"].w = self.character["coords"][2]
+        self.character["rect"].h = self.character["coord_rect"] # self.character["coords"][3]
 
     def udpate(self):
         flag_change = 0
+        # pygame.draw.rect(self.parent.display, (255, 255, 255), self.character["rect"])
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
         dir_collides = []
         for obj_rect in self.game.room_now.rect_objs:
@@ -73,11 +77,13 @@ class Character:
                 self.character["coords"][1] += self.character["val_speed"]
                 self.character["dir"] = "front"
                 flag_changes["down"] = 0
+                self.character["type_collide"] = 0
                 flag_change = 1
             if dir_collide != "up" and self.character["flags"]["key_up"] and flag_changes["up"] == 1:
                 self.character["coords"][1] -= self.character["val_speed"]
                 self.character["dir"] = "back"
                 flag_changes["up"] = 0
+                self.character["type_collide"] = 1
                 flag_change = 1
             if dir_collide != "left" and self.character["flags"]["key_left"] and flag_changes["left"] == 1:
                 self.character["coords"][0] -= self.character["val_speed"]
@@ -153,8 +159,10 @@ class Character:
             "counter_sprite": 0,
             "speed": {"idle": 0, "sneak": 2, "walk": 4, "run": 6},
             "speed_TO_freq": {"idle": 9, "sneak": 8, "walk": 7, "run": 4},
+            "coord_rect": 20,
             # "key_press_TO_": {[0, 0, 0, 0]: "", "key_up": 0, "key_left": 0, "key_right": 0},
             "val_speed": 4,
+            "type_collide": 0,
             "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140] # 50, 70
         }
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
@@ -252,8 +260,12 @@ class Game:
             self.room_now.enter_rooms()
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
-        self.room_now.draw()
-        self.character.udpate()
+        if self.character.character["type_collide"] == 1:
+            self.room_now.draw()
+            self.character.udpate()
+        else:
+            self.character.udpate()
+            self.room_now.draw()
         # -------------------------------------------------------------------------------
         # if self.character.room == 'main_room':
         #     self.parent.display.fill((255, 255, 255))

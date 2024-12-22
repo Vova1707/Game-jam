@@ -167,7 +167,7 @@ class Main:
 
 
     def view_logo(self):
-        logo = pygame.image.load('sprites/floor/previe.png')
+        logo = pygame.image.load('sprites/logo.png')
         self.display.fill((255, 255, 255))
         self.display.blit(logo, (0, 0))
         pygame.display.flip()

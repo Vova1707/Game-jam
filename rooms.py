@@ -14,7 +14,8 @@ class Object:
     def init_data(self):
         self.data_obj = {
             "color": self.base_style["colors"]["light"],
-            "coords": [self.coords[0], self.coords[1], self.size[0], self.size[1]]  # 50, 70
+            "coords": [self.coords[0], self.coords[1], self.size[0], self.size[1]],  # 50, 70
+            "coord_rect": 20
         }
         self.data_obj["sprite"] = pygame.image.load(self.img).convert_alpha()
         self.data_obj["rect"] = self.data_obj["sprite"].get_rect()
@@ -22,7 +23,10 @@ class Object:
 
     def set_sprite(self):
         self.data_obj["sprite"] = pygame.transform.scale(self.data_obj["sprite"],(self.data_obj["coords"][2], self.data_obj["coords"][3]))
-        self.data_obj["rect"].x, self.data_obj["rect"].y, self.data_obj["rect"].w, self.data_obj["rect"].h = self.data_obj["coords"]
+        self.data_obj["rect"].x = self.data_obj["coords"][0]
+        self.data_obj["rect"].y = self.data_obj["coords"][1] + self.data_obj["coords"][3] - self.data_obj["coord_rect"]
+        self.data_obj["rect"].w = self.data_obj["coords"][2]
+        self.data_obj["rect"].h = self.data_obj["coord_rect"]  # self.character["coords"][3]
 
     def draw(self):
         self.parent.display.blit(self.data_obj["sprite"], self.data_obj["coords"])
@@ -37,10 +41,10 @@ class Reception:
         avtomat = Object(self.parent, self.game, self.base_style,
                                [800, 50],
                          (100, 150),
-                               'images/avtomat_1.png')
+                               'sprites/avtomat/avtomat_2.png')
         wall = Object(self.parent, self.game, self.base_style, [0, 0],
-                      (1000, 200), 'images/wall.png')
-        self.texture_floor = pygame.image.load('sprites/floor/floor_on_main.png')
+                      (1000, 200), 'sprites/walls/front_black_wall.png')
+        self.texture_floor = pygame.image.load('sprites/floor.png')
 
         self.objects = [wall, avtomat]
 
@@ -74,7 +78,7 @@ class Computer_room:
         self.game = game
 
         avtomat = Object(self.parent, self.game, self.base_style, [self.parent.display_w // 2, 300],
-                         (100, 150), 'images/avtomat_2.png')
+                         (100, 150), 'sprites/avtomat/avtomat_2.png')
 
 
         self.objects = [avtomat]
@@ -101,7 +105,7 @@ class PS_room:
         self.parent = parent
         self.game = game
 
-        self.test_obj = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150), 'images/avtomat_1.png')
+        self.test_obj = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150), 'sprites/avtomat/avtomat_1.png')
         self.rect_objs = [self.test_obj.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
@@ -125,7 +129,7 @@ class VR_room:
         self.parent = parent
         self.game = game
 
-        self.test_obj = Object(self.parent, self.game, self.base_style, [self.parent.display_w-300, self.parent.display_h // 2], (100, 150), 'images/avtomat_1.png')
+        self.test_obj = Object(self.parent, self.game, self.base_style, [self.parent.display_w-300, self.parent.display_h // 2], (100, 150), 'sprites/avtomat/avtomat_3.png')
         self.rect_objs = [self.test_obj.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
