@@ -177,8 +177,7 @@ class Main:
         self.view_logo()
         self.list_active_surface = {'menu': Menu,
                                     'game': Game,
-                                    'refer': Refer,
-                                    'settings': Settings}
+                                    'refer': Refer}
         self.holst = self.list_active_surface[self.type_display](self, self.style)
         self.changes_holst = 0
         while self.running:

@@ -44,16 +44,22 @@ class Reception:
                                'sprites/avtomat/avtomat_2.png')
         wall = Object(self.parent, self.game, self.base_style, [0, 0],
                       (1000, 200), 'sprites/walls/front_black_wall.png')
+
+        wal_1 = Object(self.parent, self.game, self.base_style, [0, 0],
+                      (30, 800), 'sprites/walls/side_black_wall.png')
+
+        wal_2 = Object(self.parent, self.game, self.base_style, [970, 0],
+                       (30, 800), 'sprites/walls/side_blue_wall.png')
+
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
-        self.objects = [wall, avtomat]
+        self.objects = [wall, wal_1, wal_2, avtomat]
 
-        self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj['rect']] # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
+        self.rect_objs = [avtomat.data_obj["rect"]] # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
         # self.game.floor.fill((255, 255, 255))
         self.game.floor.blit(self.texture_floor, (0, 0))
-
     def delete_all(self):
         pass
 
@@ -79,10 +85,15 @@ class Computer_room:
 
         avtomat = Object(self.parent, self.game, self.base_style, [self.parent.display_w // 2, 300],
                          (100, 150), 'sprites/avtomat/avtomat_2.png')
+        wall = Object(self.parent, self.game, self.base_style, [0, 0],
+                      (1000, 200), 'sprites/walls/front_blue_wall.png')
+        wal_1 = Object(self.parent, self.game, self.base_style, [970, 0],
+                       (30, 800), 'sprites/walls/side_black_wall.png')
 
-
-        self.objects = [avtomat]
-        self.rect_objs = [avtomat.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
+        wal_2 = Object(self.parent, self.game, self.base_style, [0, 0],
+                       (30, 800), 'sprites/walls/side_blue_wall.png')
+        self.objects = [avtomat, wall, wal_1, wal_2]
+        self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
         self.game.character.respawn([None, 600])
@@ -105,8 +116,16 @@ class PS_room:
         self.parent = parent
         self.game = game
 
-        self.test_obj = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150), 'sprites/avtomat/avtomat_1.png')
-        self.rect_objs = [self.test_obj.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
+        avtomat = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150), 'sprites/avtomat/avtomat_1.png')
+        wall = Object(self.parent, self.game, self.base_style, [0, 0],
+                      (1000, 200), 'sprites/walls/front_blue_wall.png')
+        wal_1 = Object(self.parent, self.game, self.base_style, [970, 0],
+                       (30, 800), 'sprites/walls/side_black_wall.png')
+
+        wal_2 = Object(self.parent, self.game, self.base_style, [0, 0],
+                       (30, 800), 'sprites/walls/side_blue_wall.png')
+        self.objects = [avtomat, wall, wal_1, wal_2]
+        self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
         self.game.character.respawn([750, None])
@@ -116,7 +135,7 @@ class PS_room:
         pass
 
     def draw(self):
-        self.test_obj.draw()
+        for i in self.objects: i.draw()
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([100, 330])
             self.game.room_change("reception")
@@ -129,8 +148,17 @@ class VR_room:
         self.parent = parent
         self.game = game
 
-        self.test_obj = Object(self.parent, self.game, self.base_style, [self.parent.display_w-300, self.parent.display_h // 2], (100, 150), 'sprites/avtomat/avtomat_3.png')
-        self.rect_objs = [self.test_obj.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
+        avtomat = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150),
+                         'sprites/avtomat/avtomat_1.png')
+        wall = Object(self.parent, self.game, self.base_style, [0, 0],
+                      (1000, 200), 'sprites/walls/front_blue_wall.png')
+        wal_1 = Object(self.parent, self.game, self.base_style, [970, 0],
+                       (30, 800), 'sprites/walls/side_black_wall.png')
+
+        wal_2 = Object(self.parent, self.game, self.base_style, [0, 0],
+                       (30, 800), 'sprites/walls/side_blue_wall.png')
+        self.objects = [avtomat, wall, wal_1, wal_2]
+        self.rect_objs = [avtomat.data_obj["rect"], wall.data_obj["rect"]]  # Объекты в комнате (их прямоугольные зоны для отслеживания коллизии)
 
     def enter_rooms(self):
         self.game.character.respawn([50, None])
@@ -140,7 +168,7 @@ class VR_room:
         pass
 
     def draw(self):
-        self.test_obj.draw()
+        for i in self.objects: i.draw()
         if self.game.character.character["coords"][0] == 0 and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([800, 300])
             self.game.room_change("reception")
