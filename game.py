@@ -20,6 +20,7 @@ class Character:
         self.parent = parent
         self.base_style = base_style
 
+        self.room = 'main_room' # ['main_room', 'vr_room', 'ps_room']
         self.init_shell()
         self.container_flags["character"] = 0
         self.commands = { # если val - list тогда, [(f1, flag1), (f2, flag2)], где 0-ой элемент на нажатие а 1-ый на отпускание,
@@ -170,8 +171,42 @@ class Character:
         self.set_sprite()
 
     def draw(self):
+        print(self.character["coords"])
         self.character["rect"] = pygame.Rect(self.character["coords"])
         sprite = pygame.transform.scale(self.character["sprite"], (self.character["coords"][2], self.character["coords"][3]))
+        # Максимально плохая проверка на то что спрайт на вышел за границы
+        if self.character["coords"][0] + self.character["coords"][2] > 1000:
+            self.character["coords"][0] = 1000 - self.character["coords"][2]
+        if self.character["coords"][1] + self.character["coords"][3] > 800:
+            self.character["coords"][1] = 800 - self.character["coords"][3]
+        if self.character["coords"][0] < 0:
+            self.character["coords"][0] = 0
+        if self.character["coords"][1] < 0:
+            self.character["coords"][1] = 0
+        # Проверка в какой комнате персонаж
+
+        if self.character["coords"][0] == 1000 - self.character["coords"][2] and 200 < self.character["coords"][1] < 500 and  self.room == 'main_room':
+            self.room = 'vr_room'
+            self.character["coords"][0] = 700
+
+        if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and  self.room == 'main_room':
+            self.room = 'ps_room'
+            self.character["coords"][0] = 700
+
+
+
+
+        if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and  self.room == 'vr_room':
+            self.room = 'main_room'
+            self.character["coords"][0] = 450
+            self.character["coords"][1] = 300
+
+        if self.character["coords"][0] == 1000 - self.character["coords"][2] and 200 < self.character["coords"][1] < 500 and  self.room == 'ps_room':
+            self.room = 'main_room'
+            self.character["coords"][0] = 100
+            self.character["coords"][1] = 330
+
+        #
         self.parent.display.blit(sprite, self.character["coords"])
         # pygame.draw.rect(self.parent.display, self.character["type_cond"][self.character["cond"]][self.character["dir"]], self.character["rect"])
 
@@ -220,8 +255,13 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def draw(self):
-        self.parent.display.fill((0, 0, 0))
-        self.parent.display.blit(pygame.image.load('sprites/floor/floor.png'), (0, 0))
+        if self.character.room == 'main_room':
+            self.parent.display.fill((255, 255, 255))
+        if self.character.room == 'vr_room':
+            self.parent.display.fill((255, 200, 100))
+
+        if self.character.room == 'ps_room':
+            self.parent.display.fill((200, 255, 100))
         self.character.udpate()
 
     def check_event(self, event):

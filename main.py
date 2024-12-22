@@ -46,7 +46,7 @@ class Main:
         self.display = pygame.display.set_mode((self.display_w, self.display_h))
 
         self.display.fill(self.style["colors"]["dark"])
-        pygame.display.set_caption("Office Nightmare")
+        pygame.display.set_caption("Ultimate")
         self.clock = pygame.time.Clock()
 
 
