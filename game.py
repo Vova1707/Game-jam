@@ -54,9 +54,8 @@ class Character:
     def udpate(self):
         flag_change = 0
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
+        type_collide = None
         for obj_rect in self.game.room_now.rect_objs:
-            type_collide = None
-            # print(obj_rect)
             if self.character["rect"].colliderect(obj_rect):
                 collision_area = self.character["rect"].clip(obj_rect)
                 if collision_area.width > collision_area.height:
@@ -65,7 +64,8 @@ class Character:
                 else:
                     if self.character["rect"].centerx < obj_rect.centerx: type_collide = "right"
                     else: type_collide = "left"
-            # print(type_collide)
+                break
+        for obj_rect in self.game.room_now.rect_objs:
             if type_collide != "down" and self.character["flags"]["key_down"]:
                 self.character["coords"][1] += self.character["val_speed"]
                 self.character["dir"] = "front"
