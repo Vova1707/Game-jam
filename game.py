@@ -4,29 +4,13 @@ import time
 
 from rooms import Reception, Computer_room, PS_room, VR_room
 
-class Map:
-    def __init__(self):
-        self.info = {
-            "#": {
-                "w": 50, "h": 50,
-                "sprite": (0, 0, 255)
-            }
-        }
-        self.map = []
-
-
 class Character:
-    def __init__(self, parent, base_style, container_flags, floor):
-        self.container_flags = container_flags
+    def __init__(self, parent, game, base_style):
         self.parent = parent
+        self.game = game
         self.base_style = base_style
 
-        self.room = 'main_room' # ['main_room', 'vr_room', 'ps_room']
-        self.floor = floor
-        self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
-
         self.init_shell()
-        self.container_flags["character"] = 0
         self.commands = { # если val - list тогда, [(f1, flag1), (f2, flag2)], где 0-ой элемент на нажатие а 1-ый на отпускание,
             pygame.KEYDOWN: {
                 (pygame.K_DOWN, pygame.K_s): lambda: self.set_flag("key_down", 1), # lambda: print("character - front"),
@@ -59,30 +43,45 @@ class Character:
         # print(self.character["freq_sprite"], speed, self.character["cond"])
 
     def respawn(self, coords):
-        self.character["coords"][0] = coords[0]
-        self.character["coords"][1] = coords[1]
+        if coords[0] != None: self.character["coords"][0] = coords[0]
+        if coords[1] != None: self.character["coords"][1] = coords[1]
 
     def set_sprite(self):
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
+        self.character["sprite"] = pygame.transform.scale(self.character["sprite"],(self.character["coords"][2], self.character["coords"][3]))
+        self.character["rect"].x, self.character["rect"].y, self.character["rect"].w, self.character["rect"].h = self.character["coords"]
 
     def udpate(self):
         flag_change = 0
-        if self.character["flags"]["key_down"]:
-            self.character["coords"][1] += self.character["val_speed"]
-            self.character["dir"] = "front"
-            flag_change = 1
-        if self.character["flags"]["key_up"]:
-            self.character["coords"][1] -= self.character["val_speed"]
-            self.character["dir"] = "back"
-            flag_change = 1
-        if self.character["flags"]["key_left"]:
-            self.character["coords"][0] -= self.character["val_speed"]
-            self.character["dir"] = "left"
-            flag_change = 1
-        if self.character["flags"]["key_right"]:
-            self.character["coords"][0] += self.character["val_speed"]
-            self.character["dir"] = "right"
-            flag_change = 1
+        # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
+        for obj_rect in self.game.room_now.rect_objs:
+            type_collide = None
+            # print(obj_rect)
+            if self.character["rect"].colliderect(obj_rect):
+                collision_area = self.character["rect"].clip(obj_rect)
+                if collision_area.width > collision_area.height:
+                    if self.character["rect"].centery < obj_rect.centery: type_collide = "down"
+                    else: type_collide = "up"
+                else:
+                    if self.character["rect"].centerx < obj_rect.centerx: type_collide = "right"
+                    else: type_collide = "left"
+            # print(type_collide)
+            if type_collide != "down" and self.character["flags"]["key_down"]:
+                self.character["coords"][1] += self.character["val_speed"]
+                self.character["dir"] = "front"
+                flag_change = 1
+            if type_collide != "up" and self.character["flags"]["key_up"]:
+                self.character["coords"][1] -= self.character["val_speed"]
+                self.character["dir"] = "back"
+                flag_change = 1
+            if type_collide != "left" and self.character["flags"]["key_left"]:
+                self.character["coords"][0] -= self.character["val_speed"]
+                self.character["dir"] = "left"
+                flag_change = 1
+            if type_collide != "right" and self.character["flags"]["key_right"]:
+                self.character["coords"][0] += self.character["val_speed"]
+                self.character["dir"] = "right"
+                flag_change = 1
         if flag_change == 0:
             self.character["cond"] = "idle"
             self.character["dir"] = "front"
@@ -142,7 +141,6 @@ class Character:
             },
             "dir" : "front",
             "cond": "idle",
-            "sprite": None,
             "number_sprite": 0,
             "freq_sprite": 3,
             "counter_sprite": 0,
@@ -152,15 +150,16 @@ class Character:
             "val_speed": 4,
             "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140] # 50, 70
         }
+        self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
+        self.character["rect"] = self.character["sprite"].get_rect()
+        self.set_sprite()
         print(self.character)
         self.character["coords"][0] -= self.character["coords"][2] / 2
         self.character["coords"][1] -= self.character["coords"][3] / 2
-        # self.set_sprite()
 
     def draw(self):
         # print(self.character["coords"])
         # self.character["rect"] = pygame.Rect(self.character["coords"])
-        self.character["sprite"] = pygame.transform.scale(self.character["sprite"], (self.character["coords"][2], self.character["coords"][3]))
         # Максимально плохая проверка на то что спрайт на вышел за границы
         if self.character["coords"][0] + self.character["coords"][2] > 1000:
             self.character["coords"][0] = 1000 - self.character["coords"][2]
@@ -182,12 +181,12 @@ class Game:
     def __init__(self, parent, base_style):
         self.base_style = base_style
         self.parent = parent
-        self.container_flags = {}
-        self.buttons = []
+
         self.floor = pygame.Surface((1000, 800))
-        self.character = Character(self.parent, self.base_style, self.container_flags, self.floor)
         self.type_room = "reception"
         self.flag_change_room = 0
+
+        self.character = Character(self.parent, self, self.base_style)
 
         self.commands = {
             pygame.KEYDOWN: {
@@ -199,6 +198,8 @@ class Game:
         self.commands = self.parent.format_commands(self.commands)
         print("GAME: ", self.commands)
         self.list_comands = [self.commands, self.character.commands]
+
+        self.buttons = []
         self.init_button_menu()
 
         self.list_rooms = {'reception': Reception,
@@ -232,6 +233,7 @@ class Game:
 
 
     def room_change(self, type_room):
+        print(self.type_room, "->", type_room)
         self.type_room = type_room
         self.flag_change_room = 1
 
@@ -243,8 +245,8 @@ class Game:
             self.room_now.draw()
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
-        self.character.udpate()
         self.room_now.enter_rooms()
+        self.character.udpate()
         # -------------------------------------------------------------------------------
         # if self.character.room == 'main_room':
         #     self.parent.display.fill((255, 255, 255))
