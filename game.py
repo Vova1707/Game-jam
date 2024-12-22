@@ -194,11 +194,17 @@ class Character:
             self.default_floor.fill((200, 100, 150))
             self.character["coords"][0] = 50
 
-        if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and  self.room == 'main_room':
+        if self.character["coords"][0] == 0 and 200 < self.character["coords"][1] < 500 and self.room == 'main_room':
             self.room = 'ps_room'
             self.default_floor = pygame.Surface((1000, 800))
             self.default_floor.fill((200, 20, 150))
             self.character["coords"][0] = 750
+
+        if self.character["coords"][1] == 0 and 200 < self.character["coords"][0] < 500 and self.room == 'main_room':
+            self.room = 'computer_room'
+            self.default_floor = pygame.Surface((1000, 800))
+            self.default_floor.fill((100, 120, 150))
+            self.character["coords"][1] = 600
 
 
 
@@ -215,7 +221,12 @@ class Character:
             self.character["coords"][0] = 100
             self.character["coords"][1] = 330
 
-        #
+
+        if self.character["coords"][1] == 800 - self.character["coords"][3] and 300 < self.character["coords"][0] < 700 and self.room == 'computer_room':
+            self.room = 'main_room'
+            self.default_floor = pygame.image.load('sprites/floor/floor_on_main.png')
+            self.character["coords"][1] = 150
+
         self.floor.blit(self.default_floor, (0, 0))
         self.floor.blit(sprite, self.character["coords"])
         # pygame.draw.rect(self.parent.display, self.character["type_cond"][self.character["cond"]][self.character["dir"]], self.character["rect"])
