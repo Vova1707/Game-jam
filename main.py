@@ -37,9 +37,9 @@ class Main:
                 "dark": (10, 10, 10),
                 "black": (0, 0, 0)
             },
-            "font_path": "fonts/pixel/DotGothic16-Regular.ttf"
-            # "fonts/pixel/DotGothic16-Regular.ttf" - для латиницы слишком растянутый шрифт
-            # fonts/pixel/EpilepsySans.ttf - слишком сжатый текст, особенно при большом масштабе
+            "font_path": "fonts111/pixel/DotGothic16-Regular.ttf"
+            # "fonts111/pixel/DotGothic16-Regular.ttf" - для латиницы слишком растянутый шрифт
+            # fonts111/pixel/EpilepsySans.ttf - слишком сжатый текст, особенно при большом масштабе
         }
 
         self.display = pygame.display.set_mode((self.display_w, self.display_h))
