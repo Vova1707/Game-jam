@@ -119,35 +119,35 @@ class Character:
         # print(flag_change, self.character["cond"], self.character["freq_sprite"])
 
     def init_shell(self):
-        part_file_path = r"sprites\character\base_choice" + '\\'
+        part_file_path = r"sprites/character/base_choice" + '/'
         print(part_file_path)
         self.character = {
             "type_cond": {
                 # !!! Написать позже отдельную функцию загрузку спрайтов под нужны направления (dir) и cond
                 "walk": {
-                    "front": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_front_{x}.png").convert_alpha(), range(6))),
-                    "back": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_back_{x}.png").convert_alpha(), range(6))),
-                    "left": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_side_{x}.png").convert_alpha(), range(6))),
-                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"walk\\"+f"walk_side_{x}.png").convert_alpha(), 1, 0), range(6)))
+                    "front": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_front_{x}.png").convert_alpha(), range(6))),
+                    "back": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_back_{x}.png").convert_alpha(), range(6))),
+                    "left": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_side_{x}.png").convert_alpha(), range(6))),
+                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"walk/"+f"walk_side_{x}.png").convert_alpha(), 1, 0), range(6)))
                 },
                 "run": {
-                    "front": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_front_{x}.png").convert_alpha(), range(6))),
-                    "back": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_back_{x}.png").convert_alpha(), range(6))),
-                    "left": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_side_{x}.png").convert_alpha(), range(6))),
-                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"walk\\"+f"walk_side_{x}.png").convert_alpha(), 1, 0), range(6)))
+                    "front": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_front_{x}.png").convert_alpha(), range(6))),
+                    "back": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_back_{x}.png").convert_alpha(), range(6))),
+                    "left": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_side_{x}.png").convert_alpha(), range(6))),
+                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"walk/"+f"walk_side_{x}.png").convert_alpha(), 1, 0), range(6)))
                 },
                 "sneak": {
-                    "front": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_front_{x}.png").convert_alpha(), range(6))),
-                    "back": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_back_{x}.png").convert_alpha(), range(6))),
-                    "left": list(map(lambda x: pygame.image.load(part_file_path+"walk\\"+f"walk_side_{x}.png").convert_alpha(), range(6))),
-                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"walk\\"+f"walk_side_{x}.png").convert_alpha(), 1, 0), range(6)))
+                    "front": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_front_{x}.png").convert_alpha(), range(6))),
+                    "back": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_back_{x}.png").convert_alpha(), range(6))),
+                    "left": list(map(lambda x: pygame.image.load(part_file_path+"walk/"+f"walk_side_{x}.png").convert_alpha(), range(6))),
+                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"walk/"+f"walk_side_{x}.png").convert_alpha(), 1, 0), range(6)))
 
                 },
                 "idle": {
-                    "front": list(map(lambda x: pygame.image.load(part_file_path+"idle\\"+f"idle_front_{x}.png").convert_alpha(), range(5))),
-                    "back": list(map(lambda x: pygame.image.load(part_file_path + "idle\\" + f"idle_back_{x}.png").convert_alpha(), range(5))),
-                    "left": list(map(lambda x: pygame.image.load(part_file_path + "idle\\" + f"idle_side_{x}.png").convert_alpha(), range(5))),
-                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"idle\\"+f"idle_side_{x}.png").convert_alpha(), 1, 0), range(5)))
+                    "front": list(map(lambda x: pygame.image.load(part_file_path+"idle/"+f"idle_front_{x}.png").convert_alpha(), range(5))),
+                    "back": list(map(lambda x: pygame.image.load(part_file_path + "idle/" + f"idle_back_{x}.png").convert_alpha(), range(5))),
+                    "left": list(map(lambda x: pygame.image.load(part_file_path + "idle/" + f"idle_side_{x}.png").convert_alpha(), range(5))),
+                    "right": list(map(lambda x: pygame.transform.flip(pygame.image.load(part_file_path+"idle/"+f"idle_side_{x}.png").convert_alpha(), 1, 0), range(5)))
                 }
             },
             "flags": {
