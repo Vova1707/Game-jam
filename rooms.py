@@ -1,4 +1,5 @@
 import pygame
+from pygame_widgets.button import Button
 
 THIKNESS_WALL = 30
 HEIGHT_WALL = 200
@@ -90,12 +91,57 @@ class Computer_room:
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
+        self.buttons = []
+        self.init_button_menu()
+
+    def init_button_menu(self):
+        w, h = 80, 80
+        button_ToMenu = {
+            "font": pygame.font.Font(self.base_style["font_path"], 30),
+            "coords": (400, 400, w, h),
+            "text": "",
+            "color": {
+                "inactive": self.base_style["colors"]["black"],
+                "hover": self.base_style["colors"]["base1"],
+                "pressed": self.base_style["colors"]["light"],
+                "text": self.base_style["colors"]["light"]
+            },
+            "func": lambda: self.game.change_game('ps')
+        }
+        button_ToMenu["button"] = self.parent.button(coords=button_ToMenu["coords"],
+                                                              text=button_ToMenu["text"],
+                                                              color=button_ToMenu["color"],
+                                                              font=button_ToMenu["font"],
+                                                              func=button_ToMenu["func"])
+
+        button_Comp = {
+            "font": pygame.font.Font(self.base_style["font_path"], 30),
+            "coords": (600, 600, w, h),
+            "text": "",
+            "color": {
+                "inactive": self.base_style["colors"]["black"],
+                "hover": self.base_style["colors"]["base1"],
+                "pressed": self.base_style["colors"]["light"],
+                "text": self.base_style["colors"]["light"]
+            },
+            "func": lambda: self.game.change_game('circle')
+        }
+        button_Comp["button"] = self.parent.button(coords=button_Comp["coords"],
+                                                     text=button_Comp["text"],
+                                                     color=button_Comp["color"],
+                                                     font=button_Comp["font"],
+                                                     func=button_Comp["func"])
+
+        self.buttons.append(button_ToMenu)
+        self.buttons.append(button_Comp)
+
     def enter_rooms(self):
         self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]])
         self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
-        pass
+        for j in range(len(self.buttons) - 1, -1, -1):
+            del self.buttons[j]
 
     def draw(self):
         self.game.render_objects(self.objects)

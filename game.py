@@ -1,8 +1,8 @@
 import pygame
-import numpy as np
-import time
 
 from rooms import Reception, Computer_room, PS_room, VR_room, Object
+from circle import game_1
+#from GhostBusters.main import game_from_ps
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -224,6 +224,20 @@ class Game:
                            'comp_room': Computer_room,
                            'ps_room': PS_room,
                            'vr_room': VR_room}
+
+        self.mini_game_change = False
+        self.mini_games = {'comp_room':
+                          {'circle': lambda: game_1(self.parent.display),
+                           'ps': lambda: print('jck')
+                           #game_from_ps(self.parent.display)
+                           },
+                      'ps_room':
+                          {},
+                      'vr_room':
+                          {},
+                      }
+        self.mini_game = False
+
         self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
         self.room_now.draw()
         self.room_now.enter_rooms()
@@ -240,7 +254,7 @@ class Game:
                 "pressed": self.base_style["colors"]["light"],
                 "text": self.base_style["colors"]["light"]
             },
-            "func": lambda: self.parent.display_change("menu")
+            "func": lambda: self.parent.display_change('menu')
         }
         button_ToMenu["button"] = self.parent.button(coords=button_ToMenu["coords"],
                                                               text=button_ToMenu["text"],
@@ -249,6 +263,9 @@ class Game:
                                                               func=button_ToMenu["func"])
         self.buttons.append(button_ToMenu)
 
+    def change_game(self, name_game):
+        self.mini_game_change = 1
+        self.mini_game = self.mini_games[self.type_room][name_game]()
 
     def room_change(self, type_room):
         print(self.type_room, "->", type_room)
@@ -326,3 +343,4 @@ class Game:
 
     def delete_all(self):
         for j in range(len(self.buttons)): del self.buttons[j]
+        self.room_now.delete_all()
