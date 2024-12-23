@@ -40,13 +40,13 @@ def game_1(display):
 
 	# IMAGES *********************************************************************
 
-	main_circle = pygame.image.load('Assets/main.png')
+	main_circle = pygame.image.load('For_Mini_Gaming/Assets/main.png')
 	flake_img = 'Assets/flake.png'
 
-	close_img = pygame.image.load('Assets/closeBtn.png')
-	replay_img = pygame.image.load('Assets/replay.png')
-	sound_off_img = pygame.image.load("Assets/soundOffBtn.png")
-	sound_on_img = pygame.image.load("Assets/soundOnBtn.png")
+	close_img = pygame.image.load('For_Mini_Gaming/Assets/closeBtn.png')
+	replay_img = pygame.image.load('For_Mini_Gaming/Assets/replay.png')
+	sound_off_img = pygame.image.load("For_Mini_Gaming/Assets/soundOffBtn.png")
+	sound_on_img = pygame.image.load("For_Mini_Gaming/Assets/soundOnBtn.png")
 
 	# Buttons ********************************************************************
 

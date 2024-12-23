@@ -116,10 +116,10 @@ class Computer_room:
         self.init_button_menu()
 
     def init_button_menu(self):
-        w, h = 80, 80
-        button_ToMenu = {
+        w, h = 60, 40
+        button_ps = {
             "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (400, 400, w, h),
+            "coords": (111 - 260 + 480, 111, 75, 37),
             "text": "",
             "color": {
                 "inactive": self.base_style["colors"]["black"],
@@ -129,15 +129,15 @@ class Computer_room:
             },
             "func": lambda: self.game.change_game('ps')
         }
-        button_ToMenu["button"] = self.parent.button(coords=button_ToMenu["coords"],
-                                                              text=button_ToMenu["text"],
-                                                              color=button_ToMenu["color"],
-                                                              font=button_ToMenu["font"],
-                                                              func=button_ToMenu["func"])
+        button_ps["button"] = self.parent.button(coords=button_ps["coords"],
+                                                              text=button_ps["text"],
+                                                              color=button_ps["color"],
+                                                              font=button_ps["font"],
+                                                              func=button_ps["func"])
 
         button_Comp = {
             "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (600, 600, w, h),
+            "coords": (111, 111, 75, 37),
             "text": "",
             "color": {
                 "inactive": self.base_style["colors"]["black"],
@@ -153,7 +153,7 @@ class Computer_room:
                                                      font=button_Comp["font"],
                                                      func=button_Comp["func"])
 
-        self.buttons.append(button_ToMenu)
+        self.buttons.append(button_ps)
         self.buttons.append(button_Comp)
 
     def enter_rooms(self):

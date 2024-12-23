@@ -22,7 +22,7 @@ class Circle(pygame.sprite.Sprite):
 		self.complete = False
 		self.shrink = False
 
-		self.image = pygame.image.load('Assets/circle.png')
+		self.image = pygame.image.load('For_Mini_Gaming/Assets/circle.png')
 		self.rect = self.image.get_rect()
 
 	def update(self, shrink):
@@ -69,7 +69,7 @@ class Player():
 	def __init__(self):
 		self.reset()
 
-		self.image = pygame.image.load('Assets/player.png')
+		self.image = pygame.image.load('For_Mini_Gaming/Assets/player.png')
 		self.rect = self.image.get_rect()
 
 	def reset(self):
@@ -120,7 +120,7 @@ class Snowflake(pygame.sprite.Sprite):
 		self.side = random.randint(15, 40)
 		self.image = None
 		if image:
-			self.image = pygame.image.load(image)
+			self.image = pygame.image.load('For_Mini_Gaming/' + image)
 			self.image = pygame.transform.scale(self.image, (self.side, self.side))
 			self.rect = self.image.get_rect(center=(x, y))
 		else:
