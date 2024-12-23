@@ -27,6 +27,7 @@ main_text = ('  Добро пожаловать в репозиторий "Ге�
              '      краткое описание, что добавилось',
              "- Например 'start commit | перенёс всю свою игру'")
 
+
 class Refer:
     def __init__(self, parent, base_style):
         self.labels = []
@@ -40,14 +41,15 @@ class Refer:
     def init_label_title(self):
         label_title = {
             "coords": (100, 10),
-            "text":"Справка",
+            "text": "Справка",
             "font": pygame.font.Font(self.base_style["font_path"], 50)
         }
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
-                                                           text=label_title["text"],
-                                                           font=label_title["font"])
+                                                      text=label_title["text"],
+                                                      font=label_title["font"])
         label_title["label"], label_title["coords"] = self.parent.align(label_title["label"], label_title["coords"],
-                                                            inacurr=-20, type_blit=False, type_align="horizontal")
+                                                                        inacurr=-20, type_blit=False,
+                                                                        type_align="horizontal")
         self.labels.append(label_title)
 
     def init_main_text(self):
@@ -61,7 +63,7 @@ class Refer:
             label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                           text=label_title["text"],
                                                           font=label_title["font"])
-            #label_title["label"], label_title["coords"] = self.parent.align(label_title["label"], label_title["coords"],
+            # label_title["label"], label_title["coords"] = self.parent.align(label_title["label"], label_title["coords"],
             #                                                                inacurr=-20, type_blit=False)
             self.labels.append(label_title)
 
@@ -69,7 +71,7 @@ class Refer:
         w, h = 80, 50
         button_ToMenu = {
             "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (self.parent.display_w-w, 0, w, h),
+            "coords": (self.parent.display_w - w, 0, w, h),
             "color": {
                 "inactive": self.base_style["colors"]["base2"],
                 "hover": self.base_style["colors"]["base1"],
@@ -81,12 +83,11 @@ class Refer:
             "inv_clr": 1
         }
         button_ToMenu = self.parent.button(coords=button_ToMenu["coords"],
-                                                          text=button_ToMenu["text"],
-                                                          color=button_ToMenu["color"],
-                                                          font=button_ToMenu["font"],
-                                                          func=button_ToMenu["func"])
+                                           text=button_ToMenu["text"],
+                                           color=button_ToMenu["color"],
+                                           font=button_ToMenu["font"],
+                                           func=button_ToMenu["func"])
         self.buttons.append(button_ToMenu)
-
 
     def delete_all(self):
         print(self.buttons)
