@@ -1,5 +1,7 @@
 import pygame
 
+THIKNESS_WALL = 30
+HEIGHT_WALL = 200
 
 class Object:
     def __init__(self, parent, game, base_style, coords, size, image):
@@ -40,7 +42,8 @@ class Reception:
         self.base_style = base_style
         self.parent = parent
         self.game = game
-        wall_up, wal_left, wal_right = self.game.draw_walls(colors=['black', 'black', 'black'], thinkess=30, height=200)
+        walls = self.game.draw_walls(color_left=["black", "blue"], color_up=["blue", "black"],  color_right=["black", "black"],
+                                                            thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         avtomat_1 = Object(self.parent, self.game, self.base_style,
                                [300, 400],
                          (100, 150),
@@ -48,13 +51,13 @@ class Reception:
         avtomat_2 = Object(self.parent, self.game, self.base_style,
                          [300, 300],
                          (100, 150),
-                         'sprites/avtomat/avtomat_2.png')
-        self.objects = [wall_up, avtomat_1, wal_left, wal_right, avtomat_2]
+                         'sprites/avtomat/avtomat_2.png') #wall_up
+        self.objects = [avtomat_1, *walls, avtomat_2]
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
     def enter_rooms(self):
-        # self.game.floor.fill((255, 255, 255))
         self.game.floor.blit(self.texture_floor, (0, 0))
+
     def delete_all(self):
         pass
 
@@ -78,14 +81,18 @@ class Computer_room:
         self.parent = parent
         self.game = game
 
+        walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
+                                     color_right=["black"],
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         avtomat = Object(self.parent, self.game, self.base_style, [self.parent.display_w // 2, 300],
                          (100, 150), 'sprites/avtomat/avtomat_2.png')
-        wall_up, wal_left, wal_right = self.game.draw_walls(colors=['black', 'black', 'black'], thinkess=30, height=200)
-        self.objects = [avtomat, wall_up, wal_left, wal_right]
+        self.objects = [avtomat, *walls]
+
+        self.texture_floor = pygame.image.load('sprites/floor.png')
 
     def enter_rooms(self):
-        self.game.character.respawn([None, 600])
-        self.game.floor.fill((100, 120, 150))
+        self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]])
+        self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
         pass
@@ -96,7 +103,8 @@ class Computer_room:
             obj.draw()
 
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
-            self.game.character.respawn([None, 150])
+            print([self.parent.display_w // 2, self.game.character.character["coords"][3]+HEIGHT_WALL])
+            self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])
             self.game.room_change("reception")
 
 
@@ -107,13 +115,17 @@ class PS_room:
         self.parent = parent
         self.game = game
 
+        walls = self.game.draw_walls(color_left=["blue"], color_up=["black"],
+                                     color_right=["black", "blue"],
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         avtomat = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150), 'sprites/avtomat/avtomat_1.png')
-        wall_up, wal_left, wal_right = self.game.draw_walls(colors=['blue', 'black', 'black'], thinkess=30, height=200)
-        self.objects = [avtomat, wall_up, wal_left, wal_right]
+        self.objects = [avtomat, *walls]
+
+        self.texture_floor = pygame.image.load('sprites/floor.png')
 
     def enter_rooms(self):
-        self.game.character.respawn([750, None])
-        self.game.floor.fill((200, 20, 150))
+        self.game.character.respawn([self.parent.display_w-self.game.character.character["coords"][2], self.parent.display_h // 2])
+        self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
         pass
@@ -121,7 +133,7 @@ class PS_room:
     def draw(self):
         self.game.render_objects(self.objects)
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
-            self.game.character.respawn([100, 330])
+            self.game.character.respawn([self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")
 
 
@@ -132,14 +144,18 @@ class VR_room:
         self.parent = parent
         self.game = game
 
+        walls = self.game.draw_walls(color_left=["black", "black"], color_up=["black"],
+                                     color_right=["black"],
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         avtomat = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150),
                          'sprites/avtomat/avtomat_1.png')
-        wall_up, wal_left, wal_right = self.game.draw_walls(colors=['black', 'black', 'black'], thinkess=30, height=200)
-        self.objects = [avtomat, wall_up, wal_left, wal_right]
+        self.objects = [avtomat, *walls]
+
+        self.texture_floor = pygame.image.load('sprites/floor.png')
 
     def enter_rooms(self):
-        self.game.character.respawn([50, None])
-        self.game.floor.fill((200, 100, 150))
+        self.game.character.respawn([self.game.character.character["coords"][2], self.parent.display_h // 2])
+        self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
         pass
@@ -147,5 +163,5 @@ class VR_room:
     def draw(self):
         self.game.render_objects(self.objects)
         if self.game.character.character["coords"][0] == 0 and 200 < self.game.character.character["coords"][1] < 500:
-            self.game.character.respawn([800, 300])
+            self.game.character.respawn([self.parent.display_w - self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")
