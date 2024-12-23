@@ -10,7 +10,6 @@ from refer import Refer
 
 from circle import game_1
 
-
 from databases import Database_With_Users
 
 
@@ -74,7 +73,8 @@ class Main:
             onClicks=funcs
         )
 
-    def button(self, coords, text, color, font, func):
+    def button(self, coords, text, color, font, func, layer=None):
+        if layer is None: layer = self.display
         check_keys = {
             "inactive": self.style["colors"]["base1"],
             "hover": self.style["colors"]["base2"],
@@ -85,7 +85,7 @@ class Main:
             if k not in color.keys():
                 color[k] = v
         return Button(
-            self.display,  # Surface to place button array on
+            layer,  # Surface to place button array on
             coords[0], coords[1], coords[2], coords[3],
             # border=100,  # Distance between buttons and edge of array
             text=text,
@@ -165,6 +165,7 @@ class Main:
         self.type_display = type_display
 
     def update_widgets(self):
+        # print("EVENT:", self.events)
         pygame_widgets.update(self.events)
 
     def view_logo(self):
@@ -193,9 +194,7 @@ class Main:
                 if self.type_display == "game":
                     self.holst.check_event(event)
             self.clock.tick(self.FPS)
-            # self.update_widgets()
-            if self.type_display != "game":
-                self.update_widgets()
+            self.update_widgets()
             pygame.display.update()
 
 if __name__ == "__main__":

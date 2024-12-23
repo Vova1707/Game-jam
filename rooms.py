@@ -3,6 +3,15 @@ from pygame_widgets.button import Button
 
 THIKNESS_WALL = 30
 HEIGHT_WALL = 200
+TYPE_BUTTONS = {
+    "comp_cord": (80, 0), "comp_size": (75, 37),
+    "color": {
+            "inactive": (0, 0, 0),
+            "hover": (0, 32, 214),
+            "pressed": (200, 208, 200),
+            "text": (200, 208, 200)
+    }
+}
 
 class Object:
     def __init__(self, parent, game, base_style, coords, size, image, coord_rect=20):
@@ -42,6 +51,43 @@ class Object:
         self.parent.display.blit(self.data["sprite"], self.data["coords"])
 
 
+
+class Buttons:
+    def __init__(self, parent, game, object, layer, func, coords, size, colors):
+        self.parent = parent
+        self.game = game
+        self.object = object
+        self.layer = layer
+        self.func = func
+        self.size = size
+        self.coords = coords
+        self.colors = colors
+        if "hover" not in self.colors.keys(): self.colors["hover"] = self.colors["inactive"]
+        elif "pressed" not in self.colors.keys(): self.colors["pressed"] = self.colors["inactive"]
+        self.data = {
+            "coords": (self.object.data["coords"][0]+self.coords[0], self.object.data["coords"][1]+self.coords[1], self.size[0], self.size[1]),
+            "color": {
+                "inactive": self.colors["inactive"],
+                "hover":  self.colors["hover"],
+                "pressed": self.colors["pressed"],
+                "text": self.colors["inactive"]
+            },
+            "func": self.func,
+            # "type_render": 1
+        }
+        self.create(layer)
+
+    def create(self, layer):
+        self.layer = layer
+        self.data["button"] = self.parent.button(coords=self.data["coords"],
+                                             text="",
+                                             color=self.data["color"],
+                                             font=pygame.font.SysFont(None, 30),
+                                             func=self.data["func"],
+                                            layer=layer
+                                            )
+    def delete(self):
+        del self.data["button"]
 
 class Reception:
     def __init__(self, parent, game, base_style):
@@ -100,63 +146,44 @@ class Computer_room:
 
         computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
                                      (200, 125), 'sprites/comp/comp_1.png')
-
+        button_computer_1 = Buttons(parent=self.parent, game=self.game, object=computer_1, layer=self.parent.display,
+                                    # self.game.layer_buttons_1
+                                    func=lambda: print("кнопка комп 4"), coords=TYPE_BUTTONS["comp_cord"],
+                                    size=TYPE_BUTTONS["comp_size"],
+                                    colors=TYPE_BUTTONS["color"])
         computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
                           (200, 125), 'sprites/comp/comp_1.png')
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
                             (200, 125), 'sprites/comp/comp_1.png')
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 330],
                             (200, 125), 'sprites/comp/comp_1.png')
+        # def __init__(self, parent, game, object, layer, func, coords, size, colors):
+        button_computer_4 = Buttons(parent=self.parent, game=self.game, object=computer_4, layer=self.parent.display, # self.game.layer_buttons_1
+                                    func=lambda: print("кнопка комп 4"), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
+                                    colors=TYPE_BUTTONS["color"])
 
-
-
+        self.buttons = [button_computer_1, button_computer_4]
         self.objects = [avtomat, *walls, title_computer_room, computer_1, computer_2, computer_3, computer_4]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
-        self.buttons = []
-        self.init_button_menu()
-
-    def init_button_menu(self):
-        w, h = 75, 37
-        button_ToMenu = {
-            "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (400, 400, w, h),
-            "text": "",
-            "color": {
-                "inactive": self.base_style["colors"]["black"],
-                "hover": self.base_style["colors"]["base1"],
-                "pressed": self.base_style["colors"]["light"],
-                "text": self.base_style["colors"]["light"]
-            },
-            "func": lambda: self.game.change_game('ps')
-        }
-        button_ToMenu["button"] = self.parent.button(coords=button_ToMenu["coords"],
-                                                              text=button_ToMenu["text"],
-                                                              color=button_ToMenu["color"],
-                                                              font=button_ToMenu["font"],
-                                                              func=button_ToMenu["func"])
-
-        button_Comp = {
-            "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (110, 110, w, h),
-            "text": "",
-            "color": {
-                "inactive": self.base_style["colors"]["black"],
-                "hover": self.base_style["colors"]["base1"],
-                "pressed": self.base_style["colors"]["light"],
-                "text": self.base_style["colors"]["light"]
-            },
-            "func": lambda: self.game.change_game('circle')
-        }
-        button_Comp["button"] = self.parent.button(coords=button_Comp["coords"],
-                                                     text=button_Comp["text"],
-                                                     color=button_Comp["color"],
-                                                     font=button_Comp["font"],
-                                                     func=button_Comp["func"])
-
-        self.buttons.append(button_ToMenu)
-        self.buttons.append(button_Comp)
+        # button_Comp_2 = {
+        #     "font": pygame.font.Font(self.base_style["font_path"], 30),
+        #     "coords": (110, 110, w, h),
+        #     "text": "",
+        #     "color": {
+        #         "inactive": self.base_style["colors"]["black"],
+        #         "hover": self.base_style["colors"]["base1"],
+        #         "pressed": self.base_style["colors"]["light"],
+        #         "text": self.base_style["colors"]["light"]
+        #     },
+        #     "func": lambda: self.game.change_game('circle')
+        # }
+        # button_Comp_2["button"] = self.parent.button(coords=button_Comp_2["coords"],
+        #                                              text=button_Comp_2["text"],
+        #                                              color=button_Comp_2["color"],
+        #                                              font=button_Comp_2["font"],
+        #                                              func=button_Comp_2["func"])
 
     def enter_rooms(self):
         self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]-THIKNESS_WALL-20])
@@ -167,7 +194,7 @@ class Computer_room:
             del self.buttons[j]
 
     def draw(self):
-        self.game.render_objects(self.objects)
+        self.game.render_objects(self.objects, self.buttons)
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
             print([self.parent.display_w // 2, self.game.character.character["coords"][3]+HEIGHT_WALL])
             self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])

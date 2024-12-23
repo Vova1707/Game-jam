@@ -180,6 +180,12 @@ class Game:
         self.buttons = []
         self.init_button_menu()
 
+        self.layer_buttons_1 = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
+        self.layer_buttons_1 = self.layer_buttons_1.convert_alpha()
+        self.layer_buttons_2 = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
+        self.layer_buttons_2 = self.layer_buttons_2.convert_alpha()
+        self.old_data_layers = [0, 0]
+        self.data_layers = [0, 0]
         self.list_rooms = {'reception': Reception,
                            'comp_room': Computer_room,
                            'ps_room': PS_room,
@@ -252,19 +258,39 @@ class Game:
         # self.parent.display.blit(self.floor, (0, 0))
         # self.character.udpate()
 
-    def render_objects(self, objects):
+    def render_objects(self, objects, buttons=None):
         for obj in objects:
             obj.draw()
             if self.character.character["rect"].centery > obj.data["rect"].centery:
                 obj.data["type_render"] = 1
             else:
                 obj.data["type_render"] = 0
+        if buttons is not None:
+            for i in range(len(buttons)):
+                buttons[i].delete()
+                if self.character.character["coords"][1] > buttons[i].data["coords"][1]:
+                    buttons[i].create(self.layer_buttons_1)
+                    self.data_layers[i] = 1
+                else:
+                    buttons[i].create(self.layer_buttons_2)
+                    self.data_layers[i] = 0
         for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: obj.data["rect"].y):
             obj.draw()
-        self.parent.update_widgets()
+        if buttons is not None:
+            self.parent.display.blit(self.layer_buttons_1, (0, 0))
         self.character.udpate()
         for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: obj.data["rect"].y):
             obj.draw()
+        if buttons is not None:
+            self.parent.display.blit(self.layer_buttons_2, (0, 0))
+        # print(self.data_layers, self.old_data_layers)
+        if buttons is not None:
+            if self.data_layers != self.old_data_layers:
+                self.layer_buttons_1 = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
+                self.layer_buttons_1 = self.layer_buttons_1.convert_alpha()
+                self.layer_buttons_2 = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
+                self.layer_buttons_2 = self.layer_buttons_2.convert_alpha()
+        self.old_data_layers = self.data_layers.copy()
 
     def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door):
         # print(color_left, color_up, color_right)
