@@ -5,7 +5,7 @@ THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 
 class Object:
-    def __init__(self, parent, game, base_style, coords, size, image):
+    def __init__(self, parent, game, base_style, coords, size, image, coord_rect=20):
         self.base_style = base_style
         self.parent = parent
         self.game = game
@@ -13,6 +13,7 @@ class Object:
         self.size = size
 
         self.coords = coords
+        self.coord_rect = coord_rect
         self.init_data()
 
     def init_data(self):
@@ -24,6 +25,10 @@ class Object:
         }
         self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
         self.data["rect"] = self.data["sprite"].get_rect()
+        if self.coord_rect == "full":
+            self.data["coord_rect"] = self.size[1]
+        else:
+            self.data["coord_rect"] = self.coord_rect
         self.set_sprite()
 
     def set_sprite(self):
@@ -52,7 +57,7 @@ class Reception:
         avtomat_2 = Object(self.parent, self.game, self.base_style,
                          [300, 300],
                          (100, 150),
-                         'sprites/avtomat/avtomat_2.png') #wall_up
+                         'sprites/avtomat/avtomat_2.png')
         self.objects = [avtomat_1, *walls, avtomat_2]
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -64,6 +69,8 @@ class Reception:
 
     def draw(self):
         self.game.render_objects(self.objects)
+        # for obj in self.objects:
+        #     pygame.draw.rect(self.parent.display, (255, 255, 255), obj.data["rect"])
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             # self.game.character.respawn([450, 300])
             self.game.room_change("vr_room")
@@ -138,7 +145,7 @@ class Computer_room:
         self.buttons.append(button_Comp)
 
     def enter_rooms(self):
-        self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]])
+        self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]-THIKNESS_WALL-20])
         self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
@@ -147,9 +154,6 @@ class Computer_room:
 
     def draw(self):
         self.game.render_objects(self.objects)
-        for obj in list(filter(lambda obj: obj.data["type_render"] == 0, self.objects)):
-            obj.draw()
-
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
             print([self.parent.display_w // 2, self.game.character.character["coords"][3]+HEIGHT_WALL])
             self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])
