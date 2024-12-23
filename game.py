@@ -261,6 +261,7 @@ class Game:
                 obj.data["type_render"] = 0
         for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: obj.data["rect"].y):
             obj.draw()
+        self.parent.update_widgets()
         self.character.udpate()
         for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: obj.data["rect"].y):
             obj.draw()

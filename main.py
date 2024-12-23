@@ -164,6 +164,8 @@ class Main:
         #if type_display == "final": self.final.set_final(dop_type)
         self.type_display = type_display
 
+    def update_widgets(self):
+        pygame_widgets.update(self.events)
 
     def view_logo(self):
         logo = pygame.image.load('sprites/logo.png')
@@ -180,18 +182,20 @@ class Main:
         self.holst = self.list_active_surface[self.type_display](self, self.style)
         self.changes_holst = 0
         while self.running:
-            events = pygame.event.get()
+            self.events = pygame.event.get()
             if self.changes_holst:
                 self.holst.delete_all()
                 self.holst = self.list_active_surface[self.type_display](self, self.style)
                 self.changes_holst = 0
             self.holst.draw()
-            for event in events:
+            for event in self.events:
                 if event.type == pygame.QUIT: self.running = False
                 if self.type_display == "game":
                     self.holst.check_event(event)
             self.clock.tick(self.FPS)
-            pygame_widgets.update(events)
+            # self.update_widgets()
+            if self.type_display != "game":
+                self.update_widgets()
             pygame.display.update()
 
 if __name__ == "__main__":
