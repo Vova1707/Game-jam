@@ -105,10 +105,12 @@ class Computer_room:
                           (200, 125), 'sprites/comp/comp_1.png')
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
                             (200, 125), 'sprites/comp/comp_1.png')
+        computer_4 = Object(self.parent, self.game, self.base_style, [30, 330],
+                            (200, 125), 'sprites/comp/comp_1.png')
 
 
 
-        self.objects = [avtomat, *walls, title_computer_room, computer_1, computer_2, computer_3]
+        self.objects = [avtomat, *walls, title_computer_room, computer_1, computer_2, computer_3, computer_4]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -116,7 +118,7 @@ class Computer_room:
         self.init_button_menu()
 
     def init_button_menu(self):
-        w, h = 80, 80
+        w, h = 75, 37
         button_ToMenu = {
             "font": pygame.font.Font(self.base_style["font_path"], 30),
             "coords": (400, 400, w, h),
@@ -137,7 +139,7 @@ class Computer_room:
 
         button_Comp = {
             "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (600, 600, w, h),
+            "coords": (110, 110, w, h),
             "text": "",
             "color": {
                 "inactive": self.base_style["colors"]["black"],
