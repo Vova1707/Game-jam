@@ -268,6 +268,7 @@ class Game:
                 obj.data["type_render"] = 0
         if buttons is not None:
             for i in range(len(buttons)):
+                # print(buttons[i])
                 buttons[i].delete()
                 if self.character.character["coords"][1] > buttons[i].data["coords"][1]:
                     buttons[i].create(self.layer_buttons_1)
@@ -298,30 +299,30 @@ class Game:
         walls = []
         if len(color_up) == 1: # передняя - нет двери
             walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                      (self.parent.display_w, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect="full"))
+                      (self.parent.display_w, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect=0))
         elif len(color_up) == 2: # передняя - есть дверь
             walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                      ((self.parent.display_w-width_door)//2, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect="full"))
+                      ((self.parent.display_w-width_door)//2, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect=0))
             walls.append(Object(self.parent, self, self.base_style, [(self.parent.display_w+width_door)//2, 0],
-                      ((self.parent.display_w+width_door)//2, height), f'sprites/walls/front_{color_up[1]}_wall.png', coord_rect="full"))
+                      ((self.parent.display_w+width_door)//2, height), f'sprites/walls/front_{color_up[1]}_wall.png', coord_rect=0))
 
         if len(color_left) == 1: # левая - нет двери
             walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                              (thinkess, self.parent.display_h), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect="full"))
+                              (thinkess, self.parent.display_h), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect=0))
         elif len(color_left) == 2: # левая - есть стена
             walls.append(Object(self.parent, self, self.base_style, [0, (self.parent.display_h + width_door) // 2],
-                                (thinkess, (self.parent.display_h + width_door) // 2), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect="full"))
+                                (thinkess, (self.parent.display_h + width_door) // 2), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect=0))
             walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_left[1]}_wall.png', coord_rect="full"))
+                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_left[1]}_wall.png', coord_rect=0))
 
         if len(color_right) == 1: # правая - нет двери
             walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
-                       (thinkess, self.parent.display_h), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect="full"))
+                       (thinkess, self.parent.display_h), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect=0))
         elif len(color_right) == 2: # правая - есть дверь
             walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, 0],
-                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect="full"))
+                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect=0))
             walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, (self.parent.display_h+width_door)//2],
-                                (thinkess, (self.parent.display_h+width_door)//2), f'sprites/walls/side_{color_right[1]}_wall.png', coord_rect="full"))
+                                (thinkess, (self.parent.display_h+width_door)//2), f'sprites/walls/side_{color_right[1]}_wall.png', coord_rect=0))
         return walls
 
     def func_collide_other_obj(self):

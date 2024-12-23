@@ -4,7 +4,7 @@ from pygame_widgets.button import Button
 THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 TYPE_BUTTONS = {
-    "comp_cord": (80, 0), "comp_size": (75, 37),
+    "comp_cord": (87, 5), "comp_size": (63, 28),
     "color": {
             "inactive": (0, 0, 0),
             "hover": (0, 32, 214),
@@ -34,8 +34,10 @@ class Object:
         }
         self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
         self.data["rect"] = self.data["sprite"].get_rect()
-        if self.coord_rect == "full":
+        if self.coord_rect == 0:
             self.data["coord_rect"] = self.size[1]
+        elif self.coord_rect < 0:
+            self.data["coord_rect"] = self.size[1] - abs(self.coord_rect)
         else:
             self.data["coord_rect"] = self.coord_rect
         self.set_sprite()
@@ -113,14 +115,14 @@ class Reception:
                                       (100, 100), 'sprites/plant/plant_1.png')
 
         divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
-                                      (200, 100), 'sprites/sofas/black_sofa.png')
+                                      (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
         divan_2 = Object(self.parent, self.game, self.base_style, [211, 700],
-                         (200, 100), 'sprites/sofas/green_sofa.png')
+                         (200, 100), 'sprites/sofas/green_sofa.png', coord_rect=-40)
 
         divan_3 = Object(self.parent, self.game, self.base_style, [592, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png')
+                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
         divan_4 = Object(self.parent, self.game, self.base_style, [780, 700],
-                         (200, 100), 'sprites/sofas/green_sofa.png')
+                         (200, 100), 'sprites/sofas/green_sofa.png', coord_rect=-40)
         self.objects = [*walls, avtomat_1, avtomat_2, title_reseption_room, reseption_room_table,
                         divan_1, divan_2, divan_3, divan_4, plant_1]
         self.texture_floor = pygame.image.load('sprites/floor.png')
@@ -169,7 +171,7 @@ class Computer_room:
                                      (200, 125), 'sprites/comp/comp_1.png')
         button_computer_1 = Buttons(parent=self.parent, game=self.game, object=computer_1, layer=self.parent.display,
                                     # self.game.layer_buttons_1
-                                    func=lambda: print("кнопка комп 4"), coords=TYPE_BUTTONS["comp_cord"],
+                                    func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
@@ -180,48 +182,28 @@ class Computer_room:
                             (200, 125), 'sprites/comp/comp_1.png')
 
         divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png')
+                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
         divan_2 = Object(self.parent, self.game, self.base_style, [211, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png')
+                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
 
         divan_3 = Object(self.parent, self.game, self.base_style, [592, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png')
+                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
         divan_4 = Object(self.parent, self.game, self.base_style, [780, 700],
-                         (200, 100), 'sprites/sofas/green_sofa.png')
+                         (200, 100), 'sprites/sofas/green_sofa.png', coord_rect=-40)
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 330],
                             (200, 125), 'sprites/comp/comp_1.png')
         # def __init__(self, parent, game, object, layer, func, coords, size, colors):
         button_computer_4 = Buttons(parent=self.parent, game=self.game, object=computer_4, layer=self.parent.display, # self.game.layer_buttons_1
-                                    func=lambda: print("кнопка комп 4"), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
+                                    func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
 
         self.buttons = [button_computer_1, button_computer_4]
-        self.objects = [avtomat, *walls, title_computer_room, computer_1, computer_2, computer_3, computer_4]
-
 
         self.objects = [*walls, title_computer_room, computer_1, computer_2, computer_3, computer_4, divan_1, divan_2]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
-
-        # button_Comp_2 = {
-        #     "font": pygame.font.Font(self.base_style["font_path"], 30),
-        #     "coords": (110, 110, w, h),
-        #     "text": "",
-        #     "color": {
-        #         "inactive": self.base_style["colors"]["black"],
-        #         "hover": self.base_style["colors"]["base1"],
-        #         "pressed": self.base_style["colors"]["light"],
-        #         "text": self.base_style["colors"]["light"]
-        #     },
-        #     "func": lambda: self.game.change_game('circle')
-        # }
-        # button_Comp_2["button"] = self.parent.button(coords=button_Comp_2["coords"],
-        #                                              text=button_Comp_2["text"],
-        #                                              color=button_Comp_2["color"],
-        #                                              font=button_Comp_2["font"],
-        #                                              func=button_Comp_2["func"])
-        self.buttons = []
-        self.init_button_menu()
+        # self.buttons = []
+        # self.init_button_menu()
 
     def init_button_menu(self):
         w, h = 60, 40
