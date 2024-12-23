@@ -57,54 +57,14 @@ class Character:
         self.character["rect"].y = self.character["coords"][1] + self.character["coords"][3] - self.character["coord_rect"]
         self.character["rect"].w = self.character["coords"][2]
         self.character["rect"].h = self.character["coord_rect"] # self.character["coords"][3]
-        self.character["other_rect"].x, self.character["other_rect"].y, self.character["other_rect"].w, self.character["other_rect"].h = self.character["coords"]
 
     def udpate(self):
-        flag_change = 0
-        # pygame.draw.rect(self.parent.display, (255, 0, 0), self.character["other_rect"])
-        # pygame.draw.rect(self.parent.display, (255, 255, 255), self.character["rect"])
+        # pygame.draw.rect(self.parent.display, (255, 0, 0), self.character["rect"])
         # pygame.draw.rect(self.parent.display, (255, 255, 255), self.game.room_now.rect_objs[0])
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
-        dir_collides = []
-        for obj_rect in list(map(lambda x: x.data["rect"], self.game.room_now.objects)):
-            if self.character["rect"].colliderect(obj_rect):
-                collision_area = self.character["rect"].clip(obj_rect)
-                if collision_area.width > collision_area.height:
-                    if self.character["rect"].centery < obj_rect.centery: dir_collides.append("down")
-                    else: dir_collides.append("up")
-                else:
-                    if self.character["rect"].centerx < obj_rect.centerx: dir_collides.append("right")
-                    else: dir_collides.append("left")
 
-        if dir_collides == []: dir_collides = [None]
         # print(set(dir_collides))
-        flag_changes = {"down": 1, "up": 1, "right": 1, "left": 1}
-        for dir_collide in set(dir_collides):
-            if dir_collide != "down" and self.character["flags"]["key_down"] and flag_changes["down"] == 1:
-                self.character["coords"][1] += self.character["val_speed"]
-                self.character["dir"] = "front"
-                flag_changes["down"] = 0
-                flag_change, self.flag_idle = 1, 1
-            if dir_collide != "up" and self.character["flags"]["key_up"] and flag_changes["up"] == 1:
-                self.character["coords"][1] -= self.character["val_speed"]
-                self.character["dir"] = "back"
-                flag_changes["up"] = 0
-                flag_change, self.flag_idle = 1, 1
-            if dir_collide != "left" and self.character["flags"]["key_left"] and flag_changes["left"] == 1:
-                self.character["coords"][0] -= self.character["val_speed"]
-                self.character["dir"] = "left"
-                flag_changes["left"] = 0
-                flag_change, self.flag_idle = 1, 1
-            if dir_collide != "right" and self.character["flags"]["key_right"] and flag_changes["right"] == 1:
-                self.character["coords"][0] += self.character["val_speed"]
-                self.character["dir"] = "right"
-                flag_changes["right"] = 0
-                flag_change, self.flag_idle = 1, 1
-        if flag_change == 0 and self.flag_idle == 1:
-            self.set_move("idle")
-            self.flag_idle = 0
-            self.flag_walk = 1
-            # print(self.character["flags"], self.character["cond"])
+        self.game.func_collide_other_obj()
         # print(flag_changes)
         if self.character["counter_sprite"] >= self.character["freq_sprite"]:
             if self.character["number_sprite"] >= len(self.character["type_cond"][self.character["cond"]][self.character["dir"]])-1:
@@ -169,7 +129,7 @@ class Character:
             "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140] # 50, 70
         }
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
-        self.character["rect"], self.character["other_rect"] = self.character["sprite"].get_rect(), pygame.Rect(self.character["coords"])
+        self.character["rect"] = self.character["sprite"].get_rect()
         self.set_sprite()
         print(self.character)
         self.character["coords"][0] -= self.character["coords"][2] / 2
@@ -289,35 +249,80 @@ class Game:
             obj.draw()
 
     def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door):
-        print(color_left, color_up, color_right)
+        # print(color_left, color_up, color_right)
         walls = []
-        if len(color_left) == 1: # левая - нет двери
-            walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                              (thinkess, self.parent.display_h), f'sprites/walls/side_{color_left[0]}_wall.png'))
-        elif len(color_left) == 2: # левая - есть стена
-            walls.append(Object(self.parent, self, self.base_style, [0, (self.parent.display_h + width_door) // 2],
-                                (thinkess, (self.parent.display_h + width_door) // 2), f'sprites/walls/side_{color_left[0]}_wall.png'))
-            walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_left[1]}_wall.png'))
-
         if len(color_up) == 1: # передняя - нет двери
             walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                      (self.parent.display_w, height), f'sprites/walls/front_{color_up[0]}_wall.png'))
+                      (self.parent.display_w, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect="full"))
         elif len(color_up) == 2: # передняя - есть дверь
             walls.append(Object(self.parent, self, self.base_style, [0, 0],
-                      ((self.parent.display_w-width_door)//2, height), f'sprites/walls/front_{color_up[0]}_wall.png'))
+                      ((self.parent.display_w-width_door)//2, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect="full"))
             walls.append(Object(self.parent, self, self.base_style, [(self.parent.display_w+width_door)//2, 0],
-                      ((self.parent.display_w+width_door)//2, height), f'sprites/walls/front_{color_up[1]}_wall.png'))
+                      ((self.parent.display_w+width_door)//2, height), f'sprites/walls/front_{color_up[1]}_wall.png', coord_rect="full"))
+
+        if len(color_left) == 1: # левая - нет двери
+            walls.append(Object(self.parent, self, self.base_style, [0, 0],
+                              (thinkess, self.parent.display_h), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect="full"))
+        elif len(color_left) == 2: # левая - есть стена
+            walls.append(Object(self.parent, self, self.base_style, [0, (self.parent.display_h + width_door) // 2],
+                                (thinkess, (self.parent.display_h + width_door) // 2), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect="full"))
+            walls.append(Object(self.parent, self, self.base_style, [0, 0],
+                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_left[1]}_wall.png', coord_rect="full"))
 
         if len(color_right) == 1: # правая - нет двери
             walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
-                       (thinkess, self.parent.display_h), f'sprites/walls/side_{color_right[0]}_wall.png'))
+                       (thinkess, self.parent.display_h), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect="full"))
         elif len(color_right) == 2: # правая - есть дверь
             walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, 0],
-                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_right[0]}_wall.png'))
+                                (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect="full"))
             walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, (self.parent.display_h+width_door)//2],
-                                (thinkess, (self.parent.display_h+width_door)//2), f'sprites/walls/side_{color_right[1]}_wall.png'))
+                                (thinkess, (self.parent.display_h+width_door)//2), f'sprites/walls/side_{color_right[1]}_wall.png', coord_rect="full"))
         return walls
+
+    def func_collide_other_obj(self):
+        dir_collides = []
+        for obj_rect in list(map(lambda x: x.data["rect"], self.room_now.objects)):
+            if self.character.character["rect"].colliderect(obj_rect):
+                collision_area = self.character.character["rect"].clip(obj_rect)
+                if collision_area.width > collision_area.height:
+                    if self.character.character["rect"].centery < obj_rect.centery:
+                        dir_collides.append("down")
+                    else:
+                        dir_collides.append("up")
+                else:
+                    if self.character.character["rect"].centerx < obj_rect.centerx:
+                        dir_collides.append("right")
+                    else:
+                        dir_collides.append("left")
+        if dir_collides == []: dir_collides = [None]
+        dir_collides = list(set(dir_collides))
+        flag_change = 0
+        flag_changes = {"down": 1, "up": 1, "right": 1, "left": 1}
+        if "down" not in dir_collides and self.character.character["flags"]["key_down"] and flag_changes["down"] == 1:
+            self.character.character["coords"][1] += self.character.character["val_speed"]
+            self.character.character["dir"] = "front"
+            flag_changes["down"] = 0
+            flag_change, self.character.flag_idle = 1, 1
+        if "up" not in dir_collides and self.character.character["flags"]["key_up"] and flag_changes["up"] == 1:
+            self.character.character["coords"][1] -= self.character.character["val_speed"]
+            self.character.character["dir"] = "back"
+            flag_changes["up"] = 0
+            flag_change, self.character.flag_idle = 1, 1
+        if "left" not in dir_collides and self.character.character["flags"]["key_left"] and flag_changes["left"] == 1:
+            self.character.character["coords"][0] -= self.character.character["val_speed"]
+            self.character.character["dir"] = "left"
+            flag_changes["left"] = 0
+            flag_change, self.character.flag_idle = 1, 1
+        if "right" not in dir_collides and self.character.character["flags"]["key_right"] and flag_changes["right"] == 1:
+            self.character.character["coords"][0] += self.character.character["val_speed"]
+            self.character.character["dir"] = "right"
+            flag_changes["right"] = 0
+            flag_change, self.character.flag_idle = 1, 1
+        if flag_change == 0 and self.character.flag_idle == 1:
+            self.character.set_move("idle")
+            self.character.flag_idle = 0
+            self.character.flag_walk = 1
+            # print(self.character["flags"], self.character["cond"])
 
     def check_event(self, event):
         for commands in self.list_comands:
