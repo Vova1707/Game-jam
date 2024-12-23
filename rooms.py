@@ -87,6 +87,8 @@ class Computer_room:
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         avtomat = Object(self.parent, self.game, self.base_style, [self.parent.display_w // 2, 300],
                          (100, 150), 'sprites/avtomat/avtomat_2.png')
+
+
         self.objects = [avtomat, *walls]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
