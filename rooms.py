@@ -269,11 +269,24 @@ class PS_room:
         self.parent = parent
         self.game = game
 
-        walls = self.game.draw_walls(color_left=["blue"], color_up=["black"],
-                                     color_right=["black", "blue"],
+        self.sprite_changer = 0
+
+        walls = self.game.draw_walls(color_left=["black"], color_up=["black"],
+                                     color_right=["black", "black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
-        avtomat = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150), 'sprites/avtomat/avtomat_1.png')
-        self.objects = [avtomat, *walls]
+        avtomat = Object(self.parent, self.game, self.base_style, [30, 50], (115, 215), 'sprites/avtomat/avtomat_1.png')
+        ps_room_logo = Object(self.parent, self.game, self.base_style, [690, 30], (250, 150), 'sprites/titles/ps_room_logo.png')
+        tv = Object(self.parent, self.game, self.base_style, [340, 50], (300, 125), 'sprites/comp/TV_for_PS.png')
+        ps_table = Object(self.parent, self.game, self.base_style, [480, 150], (180, 110), 'sprites/play station/ps_table.png')
+        blue_sofa_1 = Object(self.parent, self.game, self.base_style, [370, 300], (250, 180), 'sprites/sofas/blue_sofa.png')
+
+
+        self.coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
+                        'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
+                        'sprites/kuler/9.png']
+
+        self.current_cooler = Object(self.parent, self.game, self.base_style, [150, 125], (40, 140), self.coolers[0])
+        self.objects = [avtomat, ps_room_logo, tv, ps_table, blue_sofa_1, *walls, self.current_cooler]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -285,6 +298,13 @@ class PS_room:
         pass
 
     def draw(self):
+        self.sprite_changer += 0.1
+        if self.sprite_changer > 8:
+            self.sprite_changer = 0
+        self.objects.pop(-1)
+        self.current_cooler = Object(self.parent, self.game, self.base_style, [150, 125], (40, 140),
+                                     self.coolers[int(self.sprite_changer)])
+        self.objects.append(self.current_cooler)
         self.game.render_objects(self.objects)
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([self.game.character.character["coords"][2], self.parent.display_h // 2])
