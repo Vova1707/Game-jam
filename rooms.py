@@ -92,11 +92,23 @@ class Computer_room:
         walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
                                      color_right=["black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
-        avtomat = Object(self.parent, self.game, self.base_style, [self.parent.display_w // 2, 300],
+        avtomat = Object(self.parent, self.game, self.base_style, [720, 100],
                          (100, 150), 'sprites/avtomat/avtomat_2.png')
 
+        title_computer_room = Object(self.parent, self.game, self.base_style, [100, 20],
+                         (200, 125), 'sprites/titles/computer_room_logo.png')
 
-        self.objects = [avtomat, *walls]
+        computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
+                                     (200, 125), 'sprites/comp/comp_1.png')
+
+        computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
+                          (200, 125), 'sprites/comp/comp_1.png')
+        computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
+                            (200, 125), 'sprites/comp/comp_1.png')
+
+
+
+        self.objects = [avtomat, *walls, title_computer_room, computer_1, computer_2, computer_3]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
