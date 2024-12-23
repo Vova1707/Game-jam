@@ -51,14 +51,32 @@ class Reception:
         walls = self.game.draw_walls(color_left=["black", "blue"], color_up=["blue", "black"],  color_right=["black", "black"],
                                                             thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         avtomat_1 = Object(self.parent, self.game, self.base_style,
-                               [300, 400],
+                               [790, 80],
                          (100, 150),
                                'sprites/avtomat/avtomat_2.png')
         avtomat_2 = Object(self.parent, self.game, self.base_style,
-                         [300, 300],
+                         [870, 80],
                          (100, 150),
-                         'sprites/avtomat/avtomat_2.png')
-        self.objects = [avtomat_1, *walls, avtomat_2]
+                         'sprites/avtomat/avtomat_3.png')
+        title_reseption_room = Object(self.parent, self.game, self.base_style, [600, 20],
+                                     (200, 150), 'sprites/titles/ultimate_reseption_logo.png')
+
+        reseption_room_table = Object(self.parent, self.game, self.base_style, [400, 350],
+                                      (200, 140), 'sprites/_other/reseption_table.png')
+        plant_1 = Object(self.parent, self.game, self.base_style, [300, 130],
+                                      (100, 100), 'sprites/plant/plant_1.png')
+
+        divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
+                                      (200, 100), 'sprites/sofas/black_sofa.png')
+        divan_2 = Object(self.parent, self.game, self.base_style, [211, 700],
+                         (200, 100), 'sprites/sofas/green_sofa.png')
+
+        divan_3 = Object(self.parent, self.game, self.base_style, [592, 700],
+                         (200, 100), 'sprites/sofas/black_sofa.png')
+        divan_4 = Object(self.parent, self.game, self.base_style, [780, 700],
+                         (200, 100), 'sprites/sofas/green_sofa.png')
+        self.objects = [*walls, avtomat_1, avtomat_2, title_reseption_room, reseption_room_table,
+                        divan_1, divan_2, divan_3, divan_4, plant_1]
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
     def enter_rooms(self):
@@ -92,8 +110,11 @@ class Computer_room:
         walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
                                      color_right=["black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
-        avtomat = Object(self.parent, self.game, self.base_style, [720, 100],
-                         (100, 150), 'sprites/avtomat/avtomat_2.png')
+        #avtomat_1 = Object(self.parent, self.game, self.base_style, [790, 75],
+                         #(100, 150), 'sprites/avtomat/avtomat_2.png')
+
+        #avtomat_2 = Object(self.parent, self.game, self.base_style, [870, 75],
+                         #(100, 150), 'sprites/avtomat/avtomat_3.png')
 
         title_computer_room = Object(self.parent, self.game, self.base_style, [100, 20],
                          (200, 125), 'sprites/titles/computer_room_logo.png')
@@ -105,10 +126,22 @@ class Computer_room:
                           (200, 125), 'sprites/comp/comp_1.png')
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
                             (200, 125), 'sprites/comp/comp_1.png')
+        computer_4 = Object(self.parent, self.game, self.base_style, [710, 110],
+                            (200, 125), 'sprites/comp/comp_1.png')
+
+        divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
+                         (200, 100), 'sprites/sofas/black_sofa.png')
+        divan_2 = Object(self.parent, self.game, self.base_style, [211, 700],
+                         (200, 100), 'sprites/sofas/black_sofa.png')
+
+        divan_3 = Object(self.parent, self.game, self.base_style, [592, 700],
+                         (200, 100), 'sprites/sofas/black_sofa.png')
+        divan_4 = Object(self.parent, self.game, self.base_style, [780, 700],
+                         (200, 100), 'sprites/sofas/green_sofa.png')
 
 
 
-        self.objects = [avtomat, *walls, title_computer_room, computer_1, computer_2, computer_3]
+        self.objects = [*walls, title_computer_room, computer_1, computer_2, computer_3, computer_4, divan_1, divan_2]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
