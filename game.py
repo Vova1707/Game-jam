@@ -161,6 +161,10 @@ class Game:
         self.base_style = base_style
         self.parent = parent
 
+        self.donats_many = 0
+        self.labels = []
+        self.init_label_title()
+
         self.floor = pygame.Surface((1000, 800))
         self.type_room = "reception"
         self.flag_change_room = 0
@@ -248,6 +252,8 @@ class Game:
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
         self.room_now.draw()
+        # Рисование валюты
+        for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
         # -------------------------------------------------------------------------------
         # if self.character.room == 'main_room':
         #     self.parent.display.fill((255, 255, 255))
@@ -258,6 +264,20 @@ class Game:
         #     self.parent.display.fill((200, 255, 100))
         # self.parent.display.blit(self.floor, (0, 0))
         # self.character.udpate()
+
+    def init_label_title(self):
+        label_title = {
+            "coords": (30, 0),
+            "text": f"Монет: {self.donats_many}",
+            "font": pygame.font.Font(self.base_style["font_path"], 30)
+        }
+        label_title["label"] = self.parent.label_text(coords=label_title["coords"],
+                                                      text=label_title["text"],
+                                                      font=label_title["font"],
+                                                      color=(255, 0, 0))
+        # label_title["text"] = self.parent.add_distance_between_letters(label_title["text"], 2)
+        print(label_title["text"])
+        self.labels.append(label_title)
 
     def render_objects(self, objects, buttons=None, dop_objects=None):
         if dop_objects is not None: all_objects = objects + dop_objects
