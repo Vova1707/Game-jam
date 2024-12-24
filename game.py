@@ -59,13 +59,13 @@ class Character:
         self.character["rect"].w = self.character["coords"][2]
         self.character["rect"].h = self.character["coord_rect"] # self.character["coords"][3]
 
-    def udpate(self):
+    def udpate(self, objects):
         # pygame.draw.rect(self.parent.display, (255, 0, 0), self.character["rect"])
         # pygame.draw.rect(self.parent.display, (255, 255, 255), self.game.room_now.rect_objs[0])
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
 
         # print(set(dir_collides))
-        self.game.func_collide_other_obj()
+        self.game.func_collide_other_obj(objects)
         # print(flag_changes)
         if self.character["counter_sprite"] >= self.character["freq_sprite"]:
             if self.character["number_sprite"] >= len(self.character["type_cond"][self.character["cond"]][self.character["dir"]])-1:
@@ -259,7 +259,9 @@ class Game:
         # self.parent.display.blit(self.floor, (0, 0))
         # self.character.udpate()
 
-    def render_objects(self, objects, buttons=None):
+    def render_objects(self, objects, buttons=None, dop_objects=None):
+        if dop_objects is not None: all_objects = objects + dop_objects
+        else: all_objects = objects
         for obj in objects:
             obj.draw()
             if self.character.character["rect"].centery > obj.data["rect"].centery:
@@ -268,36 +270,26 @@ class Game:
                 obj.data["type_render"] = 0
         if buttons is not None:
             for i in range(len(buttons)):
-                buttons[i].delete()
-                # del buttons[i]["button"]
+                # buttons[i].delete()
                 # if i == 1: print(self.character.character["coords"][1], buttons[i].data["coords"][1]-buttons[i].data["coords"][3])
-                if self.character.character["coords"][1] > (buttons[i].data["coords"][1]-buttons[i].data["coords"][3]): #   buttons[i]["coords"][1]
-                    # buttons[i]["button"] = self.parent.button(coords=buttons[i]["coords"],
-                    #                                          text=buttons[i]["text"],
-                    #                                          color=buttons[i]["color"],
-                    #                                          font=buttons[i]["font"],
-                    #                                          func=buttons[i]["func"],
-                    #                                           layer=self.layer_buttons_1)
+                if self.character.character["coords"][1] > (buttons[i].data["coords"][1]-buttons[i].data["coords"][3]//2):
                     buttons[i].create(self.layer_buttons_1)
                     self.data_layers[i] = 1
                 else:
-                    # buttons[i]["button"] = self.parent.button(coords=buttons[i]["coords"],
-                    #                                           text=buttons[i]["text"],
-                    #                                           color=buttons[i]["color"],
-                    #                                           font=buttons[i]["font"],
-                    #                                           func=buttons[i]["func"],
-                    #                                           layer=self.layer_buttons_2)
                     buttons[i].create(self.layer_buttons_2)
                     self.data_layers[i] = 0
-        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: obj.data["rect"].y):
-            obj.draw()
+        if dop_objects is not None:
+            for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, dop_objects)), key=lambda obj: obj.data["rect"].y):
+                obj.draw()
         if buttons is not None:
             self.parent.display.blit(self.layer_buttons_1, (0, 0))
-        self.character.udpate()
-        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: obj.data["rect"].y):
+        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: obj.data["rect"].y):
             obj.draw()
+        self.character.udpate(all_objects)
         if buttons is not None:
             self.parent.display.blit(self.layer_buttons_2, (0, 0))
+        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: obj.data["rect"].y):
+            obj.draw()
         # print(self.data_layers, self.old_data_layers)
         if buttons is not None:
             if self.data_layers != self.old_data_layers:
@@ -306,40 +298,45 @@ class Game:
                 self.layer_buttons_2.fill(pygame.Color(0, 0, 0, 0))
         self.old_data_layers = self.data_layers.copy()
 
-    def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door):
+    def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door, type_return="list"):
         # print(color_left, color_up, color_right)
         walls = []
+        if type_return == "list": walls = []
+        elif type_return == "dict": walls = {}
+        def append(key, obj):
+            if type_return == "list": walls.append(obj)
+            elif type_return == "dict": walls[key] = obj
         if len(color_up) == 1: # передняя - нет двери
-            walls.append(Object(self.parent, self, self.base_style, [0, 0],
+            append("up", Object(self.parent, self, self.base_style, [0, 0],
                       (self.parent.display_w, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect=0))
         elif len(color_up) == 2: # передняя - есть дверь
-            walls.append(Object(self.parent, self, self.base_style, [0, 0],
+            append("up_1", Object(self.parent, self, self.base_style, [0, 0],
                       ((self.parent.display_w-width_door)//2, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect=0))
-            walls.append(Object(self.parent, self, self.base_style, [(self.parent.display_w+width_door)//2, 0],
+            append("up_2", Object(self.parent, self, self.base_style, [(self.parent.display_w+width_door)//2, 0],
                       ((self.parent.display_w+width_door)//2, height), f'sprites/walls/front_{color_up[1]}_wall.png', coord_rect=0))
 
         if len(color_left) == 1: # левая - нет двери
-            walls.append(Object(self.parent, self, self.base_style, [0, 0],
+            append("left", Object(self.parent, self, self.base_style, [0, 0],
                               (thinkess, self.parent.display_h), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect=0))
         elif len(color_left) == 2: # левая - есть стена
-            walls.append(Object(self.parent, self, self.base_style, [0, (self.parent.display_h + width_door) // 2],
+            append("left_1", Object(self.parent, self, self.base_style, [0, (self.parent.display_h + width_door) // 2],
                                 (thinkess, (self.parent.display_h + width_door) // 2), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect=0))
-            walls.append(Object(self.parent, self, self.base_style, [0, 0],
+            append("left_2", Object(self.parent, self, self.base_style, [0, 0],
                                 (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_left[1]}_wall.png', coord_rect=0))
 
         if len(color_right) == 1: # правая - нет двери
-            walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
+            append("right", Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
                        (thinkess, self.parent.display_h), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect=0))
         elif len(color_right) == 2: # правая - есть дверь
-            walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, 0],
+            append("right_1", Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, 0],
                                 (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect=0))
-            walls.append(Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, (self.parent.display_h+width_door)//2],
+            append("right_2", Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, (self.parent.display_h+width_door)//2],
                                 (thinkess, (self.parent.display_h+width_door)//2), f'sprites/walls/side_{color_right[1]}_wall.png', coord_rect=0))
         return walls
 
-    def func_collide_other_obj(self):
+    def func_collide_other_obj(self, objects):
         dir_collides = []
-        for obj_rect in list(map(lambda x: x.data["rect"], self.room_now.objects)):
+        for obj_rect in list(map(lambda x: x.data["rect"], objects)):
             if self.character.character["rect"].colliderect(obj_rect):
                 collision_area = self.character.character["rect"].clip(obj_rect)
                 if collision_area.width > collision_area.height:

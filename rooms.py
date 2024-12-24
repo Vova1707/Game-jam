@@ -4,10 +4,10 @@ from pygame_widgets.button import Button
 THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 TYPE_BUTTONS = {
-    "comp_cord": (87, 5), "comp_size": (63, 28),
+    "comp_cord": (77, -5), "comp_size": (83, 47), # (63, 28)
     "color": {
-            "inactive": (0, 0, 0),
-            "hover": (0, 32, 214),
+            "inactive": (0, 0, 0, 0), # (0, 0, 0)
+            "hover": (200, 208, 200, 200), # (0, 32, 214)
             "pressed": (200, 208, 200),
             "text": (200, 208, 200)
     }
@@ -157,7 +157,7 @@ class Computer_room:
 
         walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
                                      color_right=["black"],
-                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150, type_return="dict")
         #avtomat_1 = Object(self.parent, self.game, self.base_style, [790, 75],
                          #(100, 150), 'sprites/avtomat/avtomat_2.png')
 
@@ -174,7 +174,7 @@ class Computer_room:
                                     func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
-        computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
+        computer_2 = Object(self.parent, self.game, self.base_style, [30, 400], # 250, 110
                           (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
                             (200, 125), 'sprites/comp/comp_1.png') #, coord_rect=0
@@ -196,10 +196,9 @@ class Computer_room:
         button_computer_4 = Buttons(parent=self.parent, game=self.game, object=computer_4, layer=self.parent.display, # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
-
         self.buttons = [button_computer_1, button_computer_4]
-
-        self.objects = [*walls, title_computer_room, computer_1, computer_2, computer_3, computer_4, divan_1, divan_2]
+        self.objects = [computer_1, walls["left"], walls["right"], title_computer_room, computer_2, computer_3, computer_4, divan_1, divan_2]
+        self.dop_objects = [walls["up"]]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -274,7 +273,7 @@ class Computer_room:
             del self.buttons[j]
 
     def draw(self):
-        self.game.render_objects(self.objects, self.buttons)
+        self.game.render_objects(self.objects, self.buttons, self.dop_objects)
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
             print([self.parent.display_w // 2, self.game.character.character["coords"][3]+HEIGHT_WALL])
             self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])
