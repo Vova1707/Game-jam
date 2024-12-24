@@ -1,6 +1,7 @@
 from cProfile import label
 
 import pygame
+from pygame.draw_py import draw_line
 
 main_text = ('  Добро пожаловать в репозиторий "Геймификация рекламы для',
              '                      компьютерного клуба" хакатона Game-Jam',
@@ -37,6 +38,7 @@ class Refer:
         self.init_label_title()
         self.init_main_text()
         self.init_button_menu()
+        self.draw_donut()
 
     def init_label_title(self):
         label_title = {
@@ -56,7 +58,7 @@ class Refer:
         txt = [text for text in main_text]
         for i, mini_t in enumerate(txt):
             label_title = {
-                "coords": (50, 80 + i * 30),
+                "coords": (25, 80 + i * 30),
                 "text": mini_t,
                 "font": pygame.font.Font(self.base_style["font_path"], 15)
             }
@@ -66,6 +68,9 @@ class Refer:
             # label_title["label"], label_title["coords"] = self.parent.align(label_title["label"], label_title["coords"],
             #                                                                inacurr=-20, type_blit=False)
             self.labels.append(label_title)
+
+    def draw_donut(self):
+        print("donut time")
 
     def init_button_menu(self):
         w, h = 80, 50
