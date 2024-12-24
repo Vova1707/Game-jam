@@ -101,7 +101,7 @@ class Main:
         f = font
         res_label = f.render(text, True, color)
         self.display.blit(res_label, coords)
-        pygame.display.update()
+        # pygame.display.update()
         return res_label
 
     def create_textbox(self, coords, size, border_colour=(0, 0, 0), text_colour=(0, 0, 0), r=10, bd=5):
