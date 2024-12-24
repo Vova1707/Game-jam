@@ -333,7 +333,7 @@ class Computer_room:
     def init_buttons(self):
         button_computer_1 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["computer_1"], layer=self.parent.display,
                                     # self.game.layer_buttons_1
-                                    func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
+                                    func=lambda: self.game.change_game('dash_hex'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_computer_1)

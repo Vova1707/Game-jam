@@ -7,6 +7,7 @@ from gost import game_from_ps
 from dino import dino_game
 from dash_hex import dash_hex
 from D_Game import f as d_games
+from flappy_bird import flappy_bird
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -209,7 +210,7 @@ class Game:
         self.mini_games = {'comp_room':
                           {'circle': lambda: curcle(self.parent.display),
                            'dash_hex': lambda: dash_hex(self.parent.display),
-                           'dino': lambda: dino_game(self.parent.display),
+                           'dino': lambda: flappy_bird(self.parent.display)#lambda: dino_game(self.parent.display),
                            },
                       'ps_room':
                           {'ps': lambda: game_from_ps(self.parent.display)},
