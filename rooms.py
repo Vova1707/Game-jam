@@ -21,6 +21,11 @@ TYPE_SPRITES = {
     'chair': (80, 132),
     'clock': (40, 40)
 }
+TYPE_ENERGY = {
+    "green": {"price": 2, "val": 1},
+    "yellow": {"price": 4, "val": 3},
+    "blue": {"price": 6, "val": 5},
+}
 
 
 
@@ -124,11 +129,6 @@ class Reception:
                                [20, TYPE_SPRITES["avtomat_y_up"]],
                          TYPE_SPRITES["avtomat_size"],
                                'sprites/avtomat/avtomat_2.png')
-        button_avtomat_1 = Buttons(parent=self.parent, game=self.game, object=avtomat_1, layer=self.parent.display,
-                                    # self.game.layer_buttons_1
-                                    func=lambda: self.game.energy_character_up(price=3, val=1), coords=TYPE_BUTTONS["avtomat_cord"],
-                                    size=TYPE_BUTTONS["avtomat_size"],
-                                    colors=TYPE_BUTTONS["color"])
         avtomat_2 = Object(self.parent, self.game, self.base_style,
                          [110, TYPE_SPRITES["avtomat_y_up"]],
                          TYPE_SPRITES["avtomat_size"],
@@ -157,7 +157,7 @@ class Reception:
         print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
-        self.buttons = [button_avtomat_1]
+        self.buttons = []
         # ------------------
         self.objects = {"avtomat_1": avtomat_1, "avtomat_2": avtomat_2, "title_room": title_room,
                         "reception_table": reception_table,
@@ -173,14 +173,30 @@ class Reception:
         print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
+        self.init_buttons()
 
     def enter_rooms(self):
         self.game.floor.blit(self.texture_floor, (0, 0))
         self.game.data_layers = [0] * len(self.buttons)
         self.game.old_data_layers = [0] * len(self.buttons)
 
+    def init_buttons(self):
+        button_avtomat_yellow = Buttons(parent=self.parent, game=self.game, object=self.objects["avtomat_1"], layer=self.parent.display,
+                                   # self.game.layer_buttons_1
+                                   func=lambda: self.game.energy_character_up(price=TYPE_ENERGY["yellow"]["price"],
+                                                                              val=TYPE_ENERGY["yellow"]["val"]),
+                                   coords=TYPE_BUTTONS["avtomat_cord"],
+                                   size=TYPE_BUTTONS["avtomat_size"],
+                                   colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_avtomat_yellow)
+
+
+    def delete_buttons(self):
+        for j in range(len(self.buttons) - 1, -1, -1):
+            del self.buttons[j]
+
     def delete_all(self):
-        pass
+        self.delete_buttons()
 
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
@@ -231,11 +247,6 @@ class Computer_room:
 
         computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
                                      TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        button_computer_1 = Buttons(parent=self.parent, game=self.game, object=computer_1, layer=self.parent.display,
-                                    # self.game.layer_buttons_1
-                                    func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
-                                    size=TYPE_BUTTONS["comp_size"],
-                                    colors=TYPE_BUTTONS["color"])
         computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
                           TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
@@ -264,11 +275,6 @@ class Computer_room:
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))
         sofa_2 = Object(self.parent, self.game, self.base_style, [211, 700],
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))
-        # def __init__(self, parent, game, object, layer, func, coords, size, colors):
-        button_computer_4 = Buttons(parent=self.parent, game=self.game, object=computer_4, layer=self.parent.display, # self.game.layer_buttons_1
-                                    func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
-                                    colors=TYPE_BUTTONS["color"])
-
         button_computer_6 = Buttons(parent=self.parent, game=self.game, object=computer_6, layer=self.parent.display,
                                     # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('dino'), coords=TYPE_BUTTONS["comp_cord"],
@@ -282,7 +288,7 @@ class Computer_room:
         print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
-        self.buttons = [button_computer_1, button_computer_4, button_computer_6]
+        self.buttons = []
         # ------------------
         self.objects = {"title_room": title_room,
                         'chair_2': chair_2, 'chair_1': chair_1, 'chair_3': chair_3, 'chair_4': chair_4,
@@ -322,6 +328,7 @@ class Computer_room:
         #                                          font=button_ps["font"],
         #                                          func=button_ps["func"])
         # self.buttons.append(button_ps)
+        self.init_buttons()
 
     def enter_rooms(self):
         self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]-THIKNESS_WALL-20])
@@ -329,9 +336,33 @@ class Computer_room:
         self.game.data_layers = [0] * len(self.buttons)
         self.game.old_data_layers = [0] * len(self.buttons)
 
-    def delete_all(self):
+    def init_buttons(self):
+        button_computer_1 = Buttons(parent=self.parent, game=self.game, object=self.objects["computer_1"], layer=self.parent.display,
+                                    # self.game.layer_buttons_1
+                                    func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
+                                    size=TYPE_BUTTONS["comp_size"],
+                                    colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_computer_1)
+        button_computer_4 = Buttons(parent=self.parent, game=self.game, object=self.objects["computer_4"], layer=self.parent.display,
+                                    # self.game.layer_buttons_1
+                                    func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"],
+                                    size=TYPE_BUTTONS["comp_size"],
+                                    colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_computer_4)
+        button_computer_6 = Buttons(parent=self.parent, game=self.game, object=self.objects["computer_6"],
+                                    layer=self.parent.display,
+                                    # self.game.layer_buttons_1
+                                    func=lambda: self.game.change_game('dino'), coords=TYPE_BUTTONS["comp_cord"],
+                                    size=TYPE_BUTTONS["comp_size"],
+                                    colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_computer_6)
+
+    def delete_buttons(self):
         for j in range(len(self.buttons) - 1, -1, -1):
             del self.buttons[j]
+
+    def delete_all(self):
+        self.delete_buttons()
 
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects, draw_rects=False)
@@ -366,6 +397,8 @@ class PS_room:
         print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
+        self.buttons = []
+        # ------------------
         self.objects = {"avtomat": avtomat, "ps_room_logo": ps_room_logo, "tv": tv, "ps_table": ps_table,
                         "blue_sofa_1": blue_sofa_1, "cooler": current_cooler}
         for k, v in walls.items():
@@ -385,7 +418,8 @@ class PS_room:
         self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
-        pass
+        for j in range(len(self.buttons) - 1, -1, -1):
+            del self.buttons[j]
 
     def draw(self):
         self.sprite_cooler_for = self.game.animate_sprite(self.sprite_cooler_for)
@@ -435,7 +469,7 @@ class VR_room:
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
-        # self.buttons = []
+        self.buttons = []
         # ------------------
         self.objects = {"title_room": title_room,
                         #"avtomat": avtomat,
@@ -458,7 +492,8 @@ class VR_room:
         self.game.floor.blit(self.texture_floor, (0, 0))
 
     def delete_all(self):
-        pass
+        for j in range(len(self.buttons) - 1, -1, -1):
+            del self.buttons[j]
 
     def draw(self):
         self.game.render_objects(self.list_objects, dop_objects=self.list_dop_objects)

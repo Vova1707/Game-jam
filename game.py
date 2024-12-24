@@ -166,7 +166,7 @@ class Game:
         self.parent = parent
 
         self.donats_many = 10
-        self.character_energy = 2
+        self.character_energy = 30
         self.labels = []
         self.set_labels()
 
@@ -239,10 +239,10 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def change_game(self, name_game):
-        if self.character_energy > 0:
+        if self.character_energy-13 > 0:
             update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
             self.donats_many += update_manu_for_mini_game
-            self.character_energy -= 1
+            self.character_energy -= 13
         self.set_labels()
 
     def room_change(self, type_room):
