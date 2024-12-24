@@ -166,8 +166,9 @@ class Game:
         self.parent = parent
 
         self.donats_many = 10
+        self.character_energy = 2
         self.labels = []
-        self.init_label_title()
+        self.set_labels()
 
         self.floor = pygame.Surface((1000, 800))
         self.type_room = "reception"
@@ -200,7 +201,6 @@ class Game:
                            'ps_room': PS_room,
                            'vr_room': VR_room}
 
-        self.mini_game_change = False
         self.mini_games = {'comp_room':
                           {'circle': lambda: curcle(self.parent.display),
                            'ps': lambda: game_from_ps(self.parent.display),
@@ -213,6 +213,7 @@ class Game:
                       }
 
         self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
+        self.room_now.enter_rooms()
         self.room_now.draw()
         self.room_now.enter_rooms()
 
@@ -238,11 +239,11 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def change_game(self, name_game):
-        if self.donats_many - 3 > 0:
-            self.mini_game_change = 1
+        if self.character_energy > 0:
             update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
             self.donats_many += update_manu_for_mini_game
-            self.init_label_title()
+            self.character_energy -= 1
+        self.set_labels()
 
     def room_change(self, type_room):
         print(self.type_room, "->", type_room)
@@ -270,7 +271,8 @@ class Game:
         # self.parent.display.blit(self.floor, (0, 0))
         # self.character.udpate()
 
-    def init_label_title(self):
+    def set_labels(self):
+        self.labels = []
         label_title = {
             "coords": (30, 0),
             "text": f"Монет: {self.donats_many}",
@@ -280,8 +282,18 @@ class Game:
                                                       text=label_title["text"],
                                                       font=label_title["font"],
                                                       color=(255, 0, 0))
-        # label_title["text"] = self.parent.add_distance_between_letters(label_title["text"], 2)
-        self.labels = []
+        print(label_title["text"])
+        self.labels.append(label_title)
+
+        label_title = {
+            "coords": (30, 30),
+            "text": f"Энергии: {self.character_energy}",
+            "font": pygame.font.Font(self.base_style["font_path"], 30)
+        }
+        label_title["label"] = self.parent.label_text(coords=label_title["coords"],
+                                                      text=label_title["text"],
+                                                      font=label_title["font"],
+                                                      color=(255, 0, 0))
         print(label_title["text"])
         self.labels.append(label_title)
 
@@ -411,6 +423,15 @@ class Game:
             for_data[0] = 0
         for_data[0] = for_data[0]
         return for_data
+
+    def energy_character_up(self, price, val):
+        if self.donats_many - price >= 0:
+            self.donats_many -= price
+            self.character_energy += val
+        else:
+            print("Не хватает денег")
+        self.set_labels()
+
 
     def check_event(self, event):
         for commands in self.list_comands:

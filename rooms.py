@@ -5,7 +5,7 @@ THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 TYPE_BUTTONS = {
     "comp_cord": (77, -5), "comp_size": (83, 47), # (63, 28)
-    "avtomat_cord": (0, 30), "avtomat_size": (110, 180), # (63, 28)
+    "avtomat_cord": (15, 23), "avtomat_size": (95, 182), # (63, 28)
     "color": {
             "inactive": (0, 0, 0, 0), # (0, 0, 0)
             "hover": (200, 208, 200, 200), # (0, 32, 214)
@@ -126,7 +126,7 @@ class Reception:
                                'sprites/avtomat/avtomat_2.png')
         button_avtomat_1 = Buttons(parent=self.parent, game=self.game, object=avtomat_1, layer=self.parent.display,
                                     # self.game.layer_buttons_1
-                                    func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["avtomat_cord"],
+                                    func=lambda: self.game.energy_character_up(price=3, val=1), coords=TYPE_BUTTONS["avtomat_cord"],
                                     size=TYPE_BUTTONS["avtomat_size"],
                                     colors=TYPE_BUTTONS["color"])
         avtomat_2 = Object(self.parent, self.game, self.base_style,
@@ -162,7 +162,6 @@ class Reception:
         self.objects = {"avtomat_1": avtomat_1, "avtomat_2": avtomat_2, "title_room": title_room,
                         "reception_table": reception_table,
                         "plant_1": plant_1, "sofa_1": sofa_1, "sofa_2": sofa_2, "sofa_3": sofa_3, "sofa_4": sofa_4}
-        self.buttons = []
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
@@ -177,8 +176,8 @@ class Reception:
 
     def enter_rooms(self):
         self.game.floor.blit(self.texture_floor, (0, 0))
-        self.parent.data_layers = [0] * len(self.buttons)
-        self.parent.old_data_layers = [0] * len(self.buttons)
+        self.game.data_layers = [0] * len(self.buttons)
+        self.game.old_data_layers = [0] * len(self.buttons)
 
     def delete_all(self):
         pass
