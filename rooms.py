@@ -214,16 +214,16 @@ class Computer_room:
         title_room = Object(self.parent, self.game, self.base_style, [100, 20],
                          TYPE_SPRITES["comp_size"], 'sprites/titles/computer_room_logo.png')
         chair_1 = Object(self.parent, self.game, self.base_style, [300, 110],
-                         TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', coord_rect=-100)
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', size_rect=(0, -100))
 
         chair_2 = Object(self.parent, self.game, self.base_style, [530, 120],
-                         TYPE_SPRITES["chair"], 'sprites/_other/chair_2.png', coord_rect=-100)
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_2.png', size_rect=(0, -100))
 
         chair_3 = Object(self.parent, self.game, self.base_style, [300, 250],
-                         TYPE_SPRITES["chair"], 'sprites/_other/chair_2.png', coord_rect=-100)
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_2.png', size_rect=(0, -100))
 
         chair_4 = Object(self.parent, self.game, self.base_style, [520, 400],
-                         TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', coord_rect=-100)
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', size_rect=(0, -100))
 
         computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
                                      TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
@@ -238,24 +238,23 @@ class Computer_room:
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png') #, coords_rect=0
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 300], # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png') #, coord_rect=0
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 250], # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
 
         computer_5 = Object(self.parent, self.game, self.base_style, [250, 250], # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
 
         computer_6 = Object(self.parent, self.game, self.base_style, [480, 250],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
 
         computer_7 = Object(self.parent, self.game, self.base_style, [30, 400],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
 
         computer_8 = Object(self.parent, self.game, self.base_style, [250, 400],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
 
         computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
 
         sofa_1 = Object(self.parent, self.game, self.base_style, [23, 700],
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))

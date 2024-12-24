@@ -192,6 +192,8 @@ class Main:
                 if event.type == pygame.QUIT: self.running = False
                 if self.type_display == "game":
                     self.holst.check_event(event)
+            if self.type_display == "refer":
+                self.holst.draw_donut()
             self.clock.tick(self.FPS)
             self.update_widgets()
             pygame.display.update()

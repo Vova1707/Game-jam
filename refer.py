@@ -57,11 +57,13 @@ class Refer:
         self.theta_spacing = 10
         self.phi_spacing = 1
         self.chars = ".,-~:;=!*#$@"
+        self.font = pygame.font.SysFont('Arial', 18, bold=True)
 
         self.init_label_title()
         self.draw_donut()
         self.init_main_text()
         self.init_button_menu()
+
 
     def init_label_title(self):
         label_title = {
@@ -159,8 +161,7 @@ class Refer:
         self.hue += 0.005
 
     def text_display(self, letter, x_start, y_start):
-        font = pygame.font.SysFont('Arial', 18, bold=True)
-        text = font.render(str(letter), True, hsv2rgb(self.hue, 1, 1))
+        text = self.font.render(str(letter), True, hsv2rgb(self.hue, 1, 1))
         self.parent.display.blit(text, (x_start, y_start))
 
     #################################################################################
