@@ -101,7 +101,7 @@ class Main:
         f = font
         res_label = f.render(text, True, color)
         self.display.blit(res_label, coords)
-        pygame.display.update()
+        # pygame.display.update()
         return res_label
 
     def create_textbox(self, coords, size, border_colour=(0, 0, 0), text_colour=(0, 0, 0), r=10, bd=5):
@@ -192,6 +192,8 @@ class Main:
                 if event.type == pygame.QUIT: self.running = False
                 if self.type_display == "game":
                     self.holst.check_event(event)
+            if self.type_display == "refer":
+                self.holst.draw_donut()
             self.clock.tick(self.FPS)
             self.update_widgets()
             pygame.display.update()
