@@ -321,39 +321,36 @@ class Game:
                 self.layer_buttons_2.fill(pygame.Color(0, 0, 0, 0))
         self.old_data_layers = self.data_layers.copy()
 
-    def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door, type_return="list"):
+    def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door):
         # print(color_left, color_up, color_right)
-        walls = []
-        if type_return == "list": walls = []
-        elif type_return == "dict": walls = {}
+        walls = {}
         def append(key, obj):
-            if type_return == "list": walls.append(obj)
-            elif type_return == "dict": walls[key] = obj
+            walls[key] = obj
         if len(color_up) == 1: # передняя - нет двери
-            append("up", Object(self.parent, self, self.base_style, [0, 0],
+            append("wall_up", Object(self.parent, self, self.base_style, [0, 0],
                       (self.parent.display_w, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect=0))
         elif len(color_up) == 2: # передняя - есть дверь
-            append("up_1", Object(self.parent, self, self.base_style, [0, 0],
+            append("wall_up_1", Object(self.parent, self, self.base_style, [0, 0],
                       ((self.parent.display_w-width_door)//2, height), f'sprites/walls/front_{color_up[0]}_wall.png', coord_rect=0))
-            append("up_2", Object(self.parent, self, self.base_style, [(self.parent.display_w+width_door)//2, 0],
+            append("wall_up_2", Object(self.parent, self, self.base_style, [(self.parent.display_w+width_door)//2, 0],
                       ((self.parent.display_w+width_door)//2, height), f'sprites/walls/front_{color_up[1]}_wall.png', coord_rect=0))
 
         if len(color_left) == 1: # левая - нет двери
-            append("left", Object(self.parent, self, self.base_style, [0, 0],
+            append("wall_left", Object(self.parent, self, self.base_style, [0, 0],
                               (thinkess, self.parent.display_h), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect=0))
         elif len(color_left) == 2: # левая - есть стена
-            append("left_1", Object(self.parent, self, self.base_style, [0, (self.parent.display_h + width_door) // 2],
+            append("wall_left_1", Object(self.parent, self, self.base_style, [0, (self.parent.display_h + width_door) // 2],
                                 (thinkess, (self.parent.display_h + width_door) // 2), f'sprites/walls/side_{color_left[0]}_wall.png', coord_rect=0))
-            append("left_2", Object(self.parent, self, self.base_style, [0, 0],
+            append("wall_left_2", Object(self.parent, self, self.base_style, [0, 0],
                                 (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_left[1]}_wall.png', coord_rect=0))
 
         if len(color_right) == 1: # правая - нет двери
-            append("right", Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
+            append("wall_right", Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
                        (thinkess, self.parent.display_h), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect=0))
         elif len(color_right) == 2: # правая - есть дверь
-            append("right_1", Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, 0],
+            append("wall_right_1", Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, 0],
                                 (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_right[0]}_wall.png', coord_rect=0))
-            append("right_2", Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, (self.parent.display_h+width_door)//2],
+            append("wall_right_2", Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, (self.parent.display_h+width_door)//2],
                                 (thinkess, (self.parent.display_h+width_door)//2), f'sprites/walls/side_{color_right[1]}_wall.png', coord_rect=0))
         return walls
 
@@ -401,6 +398,14 @@ class Game:
             self.character.flag_idle = 0
             self.character.flag_walk = 1
             # print(self.character["flags"], self.character["cond"])
+
+    def animate_sprite(self, for_data):
+        for_data[0] += for_data[1]
+        # print(for_data[2])
+        if for_data[0] > for_data[2]+1:
+            for_data[0] = 1
+        for_data[0] = for_data[0]
+        return for_data
 
     def check_event(self, event):
         for commands in self.list_comands:
