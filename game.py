@@ -5,6 +5,7 @@ from circle import curcle
 from gost import game_from_ps
 #from GhostBusters.main import game_from_ps
 from dino import dino_game
+from dash_hex import dash_hex
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -203,7 +204,8 @@ class Game:
 
         self.mini_games = {'comp_room':
                           {'circle': lambda: curcle(self.parent.display),
-                           'ps': lambda: game_from_ps(self.parent.display),
+                           'dash_hex': lambda: game_from_ps(self.parent.display),
+                           'ps': lambda: dash_hex(self.parent.display),
                            'dino': lambda: dino_game(self.parent.display),
                            },
                       'ps_room':
@@ -211,6 +213,7 @@ class Game:
                       'vr_room':
                           {},
                       }
+        self.flag_mini_games = False
 
         self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
         self.room_now.enter_rooms()
@@ -239,10 +242,12 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def change_game(self, name_game):
-        if self.character_energy > 0:
+        if self.character_energy > 0 and not self.flag_mini_games:
+            self.flag_mini_games = True
             update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
             self.donats_many += update_manu_for_mini_game
             self.character_energy -= 1
+            self.flag_mini_games = False
         self.set_labels()
 
     def room_change(self, type_room):
