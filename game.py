@@ -167,10 +167,13 @@ class Game:
         self.base_style = base_style
         self.parent = parent
 
-        self.donats_many = 100
-        self.character_energy = 30
+        self.donats_many = 10
+        self.character_energy = 2 # 30
         self.labels = []
         self.set_labels()
+        self.layer_message = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
+        self.layer_message = self.layer_message.convert_alpha()
+        self.flag_message_energy = 0
 
         self.floor = pygame.Surface((1000, 800))
         self.type_room = "reception"
@@ -263,6 +266,8 @@ class Game:
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
         self.room_now.draw()
+        # self.parent.display.blit(self.layer_message, (0, 0))
+        # if self.flag_message_energy == 1: self.set_message()
         for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
         # -------------------------------------------------------------------------------
         # if self.character.room == 'main_room':
@@ -300,6 +305,23 @@ class Game:
                                                       color=(255, 0, 0))
         print(label_title["text"])
         self.labels.append(label_title)
+
+    def set_message(self):
+        # self.message_labels = []
+        label = {
+            "coords": (100, 100),
+            "text": "Закончилась энергия",
+            "font": pygame.font.Font(self.base_style["font_path"], 30)
+        }
+        label["label"] = self.parent.label_text(coords=label["coords"],
+                                                      text=label["text"],
+                                                      font=label["font"],
+                                                      color=(255, 0, 0))
+        self.layer_message.blit(label["label"], label["coords"])
+        pygame.time.wait(1000)
+        self.layer_message.fill(pygame.Color(0, 0, 0, 0))
+        self.flag_message_energy = 0
+        # self.message_labels = []
 
     def render_objects(self, objects, buttons=None, dop_objects=None, draw_rects=False):
         if dop_objects is not None: all_objects = objects + dop_objects
@@ -433,7 +455,9 @@ class Game:
             self.donats_many -= price
             self.character_energy += val
         else:
+            self.flag_message_energy = 1
             print("Не хватает денег")
+            # self.set_message()
         self.set_labels()
 
     def check_event(self, event):
