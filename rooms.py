@@ -355,14 +355,37 @@ class VR_room:
         walls = self.game.draw_walls(color_left=["black", "black"], color_up=["black"],
                                      color_right=["black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+
+        table_1 = Object(self.parent, self.game, self.base_style, [45, 145], (150, 100),
+                         'sprites/vr_room/vr_table_1.png')
+        table_2 = Object(self.parent, self.game, self.base_style, [220, 145], (150, 100),
+                         'sprites/vr_room/vr_table_2.png')
+        table_3 = Object(self.parent, self.game, self.base_style, [395, 145], (150, 100),
+                         'sprites/vr_room/vr_table_3.png')
+        table_4 = Object(self.parent, self.game, self.base_style, [570, 145], (150, 100),
+                         'sprites/vr_room/vr_table_4.png')
+
+        screen_1 = Object(self.parent, self.game, self.base_style, [75, 75], (100, 50),
+                          'sprites/comp/TV_for_PS.png')
+        screen_2 = Object(self.parent, self.game, self.base_style, [250, 75], (100, 50),
+                          'sprites/comp/TV_for_PS.png')
+        screen_3 = Object(self.parent, self.game, self.base_style, [425, 75], (100, 50),
+                          'sprites/comp/TV_for_PS.png')
+        screen_4 = Object(self.parent, self.game, self.base_style, [600, 75], (100, 50),
+                          'sprites/comp/TV_for_PS.png')
+
+        title_room = Object(self.parent, self.game, self.base_style, [717, 32], (260, 160),
+                              'sprites/titles/vr_room_logo.png')
+
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
-        print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
         # self.buttons = []
         # ------------------
-        self.objects = {# "title_room": title_room,
-                        "avtomat": avtomat}
+        self.objects = {"title_room": title_room,
+                        #"avtomat": avtomat,
+        "table_1": table_1, "table_2": table_2, "table_3": table_3, "table_4": table_4,
+        "screen_1": screen_1, "screen_2": screen_2, "screen_3": screen_3, "screen_4": screen_4}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
