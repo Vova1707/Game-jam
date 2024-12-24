@@ -5,7 +5,7 @@ THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 TYPE_BUTTONS = {
     "comp_cord": (77, -5), "comp_size": (83, 47), # (63, 28)
-    # "avtomat_cord": (77, -5), "avtomat_size": (83, 47), # (63, 28)
+    "avtomat_cord": (0, 30), "avtomat_size": (110, 180), # (63, 28)
     "color": {
             "inactive": (0, 0, 0, 0), # (0, 0, 0)
             "hover": (200, 208, 200, 200), # (0, 32, 214)
@@ -124,11 +124,11 @@ class Reception:
                                [20, TYPE_SPRITES["avtomat_y_up"]],
                          TYPE_SPRITES["avtomat_size"],
                                'sprites/avtomat/avtomat_2.png')
-        # button_avtomat_1 = Buttons(parent=self.parent, game=self.game, object=avtomat_1, layer=self.parent.display,
-        #                             # self.game.layer_buttons_1
-        #                             func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
-        #                             size=TYPE_BUTTONS["comp_size"],
-        #                             colors=TYPE_BUTTONS["color"])
+        button_avtomat_1 = Buttons(parent=self.parent, game=self.game, object=avtomat_1, layer=self.parent.display,
+                                    # self.game.layer_buttons_1
+                                    func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["avtomat_cord"],
+                                    size=TYPE_BUTTONS["avtomat_size"],
+                                    colors=TYPE_BUTTONS["color"])
         avtomat_2 = Object(self.parent, self.game, self.base_style,
                          [110, TYPE_SPRITES["avtomat_y_up"]],
                          TYPE_SPRITES["avtomat_size"],
@@ -157,6 +157,8 @@ class Reception:
         print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
+        self.buttons = [button_avtomat_1]
+        # ------------------
         self.objects = {"avtomat_1": avtomat_1, "avtomat_2": avtomat_2, "title_room": title_room,
                         "reception_table": reception_table,
                         "plant_1": plant_1, "sofa_1": sofa_1, "sofa_2": sofa_2, "sofa_3": sofa_3, "sofa_4": sofa_4}
@@ -182,7 +184,7 @@ class Reception:
         pass
 
     def draw(self):
-        self.game.render_objects(self.list_objects, dop_objects=self.list_dop_objects)
+        self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
         # for obj in self.objects:
         #     pygame.draw.rect(self.parent.display, (255, 255, 255), obj.data["rect"])
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
@@ -325,8 +327,8 @@ class Computer_room:
     def enter_rooms(self):
         self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]-THIKNESS_WALL-20])
         self.game.floor.blit(self.texture_floor, (0, 0))
-        self.parent.data_layers = [0] * len(self.buttons)
-        self.parent.old_data_layers = [0] * len(self.buttons)
+        self.game.data_layers = [0] * len(self.buttons)
+        self.game.old_data_layers = [0] * len(self.buttons)
 
     def delete_all(self):
         for j in range(len(self.buttons) - 1, -1, -1):
