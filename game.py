@@ -126,7 +126,7 @@ class Character:
             "speed_TO_freq": {"idle": 20, "sneak": 8, "walk": 7, "run": 4},
             # "key_press_TO_": {[0, 0, 0, 0]: "", "key_up": 0, "key_left": 0, "key_right": 0},
             "val_speed": 4,
-            "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140], # 50, 70
+            "coords": [self.parent.display_w // 2, self.parent.display_h // 2+100, 100, 140], # 50, 70
             "coords_rect": [7, 0, 82, 20]
         }
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
@@ -166,7 +166,7 @@ class Game:
         self.base_style = base_style
         self.parent = parent
 
-        self.donats_many = 10
+        self.donats_many = 100
         self.character_energy = 30
         self.labels = []
         self.set_labels()

@@ -4,7 +4,8 @@ THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 TYPE_BUTTONS = {
     "comp_cord": (77, -5), "comp_size": (83, 47), # (63, 28)
-    "avtomat_cord": (15, 23), "avtomat_size": (95, 182),
+    "avtomat_cord": (10, 23), "avtomat_size": (96, 182),
+    "avtomat_green_cord": (15, 33), "avtomat_green_size": (93, 162),
     "tv_ps_cord": (-5, -5), "tv_ps_size": (310, 135),
     "tv_vr_cord": (-5, -5), "tv_vr_size": (110, 60),
     "color": {
@@ -188,6 +189,14 @@ class Reception:
                                    size=TYPE_BUTTONS["avtomat_size"],
                                    colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_avtomat_yellow)
+        button_avtomat_blue = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["avtomat_2"],
+                                              layer=self.parent.display,
+                                              func=lambda: self.game.energy_character_up(price=TYPE_ENERGY["blue"]["price"],
+                                                                                        val=TYPE_ENERGY["blue"]["val"]),
+                                              coords=TYPE_BUTTONS["avtomat_cord"],
+                                              size=TYPE_BUTTONS["avtomat_size"],
+                                              colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_avtomat_blue)
 
 
     def delete_buttons(self):
@@ -341,6 +350,24 @@ class Computer_room:
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_computer_6)
+        button_avtomat_1 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["avtomvat_1"],
+                                            layer=self.parent.display,
+                                            func=lambda: self.game.energy_character_up(
+                                                price=TYPE_ENERGY["blue"]["price"],
+                                                val=TYPE_ENERGY["blue"]["val"]),
+                                            coords=TYPE_BUTTONS["avtomat_cord"],
+                                            size=TYPE_BUTTONS["avtomat_size"],
+                                            colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_avtomat_1)
+        button_avtomat_green = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["avtomvat_2"],
+                                         layer=self.parent.display,
+                                         func=lambda: self.game.energy_character_up(
+                                             price=TYPE_ENERGY["green"]["price"],
+                                             val=TYPE_ENERGY["green"]["val"]),
+                                         coords=TYPE_BUTTONS["avtomat_green_cord"],
+                                         size=TYPE_BUTTONS["avtomat_green_size"],
+                                         colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_avtomat_green)
 
     def delete_buttons(self):
         for j in range(len(self.buttons) - 1, -1, -1):
@@ -416,6 +443,15 @@ class PS_room:
                                     size=TYPE_BUTTONS["tv_ps_size"],
                                     colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_tv)
+        button_avtomat_green = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["avtomat"],
+                                             layer=self.parent.display,
+                                             func=lambda: self.game.energy_character_up(
+                                                 price=TYPE_ENERGY["green"]["price"],
+                                                 val=TYPE_ENERGY["green"]["val"]),
+                                             coords=TYPE_BUTTONS["avtomat_green_cord"],
+                                             size=TYPE_BUTTONS["avtomat_green_size"],
+                                             colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_avtomat_green)
 
     def delete_buttons(self):
         for j in range(len(self.buttons) - 1, -1, -1):
@@ -497,12 +533,13 @@ class VR_room:
         self.game.old_data_layers = [0] * len(self.buttons)
 
     def init_buttons(self):
-        button_screen_1 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["screen_1"],
-                                  layer=self.parent.display,
-                                  func=lambda: print("ГДЕ 3D ИГРА, АНДРЕЙ?"), coords=TYPE_BUTTONS["tv_vr_cord"],
-                                  size=TYPE_BUTTONS["tv_vr_size"],
-                                  colors=TYPE_BUTTONS["color"])
-        self.buttons.append(button_screen_1)
+        for i in range(1, 4+1):
+            button_screen = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects[f"screen_{i}"],
+                                      layer=self.parent.display,
+                                      func=lambda: print("ГДЕ 3D ИГРА, АНДРЕЙ?"), coords=TYPE_BUTTONS["tv_vr_cord"],
+                                      size=TYPE_BUTTONS["tv_vr_size"],
+                                      colors=TYPE_BUTTONS["color"])
+            self.buttons.append(button_screen)
 
     def delete_buttons(self):
         for j in range(len(self.buttons) - 1, -1, -1):
