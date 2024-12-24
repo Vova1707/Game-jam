@@ -152,9 +152,9 @@ class Refer:
                 self.x_start += self.x_separator
             else:
                 self.y_start += self.y_separator
-                x_start = 0
-                self.text_display(b[i], x_start, self.y_start)
-                x_start += self.x_separator
+                self.x_start = 0
+                self.text_display(b[i], self.x_start, self.y_start)
+                self.x_start += self.x_separator
 
         self.hue += 0.005
 
