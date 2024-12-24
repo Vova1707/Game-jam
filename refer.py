@@ -159,7 +159,7 @@ class Refer:
         self.hue += 0.005
 
     def text_display(self, letter, x_start, y_start):
-        font = pygame.font.Font(self.base_style["font_path"], 18)
+        font = pygame.font.SysFont('Arial', 18, bold=True)
         text = font.render(str(letter), True, hsv2rgb(self.hue, 1, 1))
         self.parent.display.blit(text, (x_start, y_start))
 
