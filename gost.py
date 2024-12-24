@@ -243,8 +243,8 @@ class BlinkingText(Message):
 
 def MessageBox(win, font, name, text):
 	''' This class creates a message box and automatically fills the text '''
-	WIDTH = 600
-	HEIGHT = 800
+	WIDTH = 640
+	HEIGHT = 284
 	x = 35
 	y = 65  # depends on message box location
 	pygame.draw.rect(win, (255, 255, 255), (25, 25, WIDTH - 40, HEIGHT - 84), border_radius=10)
@@ -730,8 +730,8 @@ class Ghost(pygame.sprite.Sprite):
 		win.blit(self.image, self.rect)
 
 
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 384
 MARGIN_LEFT = 300
 WIDTH = SCREEN_WIDTH + MARGIN_LEFT
 HEIGHT = SCREEN_HEIGHT
@@ -889,7 +889,6 @@ def game_from_ps(display):
 	# RESET ***********************************************************************
 
 	def reset_level(level):
-		global running
 		trail_group.empty()
 		bullet_group.empty()
 		grenade_group.empty()
@@ -923,9 +922,10 @@ def game_from_ps(display):
 	exit_page = False
 	game_start = False
 	game_won = True
-
-	running = []
+	running = True
+	sss = []
 	a = []
+
 	button = buttonsss(
 		display,  # Surface to place button on
 		100,
@@ -934,15 +934,17 @@ def game_from_ps(display):
 		50,
 		colour=(255, 0, 0),
 		text='X',  # Heigh
-		onClick=lambda: stopping(running), )
+		onClick=lambda: stopping(sss), )
 	a.append(button)
 	print(a)
 
-	def stopping(running):
-		running.append(1)
+	def stopping(sss):
+		sss.append(1)
 
 
-	while not running:
+	while running:
+		if sss:
+			running = False
 		win.fill((0, 0, 0))
 		for x in range(5):
 			win.blit(BG1, ((x * WIDTH) - bg_scroll * 0.6, 0))
@@ -953,6 +955,14 @@ def game_from_ps(display):
 			win.blit(MOON, (-40, 150))
 
 		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				running = False
+
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE or \
+						event.key == pygame.K_q:
+					running = False
+
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_LEFT:
 					moving_left = True
@@ -1150,8 +1160,8 @@ def game_from_ps(display):
 				about_page = False
 				controls_page = False
 				game_start = False
-		events = pygame.event.get()
-		pygame_widgets.update(events)
+		pygame_widgets.update(pygame.event.get())
 		display.blit(win, (200, 0))
 		clock.tick(FPS)
 		pygame.display.update()
+	pygame.mixer.stop()
