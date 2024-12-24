@@ -268,12 +268,25 @@ class Game:
                 obj.data["type_render"] = 0
         if buttons is not None:
             for i in range(len(buttons)):
-                # print(buttons[i])
                 buttons[i].delete()
-                if self.character.character["coords"][1] > buttons[i].data["coords"][1]:
+                # del buttons[i]["button"]
+                # if i == 1: print(self.character.character["coords"][1], buttons[i].data["coords"][1]-buttons[i].data["coords"][3])
+                if self.character.character["coords"][1] > (buttons[i].data["coords"][1]-buttons[i].data["coords"][3]): #   buttons[i]["coords"][1]
+                    # buttons[i]["button"] = self.parent.button(coords=buttons[i]["coords"],
+                    #                                          text=buttons[i]["text"],
+                    #                                          color=buttons[i]["color"],
+                    #                                          font=buttons[i]["font"],
+                    #                                          func=buttons[i]["func"],
+                    #                                           layer=self.layer_buttons_1)
                     buttons[i].create(self.layer_buttons_1)
                     self.data_layers[i] = 1
                 else:
+                    # buttons[i]["button"] = self.parent.button(coords=buttons[i]["coords"],
+                    #                                           text=buttons[i]["text"],
+                    #                                           color=buttons[i]["color"],
+                    #                                           font=buttons[i]["font"],
+                    #                                           func=buttons[i]["func"],
+                    #                                           layer=self.layer_buttons_2)
                     buttons[i].create(self.layer_buttons_2)
                     self.data_layers[i] = 0
         for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: obj.data["rect"].y):
@@ -288,10 +301,9 @@ class Game:
         # print(self.data_layers, self.old_data_layers)
         if buttons is not None:
             if self.data_layers != self.old_data_layers:
-                self.layer_buttons_1 = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
-                self.layer_buttons_1 = self.layer_buttons_1.convert_alpha()
-                self.layer_buttons_2 = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
-                self.layer_buttons_2 = self.layer_buttons_2.convert_alpha()
+                # print("INTO")
+                self.layer_buttons_1.fill(pygame.Color(0, 0, 0, 0))
+                self.layer_buttons_2.fill(pygame.Color(0, 0, 0, 0))
         self.old_data_layers = self.data_layers.copy()
 
     def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door):

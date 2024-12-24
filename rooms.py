@@ -168,18 +168,18 @@ class Computer_room:
                          (200, 125), 'sprites/titles/computer_room_logo.png')
 
         computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
-                                     (200, 125), 'sprites/comp/comp_1.png')
+                                     (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
         button_computer_1 = Buttons(parent=self.parent, game=self.game, object=computer_1, layer=self.parent.display,
                                     # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
-                          (200, 125), 'sprites/comp/comp_1.png')
+                          (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
-                            (200, 125), 'sprites/comp/comp_1.png')
+                            (200, 125), 'sprites/comp/comp_1.png') #, coord_rect=0
         computer_4 = Object(self.parent, self.game, self.base_style, [710, 110],
-                            (200, 125), 'sprites/comp/comp_1.png')
+                            (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
 
         divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
                          (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
@@ -191,7 +191,7 @@ class Computer_room:
         divan_4 = Object(self.parent, self.game, self.base_style, [780, 700],
                          (200, 100), 'sprites/sofas/green_sofa.png', coord_rect=-40)
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 330],
-                            (200, 125), 'sprites/comp/comp_1.png')
+                            (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
         # def __init__(self, parent, game, object, layer, func, coords, size, colors):
         button_computer_4 = Buttons(parent=self.parent, game=self.game, object=computer_4, layer=self.parent.display, # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
@@ -202,8 +202,27 @@ class Computer_room:
         self.objects = [*walls, title_computer_room, computer_1, computer_2, computer_3, computer_4, divan_1, divan_2]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
+
         # self.buttons = []
-        # self.init_button_menu()
+        # # self.init_button_menu()
+        # button_ps = {
+        #     "font": pygame.font.Font(self.base_style["font_path"], 30),
+        #     "coords": (400, 400, 75, 37),# (111 - 260 + 480, 111, 75, 37),
+        #     "text": "",
+        #     "color": {
+        #         "inactive": self.base_style["colors"]["black"],
+        #         "hover": self.base_style["colors"]["base1"],
+        #         "pressed": self.base_style["colors"]["light"],
+        #         "text": self.base_style["colors"]["light"]
+        #     },
+        #     "func": lambda: self.game.change_game('ps')
+        # }
+        # button_ps["button"] = self.parent.button(coords=button_ps["coords"],
+        #                                          text=button_ps["text"],
+        #                                          color=button_ps["color"],
+        #                                          font=button_ps["font"],
+        #                                          func=button_ps["func"])
+        # self.buttons.append(button_ps)
 
     def init_button_menu(self):
         w, h = 60, 40
