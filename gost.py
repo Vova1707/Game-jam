@@ -3,7 +3,8 @@ import pickle
 import random
 import os
 import math
-
+import pygame_widgets
+from pygame_widgets.button import Button as buttonsss
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self, x, y):
@@ -795,7 +796,7 @@ RED = (255, 25, 25)
 
 
 def game_from_ps(display):
-	WIDTH, HEIGHT = 1000, 800
+	WIDTH, HEIGHT = 600, 800
 	win = pygame.Surface((WIDTH, HEIGHT))
 	TILE_SIZE = 16
 	pygame.mixer.init()
@@ -853,21 +854,6 @@ def game_from_ps(display):
 	main_menu_btn = Button(WIDTH // 2 - bwidth // 4, HEIGHT // 2 + 130, ButtonBG, 0.5, main_menu, 20)
 
 	# MUSIC ***********************************************************************
-
-	pygame.mixer.music.load('For_Mini_Gaming/Sounds/mixkit-complex-desire-1093.mp3')
-	pygame.mixer.music.play(loops=-1)
-	pygame.mixer.music.set_volume(0.5)
-
-	diamond_fx = pygame.mixer.Sound('For_Mini_Gaming/Sounds/point.mp3')
-	diamond_fx.set_volume(0.6)
-	bullet_fx = pygame.mixer.Sound('For_Mini_Gaming/Sounds/bullet.wav')
-	jump_fx = pygame.mixer.Sound('For_Mini_Gaming/Sounds/jump.mp3')
-	health_fx = pygame.mixer.Sound('For_Mini_Gaming/Sounds/health.wav')
-	menu_click_fx = pygame.mixer.Sound('For_Mini_Gaming/Sounds/menu.mp3')
-	next_level_fx = pygame.mixer.Sound('For_Mini_Gaming/Sounds/level.mp3')
-	grenade_throw_fx = pygame.mixer.Sound('For_Mini_Gaming/Sounds/grenade throw.wav')
-	grenade_throw_fx.set_volume(0.6)
-
 	# GROUPS **********************************************************************
 
 	trail_group = pygame.sprite.Group()
@@ -937,7 +923,28 @@ def game_from_ps(display):
 	game_start = False
 	game_won = True
 	running = True
+	sss = []
+	a = []
+
+	button = buttonsss(
+		display,  # Surface to place button on
+		100,
+		0,  # Y-coordinate of top left corner
+		100,  # Width
+		50,
+		colour=(255, 0, 0),
+		text='X',  # Heigh
+		onClick=lambda: stopping(sss), )
+	a.append(button)
+	print(a)
+
+	def stopping(sss):
+		sss.append(1)
+
+
 	while running:
+		if sss:
+			running = False
 		win.fill((0, 0, 0))
 		for x in range(5):
 			win.blit(BG1, ((x * WIDTH) - bg_scroll * 0.6, 0))
@@ -964,7 +971,6 @@ def game_from_ps(display):
 				if event.key == pygame.K_UP:
 					if not p.jump:
 						p.jump = True
-						jump_fx.play()
 				if event.key == pygame.K_SPACE:
 					x, y = p.rect.center
 					direction = p.direction
@@ -978,7 +984,6 @@ def game_from_ps(display):
 						p.grenades -= 1
 						grenade = Grenade(p.rect.centerx, p.rect.centery, p.direction, win)
 						grenade_group.add(grenade)
-						grenade_throw_fx.play()
 
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_LEFT:
@@ -998,7 +1003,6 @@ def game_from_ps(display):
 			trail_group.add(t)
 
 			if play_btn.draw(win):
-				menu_click_fx.play()
 				world_data, level_length, w = reset_level(level)
 				p, moving_left, moving_right = reset_player()
 
@@ -1007,23 +1011,19 @@ def game_from_ps(display):
 				game_won = False
 
 			if about_btn.draw(win):
-				menu_click_fx.play()
 				about_page = True
 				main_menu = False
 
 			if controls_btn.draw(win):
-				menu_click_fx.play()
 				controls_page = True
 				main_menu = False
 
 			if exit_btn.draw(win):
-				menu_click_fx.play()
 				running = False
 
 		elif about_page:
 			MessageBox(win, about_font, 'GhostBusters', info)
 			if main_menu_btn.draw(win):
-				menu_click_fx.play()
 				about_page = False
 				main_menu = True
 
@@ -1035,7 +1035,6 @@ def game_from_ps(display):
 			g_key.update()
 
 			if main_menu_btn.draw(win):
-				menu_click_fx.play()
 				controls_page = False
 				main_menu = True
 
@@ -1045,7 +1044,6 @@ def game_from_ps(display):
 		elif game_won:
 			game_won_msg.update()
 			if main_menu_btn.draw(win):
-				menu_click_fx.play()
 				controls_page = False
 				main_menu = True
 				level = 1
@@ -1098,11 +1096,9 @@ def game_from_ps(display):
 				level = 1
 
 			if pygame.sprite.spritecollide(p, diamond_group, True):
-				diamond_fx.play()
 				pass
 
 			if pygame.sprite.spritecollide(p, exit_group, False):
-				next_level_fx.play()
 				level += 1
 				if level <= MAX_LEVEL:
 					health = p.health
@@ -1121,7 +1117,6 @@ def game_from_ps(display):
 				if p.health < 100:
 					potion[0].kill()
 					p.health += 15
-					health_fx.play()
 					if p.health > 100:
 						p.health = 100
 
@@ -1165,8 +1160,8 @@ def game_from_ps(display):
 				about_page = False
 				controls_page = False
 				game_start = False
-
-		display.blit(win, (0, 0))
+		pygame_widgets.update(pygame.event.get())
+		display.blit(win, (200, 0))
 		clock.tick(FPS)
 		pygame.display.update()
 	pygame.mixer.stop()

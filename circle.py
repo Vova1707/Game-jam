@@ -1,10 +1,14 @@
 import random
 import pygame
 import math
-def game_1(display):
+import pygame_widgets
+from pygame_widgets.button import Button as buttonsss
+
+def curcle(display):
+	global running
+	running = True
 	SCREEN = WIDTH, HEIGHT = 600, 800
 	CENTER = WIDTH // 2, HEIGHT // 2
-	info = pygame.display.Info()
 	win = pygame.Surface(SCREEN)
 	clock = pygame.time.Clock()
 	FPS = 60
@@ -76,18 +80,26 @@ def game_1(display):
 	game_page = False
 	score_page = False
 
-	running = True
+	a = []
+
+
+	button = buttonsss(
+		display,  # Surface to place button on
+		100,
+		0,  # Y-coordinate of top left corner
+		100,  # Width
+		50,
+		colour=(255, 0, 0),
+		text= 'X',# Heigh
+		onClick=stopping,)
+	a.append(button)
+	print(a)
+
 	while running:
 		win.fill(BLACK)
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				running = False
+		events = pygame.event.get()
 
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE or \
-						event.key == pygame.K_q:
-					running = False
-
+		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if home_page:
 					home_page = False
@@ -208,9 +220,12 @@ def game_1(display):
 				particle_group.empty()
 				game_page = False
 				score_page = True
+		pygame_widgets.update(events)
 		display.blit(win, (200, 0))
 		clock.tick(FPS)
 		pygame.display.update()
+
+
 
 
 SCREEN = WIDTH, HEIGHT = 600, 800
@@ -499,3 +514,14 @@ class BlinkingText(Message):
 
 		if self.show:
 			self.win.blit(self.image, self.rect)
+
+
+
+
+running = True
+
+
+def stopping():
+	global a, running
+	print(running)
+	running = False

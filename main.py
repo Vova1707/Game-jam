@@ -8,8 +8,6 @@ from menu import Menu
 from game import Game
 from refer import Refer
 
-from circle import game_1
-
 from databases import Database_With_Users
 
 
@@ -98,9 +96,10 @@ class Main:
             onClick=func
         )
 
-    def label_text(self, coords, text, font):
+    def label_text(self, coords, text, font, color=False):
+        color = self.style["colors"]["light"] if not color else color
         f = font
-        res_label = f.render(text, True, self.style["colors"]["light"])
+        res_label = f.render(text, True, color)
         self.display.blit(res_label, coords)
         pygame.display.update()
         return res_label
