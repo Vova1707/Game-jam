@@ -730,8 +730,8 @@ class Ghost(pygame.sprite.Sprite):
 		win.blit(self.image, self.rect)
 
 
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 384
+SCREEN_WIDTH = 900
+SCREEN_HEIGHT = 800
 MARGIN_LEFT = 300
 WIDTH = SCREEN_WIDTH + MARGIN_LEFT
 HEIGHT = SCREEN_HEIGHT
@@ -796,7 +796,7 @@ RED = (255, 25, 25)
 
 
 def game_from_ps(display):
-	WIDTH, HEIGHT = 600, 800
+	WIDTH, HEIGHT = 900, 800
 	win = pygame.Surface((WIDTH, HEIGHT))
 	TILE_SIZE = 16
 	pygame.mixer.init()
@@ -923,13 +923,14 @@ def game_from_ps(display):
 	game_start = False
 	game_won = True
 	running = True
-	sss = []
+
 	a = []
+	sss = []
 
 	button = buttonsss(
 		display,  # Surface to place button on
-		100,
-		0,  # Y-coordinate of top left corner
+		900,
+		200,  # Y-coordinate of top left corner
 		100,  # Width
 		50,
 		colour=(255, 0, 0),
@@ -937,14 +938,10 @@ def game_from_ps(display):
 		onClick=lambda: stopping(sss), )
 	a.append(button)
 	print(a)
-
-	def stopping(sss):
-		sss.append(1)
-
+	def stopping(ss):
+		ss.append(1)
 
 	while running:
-		if sss:
-			running = False
 		win.fill((0, 0, 0))
 		for x in range(5):
 			win.blit(BG1, ((x * WIDTH) - bg_scroll * 0.6, 0))
@@ -957,11 +954,8 @@ def game_from_ps(display):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
-
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE or \
-						event.key == pygame.K_q:
-					running = False
+			elif sss:
+				running = False
 
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_LEFT:
@@ -1160,8 +1154,11 @@ def game_from_ps(display):
 				about_page = False
 				controls_page = False
 				game_start = False
-		pygame_widgets.update(pygame.event.get())
-		display.blit(win, (200, 0))
+
+		display.blit(win, (0, 0))
 		clock.tick(FPS)
 		pygame.display.update()
+	running = True
+	sss = []
+	return 1
 	pygame.mixer.stop()
