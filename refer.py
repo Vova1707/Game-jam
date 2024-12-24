@@ -1,5 +1,3 @@
-from cProfile import label
-
 import pygame
 import math
 import colorsys
