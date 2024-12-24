@@ -237,7 +237,6 @@ class Game:
         if self.donats_many - 3 > 0:
             self.mini_game_change = 1
             update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
-            self.donats_many -= 3
             self.donats_many += update_manu_for_mini_game
             self.init_label_title()
 
