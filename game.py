@@ -279,16 +279,16 @@ class Game:
                     buttons[i].create(self.layer_buttons_2)
                     self.data_layers[i] = 0
         if dop_objects is not None:
-            for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, dop_objects)), key=lambda obj: obj.data["rect"].y):
+            for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, dop_objects)), key=lambda obj: (obj.data["rect"].y, obj.data["rect"].h)):
                 obj.draw()
         if buttons is not None:
             self.parent.display.blit(self.layer_buttons_1, (0, 0))
-        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: obj.data["rect"].y):
+        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: (obj.data["rect"].y, obj.data["rect"].h)):
             obj.draw()
         self.character.udpate(all_objects)
         if buttons is not None:
             self.parent.display.blit(self.layer_buttons_2, (0, 0))
-        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: obj.data["rect"].y):
+        for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: (obj.data["rect"].y, obj.data["rect"].h)):
             obj.draw()
         # print(self.data_layers, self.old_data_layers)
         if buttons is not None:

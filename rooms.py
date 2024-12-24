@@ -5,6 +5,7 @@ THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 TYPE_BUTTONS = {
     "comp_cord": (77, -5), "comp_size": (83, 47), # (63, 28)
+    # "avtomat_cord": (77, -5), "avtomat_size": (83, 47), # (63, 28)
     "color": {
             "inactive": (0, 0, 0, 0), # (0, 0, 0)
             "hover": (200, 208, 200, 200), # (0, 32, 214)
@@ -102,6 +103,11 @@ class Reception:
                                [790, 80],
                          (100, 150),
                                'sprites/avtomat/avtomat_2.png')
+        # button_avtomat_1 = Buttons(parent=self.parent, game=self.game, object=avtomat_1, layer=self.parent.display,
+        #                             # self.game.layer_buttons_1
+        #                             func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
+        #                             size=TYPE_BUTTONS["comp_size"],
+        #                             colors=TYPE_BUTTONS["color"])
         avtomat_2 = Object(self.parent, self.game, self.base_style,
                          [870, 80],
                          (100, 150),
@@ -174,30 +180,23 @@ class Computer_room:
                                     func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
-        computer_2 = Object(self.parent, self.game, self.base_style, [30, 400], # 250, 110
+        computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
                           (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
                             (200, 125), 'sprites/comp/comp_1.png') #, coord_rect=0
-        computer_4 = Object(self.parent, self.game, self.base_style, [710, 110],
+        computer_4 = Object(self.parent, self.game, self.base_style, [30, 300], # 300
                             (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
 
         divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
                          (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
         divan_2 = Object(self.parent, self.game, self.base_style, [211, 700],
                          (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
-
-        divan_3 = Object(self.parent, self.game, self.base_style, [592, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
-        divan_4 = Object(self.parent, self.game, self.base_style, [780, 700],
-                         (200, 100), 'sprites/sofas/green_sofa.png', coord_rect=-40)
-        computer_4 = Object(self.parent, self.game, self.base_style, [30, 330],
-                            (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
         # def __init__(self, parent, game, object, layer, func, coords, size, colors):
         button_computer_4 = Buttons(parent=self.parent, game=self.game, object=computer_4, layer=self.parent.display, # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         self.buttons = [button_computer_1, button_computer_4]
-        self.objects = [computer_1, walls["left"], walls["right"], title_computer_room, computer_2, computer_3, computer_4, divan_1, divan_2]
+        self.objects = [computer_1, computer_2, walls["left"], walls["right"], title_computer_room, computer_3, computer_4, divan_1, divan_2]
         self.dop_objects = [walls["up"]]
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
@@ -222,47 +221,6 @@ class Computer_room:
         #                                          font=button_ps["font"],
         #                                          func=button_ps["func"])
         # self.buttons.append(button_ps)
-
-    def init_button_menu(self):
-        w, h = 60, 40
-        button_ps = {
-            "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (111 - 260 + 480, 111, 75, 37),
-            "text": "",
-            "color": {
-                "inactive": self.base_style["colors"]["black"],
-                "hover": self.base_style["colors"]["base1"],
-                "pressed": self.base_style["colors"]["light"],
-                "text": self.base_style["colors"]["light"]
-            },
-            "func": lambda: self.game.change_game('ps')
-        }
-        button_ps["button"] = self.parent.button(coords=button_ps["coords"],
-                                                              text=button_ps["text"],
-                                                              color=button_ps["color"],
-                                                              font=button_ps["font"],
-                                                              func=button_ps["func"])
-
-        button_Comp = {
-            "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (111, 111, 75, 37),
-            "text": "",
-            "color": {
-                "inactive": self.base_style["colors"]["black"],
-                "hover": self.base_style["colors"]["base1"],
-                "pressed": self.base_style["colors"]["light"],
-                "text": self.base_style["colors"]["light"]
-            },
-            "func": lambda: self.game.change_game('circle')
-        }
-        button_Comp["button"] = self.parent.button(coords=button_Comp["coords"],
-                                                     text=button_Comp["text"],
-                                                     color=button_Comp["color"],
-                                                     font=button_Comp["font"],
-                                                     func=button_Comp["func"])
-
-        self.buttons.append(button_ps)
-        self.buttons.append(button_Comp)
 
     def enter_rooms(self):
         self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]-THIKNESS_WALL-20])
