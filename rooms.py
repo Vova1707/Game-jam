@@ -17,7 +17,9 @@ TYPE_SPRITES = {
     "comp_size": (200, 125),
     "sofa_size": (200, 100),
     "avtomat_size": (120, 200), # (100, 150)
-    "avtomat_y_up": 50
+    "avtomat_y_up": 50,
+    'chair': (80, 132),
+    'clock': (40, 40)
 }
 
 
@@ -197,9 +199,22 @@ class Computer_room:
                            [860, TYPE_SPRITES["avtomat_y_up"]],
                            TYPE_SPRITES["avtomat_size"],
                            'sprites/avtomat/avtomat_1.png')
+        clock = Object(self.parent, self.game, self.base_style, [650, 60],
+                         TYPE_SPRITES["clock"], 'sprites/_other/clock.png')
 
         title_room = Object(self.parent, self.game, self.base_style, [100, 20],
                          TYPE_SPRITES["comp_size"], 'sprites/titles/computer_room_logo.png')
+        chair_1 = Object(self.parent, self.game, self.base_style, [300, 110],
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', coord_rect=-100)
+
+        chair_2 = Object(self.parent, self.game, self.base_style, [530, 120],
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_2.png', coord_rect=-100)
+
+        chair_3 = Object(self.parent, self.game, self.base_style, [300, 250],
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_2.png', coord_rect=-100)
+
+        chair_4 = Object(self.parent, self.game, self.base_style, [520, 400],
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', coord_rect=-100)
 
         computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
                                      TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
@@ -212,7 +227,22 @@ class Computer_room:
                           TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png') #, coord_rect=0
-        computer_4 = Object(self.parent, self.game, self.base_style, [30, 300], # 300
+        computer_4 = Object(self.parent, self.game, self.base_style, [30, 250], # 300
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+
+        computer_5 = Object(self.parent, self.game, self.base_style, [250, 250], # 300
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+
+        computer_6 = Object(self.parent, self.game, self.base_style, [480, 250],  # 300
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+
+        computer_7 = Object(self.parent, self.game, self.base_style, [30, 400],  # 300
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+
+        computer_8 = Object(self.parent, self.game, self.base_style, [250, 400],  # 300
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
+
+        computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
 
         sofa_1 = Object(self.parent, self.game, self.base_style, [23, 700],
@@ -234,9 +264,11 @@ class Computer_room:
         self.buttons = [button_computer_1, button_computer_4]
         # ------------------
         self.objects = {"title_room": title_room,
-                        "computer_1": computer_1, "computer_2": computer_2, "computer_3": computer_3, "computer_4": computer_4,
+                        'chair_2': chair_2, 'chair_1': chair_1, 'chair_3': chair_3, 'chair_4': chair_4,
+                        "computer_1": computer_1, "computer_2": computer_2, "computer_3": computer_3, "computer_4": computer_4, 'computer_5': computer_5, 'computer_6': computer_6, 'computer_7': computer_7, 'computer_8': computer_8, 'computer_9': computer_9,
                         "sofa_1": sofa_1, "sofa_2": sofa_2,
-                        "avtomvat_1": avtomat_1, "avtomvat_2": avtomat_2}
+                        "avtomvat_1": avtomat_1, "avtomvat_2": avtomat_2,
+                        'clock': clock}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
