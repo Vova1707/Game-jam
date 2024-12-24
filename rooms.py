@@ -13,6 +13,13 @@ TYPE_BUTTONS = {
             "text": (200, 208, 200)
     }
 }
+TYPE_SPRITES = {
+    "comp_size": (200, 125),
+    "sofa_size": (200, 100),
+    "avtomat_size": (120, 200), # (100, 150)
+    "avtomat_y_up": 50
+}
+
 
 class Object:
     def __init__(self, parent, game, base_style, coords, size, image, coord_rect=20):
@@ -49,6 +56,11 @@ class Object:
         self.data["rect"].y = self.data["coords"][1] + self.data["coords"][3] - self.data["coord_rect"]
         self.data["rect"].w = self.data["coords"][2]
         self.data["rect"].h = self.data["coord_rect"]  # self.character["coords"][3]
+
+    def update_sprite(self, img):
+        self.img = img
+        self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
+        self.set_sprite()
 
     def draw(self):
         self.parent.display.blit(self.data["sprite"], self.data["coords"])
@@ -97,11 +109,9 @@ class Reception:
         self.base_style = base_style
         self.parent = parent
         self.game = game
-        walls = self.game.draw_walls(color_left=["black", "blue"], color_up=["blue", "black"],  color_right=["black", "black"],
-                                                            thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         avtomat_1 = Object(self.parent, self.game, self.base_style,
-                               [790, 80],
-                         (100, 150),
+                               [20, TYPE_SPRITES["avtomat_y_up"]],
+                         TYPE_SPRITES["avtomat_size"],
                                'sprites/avtomat/avtomat_2.png')
         # button_avtomat_1 = Buttons(parent=self.parent, game=self.game, object=avtomat_1, layer=self.parent.display,
         #                             # self.game.layer_buttons_1
@@ -109,28 +119,46 @@ class Reception:
         #                             size=TYPE_BUTTONS["comp_size"],
         #                             colors=TYPE_BUTTONS["color"])
         avtomat_2 = Object(self.parent, self.game, self.base_style,
-                         [870, 80],
-                         (100, 150),
+                         [110, TYPE_SPRITES["avtomat_y_up"]],
+                         TYPE_SPRITES["avtomat_size"],
                          'sprites/avtomat/avtomat_3.png')
-        title_reseption_room = Object(self.parent, self.game, self.base_style, [600, 20],
+        title_room = Object(self.parent, self.game, self.base_style, [600, 20],
                                      (200, 150), 'sprites/titles/ultimate_reseption_logo.png')
 
-        reseption_room_table = Object(self.parent, self.game, self.base_style, [400, 350],
+        reception_table = Object(self.parent, self.game, self.base_style, [400, 350],
                                       (200, 140), 'sprites/_other/reseption_table.png')
         plant_1 = Object(self.parent, self.game, self.base_style, [300, 130],
                                       (100, 100), 'sprites/plant/plant_1.png')
 
-        divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
-                                      (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
-        divan_2 = Object(self.parent, self.game, self.base_style, [211, 700],
-                         (200, 100), 'sprites/sofas/green_sofa.png', coord_rect=-40)
+        sofa_1 = Object(self.parent, self.game, self.base_style, [23, 700],
+                                      TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', coord_rect=-40)
+        sofa_2 = Object(self.parent, self.game, self.base_style, [211, 700],
+                         TYPE_SPRITES["sofa_size"], 'sprites/sofas/green_sofa.png', coord_rect=-40)
 
-        divan_3 = Object(self.parent, self.game, self.base_style, [592, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
-        divan_4 = Object(self.parent, self.game, self.base_style, [780, 700],
-                         (200, 100), 'sprites/sofas/green_sofa.png', coord_rect=-40)
-        self.objects = [*walls, avtomat_1, avtomat_2, title_reseption_room, reseption_room_table,
-                        divan_1, divan_2, divan_3, divan_4, plant_1]
+        sofa_3 = Object(self.parent, self.game, self.base_style, [592, 700],
+                         TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', coord_rect=-40)
+        sofa_4 = Object(self.parent, self.game, self.base_style, [780, 700],
+                         TYPE_SPRITES["sofa_size"], 'sprites/sofas/green_sofa.png', coord_rect=-40)
+
+        walls = self.game.draw_walls(color_left=["black", "blue"], color_up=["blue", "black"],  color_right=["black", "black"],
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+        dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up_1", "wall_up_2"], walls.items())))
+        print(dop_walls)
+        walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
+
+        self.objects = {"avtomat_1": avtomat_1, "avtomat_2": avtomat_2, "title_room": title_room,
+                        "reception_table": reception_table,
+                        "plant_1": plant_1, "sofa_1": sofa_1, "sofa_2": sofa_2, "sofa_3": sofa_3, "sofa_4": sofa_4}
+        for k, v in walls.items():
+            self.objects[k] = v
+        self.list_objects = list(self.objects.values())
+        # ------------------
+        self.dop_objects = {}
+        for k, v in dop_walls.items():
+            self.dop_objects[k] = v
+        self.list_dop_objects = list(self.dop_objects.values())
+        print(self.list_objects, self.list_dop_objects)
+
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
     def enter_rooms(self):
@@ -140,7 +168,7 @@ class Reception:
         pass
 
     def draw(self):
-        self.game.render_objects(self.objects)
+        self.game.render_objects(self.list_objects, dop_objects=self.list_dop_objects)
         # for obj in self.objects:
         #     pygame.draw.rect(self.parent.display, (255, 255, 255), obj.data["rect"])
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
@@ -161,43 +189,63 @@ class Computer_room:
         self.parent = parent
         self.game = game
 
-        walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
-                                     color_right=["black"],
-                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150, type_return="dict")
-        #avtomat_1 = Object(self.parent, self.game, self.base_style, [790, 75],
-                         #(100, 150), 'sprites/avtomat/avtomat_2.png')
+        avtomat_1 = Object(self.parent, self.game, self.base_style,
+                           [770, TYPE_SPRITES["avtomat_y_up"]],
+                           TYPE_SPRITES["avtomat_size"],
+                           'sprites/avtomat/avtomat_3.png')
+        avtomat_2 = Object(self.parent, self.game, self.base_style,
+                           [860, TYPE_SPRITES["avtomat_y_up"]],
+                           TYPE_SPRITES["avtomat_size"],
+                           'sprites/avtomat/avtomat_1.png')
 
-        #avtomat_2 = Object(self.parent, self.game, self.base_style, [870, 75],
-                         #(100, 150), 'sprites/avtomat/avtomat_3.png')
-
-        title_computer_room = Object(self.parent, self.game, self.base_style, [100, 20],
-                         (200, 125), 'sprites/titles/computer_room_logo.png')
+        title_room = Object(self.parent, self.game, self.base_style, [100, 20],
+                         TYPE_SPRITES["comp_size"], 'sprites/titles/computer_room_logo.png')
 
         computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
-                                     (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
+                                     TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
         button_computer_1 = Buttons(parent=self.parent, game=self.game, object=computer_1, layer=self.parent.display,
                                     # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
-                          (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
+                          TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
-                            (200, 125), 'sprites/comp/comp_1.png') #, coord_rect=0
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png') #, coord_rect=0
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 300], # 300
-                            (200, 125), 'sprites/comp/comp_1.png', coord_rect=-100)
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', coord_rect=-100)
 
-        divan_1 = Object(self.parent, self.game, self.base_style, [23, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
-        divan_2 = Object(self.parent, self.game, self.base_style, [211, 700],
-                         (200, 100), 'sprites/sofas/black_sofa.png', coord_rect=-40)
+        sofa_1 = Object(self.parent, self.game, self.base_style, [23, 700],
+                         TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', coord_rect=-40)
+        sofa_2 = Object(self.parent, self.game, self.base_style, [211, 700],
+                         TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', coord_rect=-40)
         # def __init__(self, parent, game, object, layer, func, coords, size, colors):
         button_computer_4 = Buttons(parent=self.parent, game=self.game, object=computer_4, layer=self.parent.display, # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
+
+        walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
+                                     color_right=["black"],
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+        dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
+        print(dop_walls)
+        walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
+
         self.buttons = [button_computer_1, button_computer_4]
-        self.objects = [computer_1, computer_2, walls["left"], walls["right"], title_computer_room, computer_3, computer_4, divan_1, divan_2]
-        self.dop_objects = [walls["up"]]
+        # ------------------
+        self.objects = {"title_room": title_room,
+                        "computer_1": computer_1, "computer_2": computer_2, "computer_3": computer_3, "computer_4": computer_4,
+                        "sofa_1": sofa_1, "sofa_2": sofa_2,
+                        "avtomvat_1": avtomat_1, "avtomvat_2": avtomat_2}
+        for k, v in walls.items():
+            self.objects[k] = v
+        self.list_objects = list(self.objects.values())
+        # ------------------
+        self.dop_objects = {}
+        for k, v in dop_walls.items():
+            self.dop_objects[k] = v
+        self.list_dop_objects = list(self.dop_objects.values())
+        print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -231,7 +279,7 @@ class Computer_room:
             del self.buttons[j]
 
     def draw(self):
-        self.game.render_objects(self.objects, self.buttons, self.dop_objects)
+        self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
             print([self.parent.display_w // 2, self.game.character.character["coords"][3]+HEIGHT_WALL])
             self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])
@@ -245,24 +293,35 @@ class PS_room:
         self.parent = parent
         self.game = game
 
-        self.sprite_changer = 0
 
-        walls = self.game.draw_walls(color_left=["black"], color_up=["black"],
-                                     color_right=["black", "black"],
-                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
-        avtomat = Object(self.parent, self.game, self.base_style, [30, 50], (115, 215), 'sprites/avtomat/avtomat_1.png')
+        avtomat = Object(self.parent, self.game, self.base_style, [30, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"], 'sprites/avtomat/avtomat_1.png')
         ps_room_logo = Object(self.parent, self.game, self.base_style, [690, 30], (250, 150), 'sprites/titles/ps_room_logo.png')
         tv = Object(self.parent, self.game, self.base_style, [340, 50], (300, 125), 'sprites/comp/TV_for_PS.png')
         ps_table = Object(self.parent, self.game, self.base_style, [480, 150], (180, 110), 'sprites/play station/ps_table.png')
-        blue_sofa_1 = Object(self.parent, self.game, self.base_style, [370, 300], (250, 180), 'sprites/sofas/blue_sofa.png')
-
-
-        self.coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
+        blue_sofa_1 = Object(self.parent, self.game, self.base_style, [370, 300], TYPE_SPRITES["sofa_size"], 'sprites/sofas/blue_sofa.png')
+        self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
+        self.sprite_cooler_for = [1, 0.1, 8]
+        current_cooler = Object(self.parent, self.game, self.base_style, [150, 125], (40, 140), self.sprite_coolers[0])
+        walls = self.game.draw_walls(color_left=["black"], color_up=["black"],
+                                     color_right=["black", "black"],
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+        dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
+        print(dop_walls)
+        walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
-        self.current_cooler = Object(self.parent, self.game, self.base_style, [150, 125], (40, 140), self.coolers[0])
-        self.objects = [avtomat, ps_room_logo, tv, ps_table, blue_sofa_1, *walls, self.current_cooler]
+        self.objects = {"avtomat": avtomat, "ps_room_logo": ps_room_logo, "tv": tv, "ps_table": ps_table,
+                        "blue_sofa_1": blue_sofa_1, "cooler": current_cooler}
+        for k, v in walls.items():
+            self.objects[k] = v
+        self.list_objects = list(self.objects.values())
+        # ------------------
+        self.dop_objects = {}
+        for k, v in dop_walls.items():
+            self.dop_objects[k] = v
+        self.list_dop_objects = list(self.dop_objects.values())
+        print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -274,14 +333,10 @@ class PS_room:
         pass
 
     def draw(self):
-        self.sprite_changer += 0.1
-        if self.sprite_changer > 8:
-            self.sprite_changer = 0
-        self.objects.pop(-1)
-        self.current_cooler = Object(self.parent, self.game, self.base_style, [150, 125], (40, 140),
-                                     self.coolers[int(self.sprite_changer)])
-        self.objects.append(self.current_cooler)
-        self.game.render_objects(self.objects)
+        self.sprite_cooler_for = self.game.animate_sprite(self.sprite_cooler_for)
+        # print(self.sprite_cooler_for)
+        self.objects["cooler"].update_sprite(self.sprite_coolers[int(self.sprite_cooler_for[0])])
+        self.game.render_objects(self.list_objects, dop_objects=self.list_dop_objects)
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")
@@ -294,12 +349,29 @@ class VR_room:
         self.parent = parent
         self.game = game
 
+        avtomat = Object(self.parent, self.game, self.base_style, [300, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"],
+                         'sprites/avtomat/avtomat_1.png')
+
         walls = self.game.draw_walls(color_left=["black", "black"], color_up=["black"],
                                      color_right=["black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
-        avtomat = Object(self.parent, self.game, self.base_style, [300, self.parent.display_h // 2], (100, 150),
-                         'sprites/avtomat/avtomat_1.png')
-        self.objects = [avtomat, *walls]
+        dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
+        print(dop_walls)
+        walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
+
+        # self.buttons = []
+        # ------------------
+        self.objects = {# "title_room": title_room,
+                        "avtomat": avtomat}
+        for k, v in walls.items():
+            self.objects[k] = v
+        self.list_objects = list(self.objects.values())
+        # ------------------
+        self.dop_objects = {}
+        for k, v in dop_walls.items():
+            self.dop_objects[k] = v
+        self.list_dop_objects = list(self.dop_objects.values())
+        print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -311,7 +383,7 @@ class VR_room:
         pass
 
     def draw(self):
-        self.game.render_objects(self.objects)
+        self.game.render_objects(self.list_objects, dop_objects=self.list_dop_objects)
         if self.game.character.character["coords"][0] == 0 and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([self.parent.display_w - self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")
