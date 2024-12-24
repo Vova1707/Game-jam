@@ -499,7 +499,7 @@ class VR_room:
     def init_buttons(self):
         button_screen_1 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["screen_1"],
                                   layer=self.parent.display,
-                                  func=lambda: print("ГДЕ 3D ИГРА, АНДРЕЙ?"), coords=TYPE_BUTTONS["tv_vr_cord"],
+                                  func=lambda: self.game.change_game('d_game'), coords=TYPE_BUTTONS["tv_vr_cord"],
                                   size=TYPE_BUTTONS["tv_vr_size"],
                                   colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_screen_1)
