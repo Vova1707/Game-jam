@@ -965,14 +965,6 @@ def game_from_ps(display):
 				if event.key == pygame.K_UP:
 					if not p.jump:
 						p.jump = True
-				if event.key == pygame.K_SPACE:
-					x, y = p.rect.center
-					direction = p.direction
-					bullet = Bullet(x, y, direction, (240, 240, 240), 1, win)
-					bullet_group.add(bullet)
-					bullet_fx.play()
-
-					p.attack = True
 				if event.key == pygame.K_g:
 					if p.grenades:
 						p.grenades -= 1
