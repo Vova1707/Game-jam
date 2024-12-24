@@ -122,8 +122,8 @@ class Reception:
                          [110, TYPE_SPRITES["avtomat_y_up"]],
                          TYPE_SPRITES["avtomat_size"],
                          'sprites/avtomat/avtomat_3.png')
-        title_room = Object(self.parent, self.game, self.base_style, [600, 20],
-                                     (200, 150), 'sprites/titles/ultimate_reseption_logo.png')
+        title_room = Object(self.parent, self.game, self.base_style, [590, 15],
+                                     (280, 190), 'sprites/titles/ultimate_reseption_logo.png')
 
         reception_table = Object(self.parent, self.game, self.base_style, [400, 350],
                                       (200, 140), 'sprites/_other/reseption_table.png')
@@ -303,7 +303,7 @@ class PS_room:
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
         self.sprite_cooler_for = [1, 0.1, 8]
-        current_cooler = Object(self.parent, self.game, self.base_style, [150, 125], (40, 140), self.sprite_coolers[0])
+        current_cooler = Object(self.parent, self.game, self.base_style, [150, 110], (40, 140), self.sprite_coolers[0])
         walls = self.game.draw_walls(color_left=["black"], color_up=["black"],
                                      color_right=["black", "black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
