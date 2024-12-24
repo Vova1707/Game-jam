@@ -4,6 +4,9 @@ import pygame
 import pygame_widgets
 from pygame_widgets.button import Button as buttonsss
 
+
+print('dsixk')
+
 def dash_hex(display):
 	win = pygame.Surface((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
