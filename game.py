@@ -204,12 +204,11 @@ class Game:
 
         self.mini_games = {'comp_room':
                           {'circle': lambda: curcle(self.parent.display),
-                           'dash_hex': lambda: game_from_ps(self.parent.display),
-                           'ps': lambda: dash_hex(self.parent.display),
+                           'dash_hex': lambda: dash_hex(self.parent.display),
                            'dino': lambda: dino_game(self.parent.display),
                            },
                       'ps_room':
-                          {},
+                          {'ps': lambda: game_from_ps(self.parent.display)},
                       'vr_room':
                           {},
                       }
@@ -218,7 +217,6 @@ class Game:
         self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
         self.room_now.enter_rooms()
         self.room_now.draw()
-        self.room_now.enter_rooms()
 
     def init_button_menu(self):
         w, h = 80, 50
@@ -242,11 +240,11 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def change_game(self, name_game):
-        if self.character_energy > 0 and not self.flag_mini_games:
+        if self.character_energy-3 > 0 and not self.flag_mini_games:
             self.flag_mini_games = True
             update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
             self.donats_many += update_manu_for_mini_game
-            self.character_energy -= 1
+            self.character_energy -= 3
             self.flag_mini_games = False
         self.set_labels()
 
@@ -436,7 +434,6 @@ class Game:
         else:
             print("Не хватает денег")
         self.set_labels()
-
 
     def check_event(self, event):
         for commands in self.list_comands:

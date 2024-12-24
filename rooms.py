@@ -1,11 +1,12 @@
 import pygame
-from pygame_widgets.button import Button
 
 THIKNESS_WALL = 30
 HEIGHT_WALL = 200
 TYPE_BUTTONS = {
     "comp_cord": (77, -5), "comp_size": (83, 47), # (63, 28)
-    "avtomat_cord": (15, 23), "avtomat_size": (95, 182), # (63, 28)
+    "avtomat_cord": (15, 23), "avtomat_size": (95, 182),
+    "tv_ps_cord": (-5, -5), "tv_ps_size": (310, 135),
+    "tv_vr_cord": (-5, -5), "tv_vr_size": (310, 135),
     "color": {
             "inactive": (0, 0, 0, 0), # (0, 0, 0)
             "hover": (200, 208, 200, 200), # (0, 32, 214)
@@ -83,7 +84,7 @@ class Object:
 
 
 
-class Buttons:
+class Hitbox_Button:
     def __init__(self, parent, game, object, layer, func, coords, size, colors):
         self.parent = parent
         self.game = game
@@ -154,7 +155,6 @@ class Reception:
         walls = self.game.draw_walls(color_left=["black", "blue"], color_up=["blue", "black"],  color_right=["black", "black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up_1", "wall_up_2"], walls.items())))
-        print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
         self.buttons = []
@@ -170,7 +170,6 @@ class Reception:
         for k, v in dop_walls.items():
             self.dop_objects[k] = v
         self.list_dop_objects = list(self.dop_objects.values())
-        print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
         self.init_buttons()
@@ -181,7 +180,7 @@ class Reception:
         self.game.old_data_layers = [0] * len(self.buttons)
 
     def init_buttons(self):
-        button_avtomat_yellow = Buttons(parent=self.parent, game=self.game, object=self.objects["avtomat_1"], layer=self.parent.display,
+        button_avtomat_yellow = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["avtomat_1"], layer=self.parent.display,
                                    # self.game.layer_buttons_1
                                    func=lambda: self.game.energy_character_up(price=TYPE_ENERGY["yellow"]["price"],
                                                                               val=TYPE_ENERGY["yellow"]["val"]),
@@ -250,24 +249,17 @@ class Computer_room:
         computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
                           TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
         computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png') #, coords_rect=0
-        computer_4 = Object(self.parent, self.game, self.base_style, [30, 300], # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
+                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png')
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 250], # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-
         computer_5 = Object(self.parent, self.game, self.base_style, [250, 250], # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-
         computer_6 = Object(self.parent, self.game, self.base_style, [480, 250],  # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-
         computer_7 = Object(self.parent, self.game, self.base_style, [30, 400],  # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-
         computer_8 = Object(self.parent, self.game, self.base_style, [250, 400],  # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-
         computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
                             TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
 
@@ -275,17 +267,11 @@ class Computer_room:
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))
         sofa_2 = Object(self.parent, self.game, self.base_style, [211, 700],
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))
-        button_computer_6 = Buttons(parent=self.parent, game=self.game, object=computer_6, layer=self.parent.display,
-                                    # self.game.layer_buttons_1
-                                    func=lambda: self.game.change_game('dino'), coords=TYPE_BUTTONS["comp_cord"],
-                                    size=TYPE_BUTTONS["comp_size"],
-                                    colors=TYPE_BUTTONS["color"])
 
         walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
                                      color_right=["black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
-        print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
         self.buttons = []
@@ -304,7 +290,6 @@ class Computer_room:
         for k, v in dop_walls.items():
             self.dop_objects[k] = v
         self.list_dop_objects = list(self.dop_objects.values())
-        print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
@@ -337,19 +322,19 @@ class Computer_room:
         self.game.old_data_layers = [0] * len(self.buttons)
 
     def init_buttons(self):
-        button_computer_1 = Buttons(parent=self.parent, game=self.game, object=self.objects["computer_1"], layer=self.parent.display,
+        button_computer_1 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["computer_1"], layer=self.parent.display,
                                     # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_computer_1)
-        button_computer_4 = Buttons(parent=self.parent, game=self.game, object=self.objects["computer_4"], layer=self.parent.display,
+        button_computer_4 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["computer_4"], layer=self.parent.display,
                                     # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"],
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_computer_4)
-        button_computer_6 = Buttons(parent=self.parent, game=self.game, object=self.objects["computer_6"],
+        button_computer_6 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["computer_6"],
                                     layer=self.parent.display,
                                     # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('dino'), coords=TYPE_BUTTONS["comp_cord"],
@@ -367,7 +352,6 @@ class Computer_room:
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects, draw_rects=False)
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
-            print([self.parent.display_w // 2, self.game.character.character["coords"][3]+HEIGHT_WALL])
             self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])
             self.game.room_change("reception")
 
@@ -394,7 +378,6 @@ class PS_room:
                                      color_right=["black", "black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
-        print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
         self.buttons = []
@@ -409,23 +392,37 @@ class PS_room:
         for k, v in dop_walls.items():
             self.dop_objects[k] = v
         self.list_dop_objects = list(self.dop_objects.values())
-        print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
+
+        self.init_buttons()
 
     def enter_rooms(self):
         self.game.character.respawn([self.parent.display_w-self.game.character.character["coords"][2], self.parent.display_h // 2])
         self.game.floor.blit(self.texture_floor, (0, 0))
+        self.game.data_layers = [0] * len(self.buttons)
+        self.game.old_data_layers = [0] * len(self.buttons)
 
-    def delete_all(self):
+    def init_buttons(self):
+        button_tv = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["tv"],
+                                    layer=self.parent.display,
+                                    # self.game.layer_buttons_1
+                                    func=lambda: self.game.change_game('ps'), coords=TYPE_BUTTONS["tv_ps_cord"],
+                                    size=TYPE_BUTTONS["tv_ps_size"],
+                                    colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_tv)
+
+    def delete_buttons(self):
         for j in range(len(self.buttons) - 1, -1, -1):
             del self.buttons[j]
 
+    def delete_all(self):
+        self.delete_buttons()
+
     def draw(self):
         self.sprite_cooler_for = self.game.animate_sprite(self.sprite_cooler_for)
-        # print(self.sprite_cooler_for)
         self.objects["cooler"].update_sprite(self.sprite_coolers[int(self.sprite_cooler_for[0])])
-        self.game.render_objects(self.list_objects, dop_objects=self.list_dop_objects)
+        self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")
@@ -483,7 +480,6 @@ class VR_room:
         for k, v in dop_walls.items():
             self.dop_objects[k] = v
         self.list_dop_objects = list(self.dop_objects.values())
-        print(self.list_objects, self.list_dop_objects)
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
