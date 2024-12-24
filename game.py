@@ -6,6 +6,7 @@ from gost import game_from_ps
 #from GhostBusters.main import game_from_ps
 from dino import dino_game
 from dash_hex import dash_hex
+from D_Game import f as d_games
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -210,7 +211,7 @@ class Game:
                       'ps_room':
                           {'ps': lambda: game_from_ps(self.parent.display)},
                       'vr_room':
-                          {},
+                          {'d_game': lambda: d_games(self.parent.display, pygame.Surface((900, 600)))},
                       }
         self.flag_mini_games = False
 
