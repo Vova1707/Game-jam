@@ -151,6 +151,7 @@ class Reception:
         self.objects = {"avtomat_1": avtomat_1, "avtomat_2": avtomat_2, "title_room": title_room,
                         "reception_table": reception_table,
                         "plant_1": plant_1, "sofa_1": sofa_1, "sofa_2": sofa_2, "sofa_3": sofa_3, "sofa_4": sofa_4}
+        self.buttons = []
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
@@ -165,6 +166,8 @@ class Reception:
 
     def enter_rooms(self):
         self.game.floor.blit(self.texture_floor, (0, 0))
+        self.parent.data_layers = [0] * len(self.buttons)
+        self.parent.old_data_layers = [0] * len(self.buttons)
 
     def delete_all(self):
         pass
@@ -254,6 +257,12 @@ class Computer_room:
                                     func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"], size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
 
+        button_computer_6 = Buttons(parent=self.parent, game=self.game, object=computer_6, layer=self.parent.display,
+                                    # self.game.layer_buttons_1
+                                    func=lambda: self.game.change_game('dino'), coords=TYPE_BUTTONS["comp_cord"],
+                                    size=TYPE_BUTTONS["comp_size"],
+                                    colors=TYPE_BUTTONS["color"])
+
         walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
                                      color_right=["black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
@@ -261,7 +270,7 @@ class Computer_room:
         print(dop_walls)
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
-        self.buttons = [button_computer_1, button_computer_4]
+        self.buttons = [button_computer_1, button_computer_4, button_computer_6]
         # ------------------
         self.objects = {"title_room": title_room,
                         'chair_2': chair_2, 'chair_1': chair_1, 'chair_3': chair_3, 'chair_4': chair_4,
@@ -305,6 +314,8 @@ class Computer_room:
     def enter_rooms(self):
         self.game.character.respawn([self.parent.display_w // 2, self.parent.display_h-self.game.character.character["coords"][3]-THIKNESS_WALL-20])
         self.game.floor.blit(self.texture_floor, (0, 0))
+        self.parent.data_layers = [0] * len(self.buttons)
+        self.parent.old_data_layers = [0] * len(self.buttons)
 
     def delete_all(self):
         for j in range(len(self.buttons) - 1, -1, -1):

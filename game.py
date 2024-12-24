@@ -4,6 +4,7 @@ from rooms import Reception, Computer_room, PS_room, VR_room, Object
 from circle import curcle
 from gost import game_from_ps
 #from GhostBusters.main import game_from_ps
+from dino import dino_game
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -189,8 +190,8 @@ class Game:
         self.layer_buttons_1 = self.layer_buttons_1.convert_alpha()
         self.layer_buttons_2 = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
         self.layer_buttons_2 = self.layer_buttons_2.convert_alpha()
-        self.old_data_layers = [0, 0]
-        self.data_layers = [0, 0]
+        self.old_data_layers = []
+        self.data_layers = []
         self.list_rooms = {'reception': Reception,
                            'comp_room': Computer_room,
                            'ps_room': PS_room,
@@ -199,8 +200,8 @@ class Game:
         self.mini_game_change = False
         self.mini_games = {'comp_room':
                           {'circle': lambda: curcle(self.parent.display),
-                           'ps': lambda: game_from_ps(self.parent.display)
-                           #game_from_ps(self.parent.display)
+                           'ps': lambda: game_from_ps(self.parent.display),
+                           'dino': lambda: dino_game(self.parent.display),
                            },
                       'ps_room':
                           {},

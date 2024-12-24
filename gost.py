@@ -930,7 +930,7 @@ def game_from_ps(display):
 	button = buttonsss(
 		display,  # Surface to place button on
 		900,
-		200,  # Y-coordinate of top left corner
+		100,  # Y-coordinate of top left corner
 		100,  # Width
 		50,
 		colour=(255, 0, 0),
@@ -1154,7 +1154,7 @@ def game_from_ps(display):
 				about_page = False
 				controls_page = False
 				game_start = False
-
+		pygame_widgets.update(pygame.event.get())
 		display.blit(win, (0, 0))
 		clock.tick(FPS)
 		pygame.display.update()
