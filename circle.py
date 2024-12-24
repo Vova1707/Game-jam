@@ -134,35 +134,7 @@ def curcle(display):
 			tap_to_play.update()
 
 		if score_page:
-			final_score_msg.update(score, YELLOW)
-			if score and score >= high_score:
-				high_score = score
-				new_high_msg.update(shadow=False)
-
-			if close_btn.draw(win):
-				running = False
-
-			if replay_btn.draw(win):
-				clicks = 0
-				score = 0
-				pos = random.randint(0, 11)
-
-				p.reset()
-				final_score_msg = Message(144, HEIGHT // 2 - 50, 100, "0", score_font, WHITE, win)
-
-				score_page = False
-				game_page = True
-
-			if sound_btn.draw(win):
-				pass
-				sound_on = not sound_on
-
-				if sound_on:
-					sound_btn.update_image(sound_on_img)
-					pygame.mixer.music.play(loops=-1)
-				else:
-					sound_btn.update_image(sound_off_img)
-					pygame.mixer.music.stop()
+			running = False
 
 		if game_page:
 			win.blit(main_circle, (CENTER[0] - 12.5, CENTER[1] - 12.5))
@@ -224,6 +196,7 @@ def curcle(display):
 		display.blit(win, (200, 0))
 		clock.tick(FPS)
 		pygame.display.update()
+	return score
 
 
 

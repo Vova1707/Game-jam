@@ -161,7 +161,7 @@ class Game:
         self.base_style = base_style
         self.parent = parent
 
-        self.donats_many = 0
+        self.donats_many = 10
         self.labels = []
         self.init_label_title()
 
@@ -207,7 +207,6 @@ class Game:
                       'vr_room':
                           {},
                       }
-        self.mini_game = False
 
         self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
         self.room_now.draw()
@@ -235,8 +234,12 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def change_game(self, name_game):
-        self.mini_game_change = 1
-        self.mini_game = self.mini_games[self.type_room][name_game]()
+        if self.donats_many - 3 > 0:
+            self.mini_game_change = 1
+            update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
+            self.donats_many -= 3
+            self.donats_many += update_manu_for_mini_game
+            self.init_label_title()
 
     def room_change(self, type_room):
         print(self.type_room, "->", type_room)
@@ -252,7 +255,6 @@ class Game:
         self.parent.display.blit(self.floor, (0, 0))
         # self.parent.display.fill(self.base_style["colors"]["black"])
         self.room_now.draw()
-        # Рисование валюты
         for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
         # -------------------------------------------------------------------------------
         # if self.character.room == 'main_room':
@@ -276,6 +278,7 @@ class Game:
                                                       font=label_title["font"],
                                                       color=(255, 0, 0))
         # label_title["text"] = self.parent.add_distance_between_letters(label_title["text"], 2)
+        self.labels = []
         print(label_title["text"])
         self.labels.append(label_title)
 
