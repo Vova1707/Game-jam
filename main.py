@@ -8,8 +8,6 @@ from menu import Menu
 from game import Game
 from refer import Refer
 
-from circle import game_1
-
 from databases import Database_With_Users
 
 

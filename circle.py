@@ -1,7 +1,10 @@
 import random
 import pygame
 import math
-def game_1(display):
+import pygame_widgets
+from pygame_widgets.button import Button as buttonsss
+
+def curcle(display):
 	SCREEN = WIDTH, HEIGHT = 600, 800
 	CENTER = WIDTH // 2, HEIGHT // 2
 	info = pygame.display.Info()
@@ -75,19 +78,28 @@ def game_1(display):
 	home_page = True
 	game_page = False
 	score_page = False
-
 	running = True
+	a = []
+
+	def not_running():
+		global running, a
+		running = False
+		a = []
+		print('sxjki')
+
+	button = buttonsss(
+		win,  # Surface to place button on
+		100,
+		100,  # Y-coordinate of top left corner
+		300,  # Width
+		150,  # Heigh
+		function=not_running())
+	a.append(button)
+	print(a)
+
 	while running:
 		win.fill(BLACK)
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				running = False
-
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE or \
-						event.key == pygame.K_q:
-					running = False
-
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if home_page:
 					home_page = False

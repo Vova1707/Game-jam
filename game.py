@@ -1,7 +1,7 @@
 import pygame
 
 from rooms import Reception, Computer_room, PS_room, VR_room, Object
-from circle import game_1
+from circle import curcle
 from gost import game_from_ps
 #from GhostBusters.main import game_from_ps
 
@@ -194,7 +194,7 @@ class Game:
 
         self.mini_game_change = False
         self.mini_games = {'comp_room':
-                          {'circle': lambda: game_1(self.parent.display),
+                          {'circle': lambda: curcle(self.parent.display),
                            'ps': lambda: game_from_ps(self.parent.display)
                            #game_from_ps(self.parent.display)
                            },
