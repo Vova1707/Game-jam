@@ -6,7 +6,7 @@ TYPE_BUTTONS = {
     "comp_cord": (77, -5), "comp_size": (83, 47), # (63, 28)
     "avtomat_cord": (15, 23), "avtomat_size": (95, 182),
     "tv_ps_cord": (-5, -5), "tv_ps_size": (310, 135),
-    "tv_vr_cord": (-5, -5), "tv_vr_size": (310, 135),
+    "tv_vr_cord": (-5, -5), "tv_vr_size": (110, 60),
     "color": {
             "inactive": (0, 0, 0, 0), # (0, 0, 0)
             "hover": (200, 208, 200, 200), # (0, 32, 214)
@@ -138,7 +138,7 @@ class Reception:
                                      (280, 190), 'sprites/titles/ultimate_reseption_logo.png')
 
         reception_table = Object(self.parent, self.game, self.base_style, [400, 350],
-                                      (200, 140), 'sprites/_other/reseption_table.png')
+                                      (200, 140), 'sprites/_other/reseption_table.png', size_rect=(0, -70))
         plant_1 = Object(self.parent, self.game, self.base_style, [300, 130],
                                       (100, 100), 'sprites/plant/plant_1.png')
 
@@ -364,16 +364,20 @@ class PS_room:
         self.game = game
 
 
-        avtomat = Object(self.parent, self.game, self.base_style, [30, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"], 'sprites/avtomat/avtomat_1.png')
+        avtomat = Object(self.parent, self.game, self.base_style, [30, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"], 'sprites/avtomat/avtomat_1.png',  size_rect=(0, 0))
         ps_room_logo = Object(self.parent, self.game, self.base_style, [690, 30], (250, 150), 'sprites/titles/ps_room_logo.png')
         tv = Object(self.parent, self.game, self.base_style, [340, 50], (300, 125), 'sprites/comp/TV_for_PS.png')
-        ps_table = Object(self.parent, self.game, self.base_style, [480, 150], (180, 110), 'sprites/play station/ps_table.png')
-        blue_sofa_1 = Object(self.parent, self.game, self.base_style, [370, 300], TYPE_SPRITES["sofa_size"], 'sprites/sofas/blue_sofa.png')
+        ps_table = Object(self.parent, self.game, self.base_style, [400, 120], (180, 110), 'sprites/play station/ps_table.png')
+        speaker_left = Object(self.parent, self.game, self.base_style, [280, 100],
+                        (48, 120), 'sprites/loudspeaker/loudspeaker_1.png', size_rect=(0, 0))
+        speaker_right = Object(self.parent, self.game, self.base_style, [660, 100],
+                              (48, 120), 'sprites/loudspeaker/loudspeaker_1.png',  size_rect=(0, 0))
         self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
         self.sprite_cooler_for = [1, 0.1, 8]
-        current_cooler = Object(self.parent, self.game, self.base_style, [150, 110], (40, 140), self.sprite_coolers[0])
+        current_cooler = Object(self.parent, self.game, self.base_style, [140, 100], (40, 140), self.sprite_coolers[0],  size_rect=(0, 0))
+
         walls = self.game.draw_walls(color_left=["black"], color_up=["black"],
                                      color_right=["black", "black"],
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
@@ -383,7 +387,8 @@ class PS_room:
         self.buttons = []
         # ------------------
         self.objects = {"avtomat": avtomat, "ps_room_logo": ps_room_logo, "tv": tv, "ps_table": ps_table,
-                        "blue_sofa_1": blue_sofa_1, "cooler": current_cooler}
+                        "cooler": current_cooler,
+                        "speaker_left": speaker_left, "speaker_right": speaker_right}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
@@ -443,13 +448,13 @@ class VR_room:
                                      thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
 
         table_1 = Object(self.parent, self.game, self.base_style, [45, 145], (150, 100),
-                         'sprites/vr_room/vr_table_1.png')
+                         'sprites/vr_room/vr_table_1.png', size_rect=(0, 0))
         table_2 = Object(self.parent, self.game, self.base_style, [220, 145], (150, 100),
-                         'sprites/vr_room/vr_table_2.png')
+                         'sprites/vr_room/vr_table_2.png', size_rect=(0, 0))
         table_3 = Object(self.parent, self.game, self.base_style, [395, 145], (150, 100),
-                         'sprites/vr_room/vr_table_3.png')
+                         'sprites/vr_room/vr_table_3.png', size_rect=(0, 0))
         table_4 = Object(self.parent, self.game, self.base_style, [570, 145], (150, 100),
-                         'sprites/vr_room/vr_table_4.png')
+                         'sprites/vr_room/vr_table_4.png', size_rect=(0, 0))
 
         screen_1 = Object(self.parent, self.game, self.base_style, [75, 75], (100, 50),
                           'sprites/comp/TV_for_PS.png')
@@ -483,16 +488,31 @@ class VR_room:
 
         self.texture_floor = pygame.image.load('sprites/floor.png')
 
+        self.init_buttons()
+
     def enter_rooms(self):
         self.game.character.respawn([self.game.character.character["coords"][2], self.parent.display_h // 2])
         self.game.floor.blit(self.texture_floor, (0, 0))
+        self.game.data_layers = [0] * len(self.buttons)
+        self.game.old_data_layers = [0] * len(self.buttons)
 
-    def delete_all(self):
+    def init_buttons(self):
+        button_screen_1 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["screen_1"],
+                                  layer=self.parent.display,
+                                  func=lambda: print("ГДЕ 3D ИГРА, АНДРЕЙ?"), coords=TYPE_BUTTONS["tv_vr_cord"],
+                                  size=TYPE_BUTTONS["tv_vr_size"],
+                                  colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_screen_1)
+
+    def delete_buttons(self):
         for j in range(len(self.buttons) - 1, -1, -1):
             del self.buttons[j]
 
+    def delete_all(self):
+        self.delete_buttons()
+
     def draw(self):
-        self.game.render_objects(self.list_objects, dop_objects=self.list_dop_objects)
+        self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
         if self.game.character.character["coords"][0] == 0 and 200 < self.game.character.character["coords"][1] < 500:
             self.game.character.respawn([self.parent.display_w - self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")
