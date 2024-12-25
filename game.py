@@ -1,5 +1,7 @@
 import pygame
 
+import time
+
 from rooms import Reception, Computer_room, PS_room, VR_room, Object
 from circle import curcle
 from gost import game_from_ps
@@ -169,12 +171,9 @@ class Game:
         self.parent = parent
 
         self.donats_many = 10
-        self.character_energy = 2 # 30
+        self.character_energy = 3 # 30
         self.labels = []
         self.set_labels()
-        self.layer_message = pygame.Surface((1000, 800), pygame.SRCALPHA, 32)
-        self.layer_message = self.layer_message.convert_alpha()
-        self.flag_message_energy = 0
 
         self.floor = pygame.Surface((1000, 800))
         self.type_room = "reception"
@@ -251,6 +250,8 @@ class Game:
             self.donats_many += update_manu_for_mini_game
             self.character_energy -= 3
             self.flag_mini_games = False
+        else:
+            self.set_message(f"Не хватает денег, нужно {3+1} энергии ")
         self.set_labels()
 
     def room_change(self, type_room):
@@ -265,21 +266,9 @@ class Game:
             self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
             self.room_now.enter_rooms()
         self.parent.display.blit(self.floor, (0, 0))
-        # self.parent.display.fill(self.base_style["colors"]["black"])
         self.room_now.draw()
-        # self.parent.display.blit(self.layer_message, (0, 0))
         # if self.flag_message_energy == 1: self.set_message()
         for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
-        # -------------------------------------------------------------------------------
-        # if self.character.room == 'main_room':
-        #     self.parent.display.fill((255, 255, 255))
-        # if self.character.room == 'vr_room':
-        #     self.parent.display.fill((255, 200, 100))
-        #
-        # if self.character.room == 'ps_room':
-        #     self.parent.display.fill((200, 255, 100))
-        # self.parent.display.blit(self.floor, (0, 0))
-        # self.character.udpate()
 
     def set_labels(self):
         self.labels = []
@@ -307,22 +296,27 @@ class Game:
         print(label_title["text"])
         self.labels.append(label_title)
 
-    def set_message(self):
-        # self.message_labels = []
+    def set_message(self, text):
         label = {
             "coords": (100, 100),
-            "text": "Закончилась энергия",
-            "font": pygame.font.Font(self.base_style["font_path"], 30)
+            "text": text,
+            "font": self.parent.style["dop_font"]
         }
         label["label"] = self.parent.label_text(coords=label["coords"],
-                                                      text=label["text"],
-                                                      font=label["font"],
-                                                      color=(255, 0, 0))
-        self.layer_message.blit(label["label"], label["coords"])
-        pygame.time.wait(1000)
-        self.layer_message.fill(pygame.Color(0, 0, 0, 0))
-        self.flag_message_energy = 0
-        # self.message_labels = []
+                                                text=label["text"],
+                                                font=label["font"],
+                                                color=(255, 0, 0), type_blit=False)
+        label["coords"], label["label"] = self.parent.align(label["coords"], label["label"],
+                                            inacurr=-20, type_blit=False, type_align="center")
+        bortic = 20
+        coords_rect = (label["coords"][0]-bortic,
+                       label["coords"][1]-bortic,
+                       label["label"].get_width()+bortic,
+                       label["label"].get_height()+bortic)
+        pygame.draw.rect(self.parent.display, (0, 0, 0), coords_rect)
+        self.parent.display.blit(label["label"], label["coords"])
+        pygame.display.flip()
+        pygame.time.wait(1500)
 
     def render_objects(self, objects, buttons=None, dop_objects=None, draw_rects=False):
         if dop_objects is not None: all_objects = objects + dop_objects
@@ -448,7 +442,6 @@ class Game:
         # print(for_data[2])
         if for_data[0] > for_data[2]:
             for_data[0] = 0
-        for_data[0] = for_data[0]
         return for_data
 
     def energy_character_up(self, price, val):
@@ -456,9 +449,7 @@ class Game:
             self.donats_many -= price
             self.character_energy += val
         else:
-            self.flag_message_energy = 1
-            print("Не хватает денег")
-            # self.set_message()
+            self.set_message(f"Не хватает денег, нужно {price} монет ")
         self.set_labels()
 
     def check_event(self, event):

@@ -35,7 +35,8 @@ class Main:
                 "dark": (10, 10, 10),
                 "black": (0, 0, 0)
             },
-            "font_path": "fonts111/pixel/DotGothic16-Regular.ttf"
+            "font_path": "fonts111/pixel/DotGothic16-Regular.ttf",
+            "dop_font": pygame.font.SysFont('Arial', 40, bold=True)
             # "fonts111/pixel/DotGothic16-Regular.ttf" - для латиницы слишком растянутый шрифт
             # fonts111/pixel/EpilepsySans.ttf - слишком сжатый текст, особенно при большом масштабе
         }
@@ -96,11 +97,11 @@ class Main:
             onClick=func
         )
 
-    def label_text(self, coords, text, font, color=False):
+    def label_text(self, coords, text, font, color=False, type_blit=True):
         color = self.style["colors"]["light"] if not color else color
         f = font
         res_label = f.render(text, True, color)
-        self.display.blit(res_label, coords)
+        if type_blit == True: self.display.blit(res_label, coords)
         # pygame.display.update()
         return res_label
 
@@ -118,7 +119,7 @@ class Main:
         borderThickness=bd)
         return textbox
 
-    def align(self, obj, coords, inacurr=(0, 0), type_blit=False, type_align="center"):
+    def align(self, coords, obj, inacurr=(0, 0), type_blit=False, type_align="center"):
         if type(coords) == tuple: coords = list(coords)
         inacurr_w, inacurr_h = 0, 0
         if type(inacurr) == int: inacurr_w = inacurr
@@ -126,23 +127,21 @@ class Main:
         if type(inacurr) == list:
             if len(inacurr) == 1: inacurr_w = inacurr[0]
             elif len(inacurr) == 2: inacurr_w, inacurr_h = inacurr
-        print(type(obj))
+        # print(type(obj))
+        # if type(obj) == pygame.surface.Surface:
         if type_align == "horizontal":
-            if type(obj) == pygame.surface.Surface:
-                coords[0] = (self.display.get_width() - obj.get_width()) // 2 + inacurr_w
+            coords[0] = (self.display.get_width() - obj.get_width()) // 2 + inacurr_w
         elif type_align == "vertical":
-            if type(obj) == pygame.surface.Surface:
-                coords[1] = (self.display.get_height() - obj.get_height()) // 2 + inacurr_h
+            coords[1] = (self.display.get_height() - obj.get_height()) // 2 + inacurr_h
         elif type_align == "center":
-            if type(obj) == pygame.surface.Surface:
-                coords[0] = (self.display.get_width() - obj.get_width()) // 2 + inacurr_w
-                coords[1] = (self.display.get_height() - obj.get_height()) // 2 + inacurr_h
+            coords[0] = (self.display.get_width() - obj.get_width()) // 2 + inacurr_w
+            coords[1] = (self.display.get_height() - obj.get_height()) // 2 + inacurr_h
         else:
             raise TypeError("Align type must be 'horizontal' or 'vertical' or 'center'")
         if type_blit == True:
             if type(obj) == pygame.surface.Surface:
                 self.display.blit(obj, coords)
-        return obj, coords
+        return coords, obj
 
     def format_commands(self, commands):
         res_commands = {}

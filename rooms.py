@@ -208,8 +208,7 @@ class Reception:
 
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
-        # for obj in self.objects:
-        #     pygame.draw.rect(self.parent.display, (255, 255, 255), obj.data["rect"])
+        print(self.game.character.character["coords"][0], self.game.character.character["coords"][1])
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             # self.game.character.respawn([450, 300])
             self.game.room_change("vr_room")
@@ -218,6 +217,10 @@ class Reception:
             self.game.room_change("ps_room")
         if self.game.character.character["coords"][1] == 0 and 200 < self.game.character.character["coords"][0] < 500:
             # self.game.character.respawn([None, 150])
+            self.game.room_change("comp_room")
+        if self.parent.display_h-self.game.character.character["coords"][3] <= self.game.character.character["coords"][1] <= self.parent.display_h and 200 < self.game.character.character["coords"][0] < 500:
+            # self.game.character.respawn([None, 150])
+            print("INTO")
             self.game.room_change("comp_room")
 
 
