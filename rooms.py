@@ -256,29 +256,39 @@ class Computer_room:
         chair_4 = Object(self.parent, self.game, self.base_style, [520, 400],
                          TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', size_rect=(0, -100))
 
-        computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
-                                     TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
-                          TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png')
-        computer_4 = Object(self.parent, self.game, self.base_style, [30, 250], # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        computer_5 = Object(self.parent, self.game, self.base_style, [250, 250], # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        computer_6 = Object(self.parent, self.game, self.base_style, [480, 250],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        computer_7 = Object(self.parent, self.game, self.base_style, [30, 400],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        computer_8 = Object(self.parent, self.game, self.base_style, [250, 400],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-        computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
-                            TYPE_SPRITES["comp_size"], 'sprites/comp/comp_1.png', size_rect=(0, -100))
-
         sofa_1 = Object(self.parent, self.game, self.base_style, [23, 700],
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))
         sofa_2 = Object(self.parent, self.game, self.base_style, [211, 700],
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))
+
+        self.computer_sprites = ['sprites/comp/gaming_comp_1.png', 'sprites/comp/gaming_comp_2.png',
+                                 'sprites/comp/gaming_comp_3.png', 'sprites/comp/gaming_comp_4.png',
+                                 'sprites/comp/gaming_comp_5.png', 'sprites/comp/gaming_comp_6.png',
+                                 'sprites/comp/gaming_comp_7.png', 'sprites/comp/gaming_comp_8.png',
+                                 'sprites/comp/gaming_comp_9.png']
+
+        computer_1 = Object(self.parent, self.game, self.base_style, [30, 110],
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+        computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+        computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4])
+        computer_4 = Object(self.parent, self.game, self.base_style, [30, 250],  # 300
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+        computer_5 = Object(self.parent, self.game, self.base_style, [250, 250],  # 300
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+        computer_6 = Object(self.parent, self.game, self.base_style, [480, 250],  # 300
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+        computer_7 = Object(self.parent, self.game, self.base_style, [30, 400],  # 300
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+        computer_8 = Object(self.parent, self.game, self.base_style, [250, 400],  # 300
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+        computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
+                            TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
+
+        self.sprite_computer_for_1 = [1, 0.2, 8]
+        self.sprite_computer_for_2 = [3, 0.1, 8]
+        self.sprite_computer_for_3 = [6, 0.1, 8]
 
         walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
                                      color_right=["black"],
@@ -290,7 +300,9 @@ class Computer_room:
         # ------------------
         self.objects = {"title_room": title_room,
                         'chair_2': chair_2, 'chair_1': chair_1, 'chair_3': chair_3, 'chair_4': chair_4,
-                        "computer_1": computer_1, "computer_2": computer_2, "computer_3": computer_3, "computer_4": computer_4, 'computer_5': computer_5, 'computer_6': computer_6, 'computer_7': computer_7, 'computer_8': computer_8, 'computer_9': computer_9,
+                        "computer_1": computer_1, "computer_2": computer_2, "computer_3": computer_3,
+                        "computer_4": computer_4, 'computer_5': computer_5, 'computer_6': computer_6,
+                        'computer_7': computer_7, 'computer_8': computer_8, 'computer_9': computer_9,
                         "sofa_1": sofa_1, "sofa_2": sofa_2,
                         "avtomvat_1": avtomat_1, "avtomvat_2": avtomat_2,
                         'clock': clock}
@@ -380,11 +392,20 @@ class Computer_room:
         self.delete_buttons()
 
     def draw(self):
+        self.animate_computer_sprites()
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects, draw_rects=False)
         if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
             self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])
             self.game.room_change("reception")
 
+    def animate_computer_sprites(self):
+        self.sprite_computer_for_1 = self.game.animate_sprite(self.sprite_computer_for_1, reverse=True)
+        #self.sprite_computer_for_2 = self.game.animate_sprite(self.sprite_computer_for_2, reverse=True)
+        #self.sprite_computer_for_3 = self.game.animate_sprite(self.sprite_computer_for_3, reverse=True)
+
+        self.objects["computer_1"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_1[0])])
+        #self.objects["computer_4"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_2[0])])
+        #self.objects["computer_6"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_3[0])])
 
 
 class PS_room:
@@ -405,7 +426,7 @@ class PS_room:
         self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
-        self.sprite_cooler_for = [1, 0.1, 8]
+        self.sprite_cooler_for = [0, 0.1, 8]
         current_cooler = Object(self.parent, self.game, self.base_style, [140, 100], (40, 140), self.sprite_coolers[0],  size_rect=(0, 0))
 
         walls = self.game.draw_walls(color_left=["black"], color_up=["black"],

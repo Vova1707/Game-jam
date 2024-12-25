@@ -171,7 +171,7 @@ class Game:
         self.parent = parent
 
         self.donats_many = 10
-        self.character_energy = 3 # 30
+        self.character_energy = 30
         self.labels = []
         self.set_labels()
 
@@ -437,11 +437,15 @@ class Game:
             self.character.flag_walk = 1
             # print(self.character["flags"], self.character["cond"])
 
-    def animate_sprite(self, for_data):
+    def animate_sprite(self, for_data, reverse=False):
         for_data[0] += for_data[1]
         # print(for_data[2])
-        if for_data[0] > for_data[2]:
-            for_data[0] = 0
+        if for_data[0] > for_data[2] or for_data[0] < 0:
+            if reverse:
+                for_data[1] = -for_data[1]
+                for_data[0] += for_data[1]
+            else:
+                for_data[0] = 0
         return for_data
 
     def energy_character_up(self, price, val):
