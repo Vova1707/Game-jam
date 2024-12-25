@@ -171,7 +171,7 @@ class Game:
         self.base_style = base_style
         self.parent = parent
 
-        self.donats_many = 10
+        self.donats_many = 80
         self.character_energy = 30
         self.labels = []
         self.set_labels()
@@ -300,7 +300,15 @@ class Game:
         print(label_title["text"])
         self.labels.append(label_title)
 
-    def set_message(self, text):
+    def set_discount(self, discount, money, delay):
+        if self.donats_many - money >= 0:
+            self.donats_many -= money
+            self.set_message(f"вы получили скидку {discount}% в клубе", delay)
+        else:
+            self.set_message(f"Не хватает денег, для скидки: {discount}% нужно монет: {money} ", delay)
+        self.set_labels()
+
+    def set_message(self, text, delay=1500):
         label = {
             "coords": (100, 100),
             "text": text,
@@ -320,7 +328,51 @@ class Game:
         pygame.draw.rect(self.parent.display, (0, 0, 0), coords_rect)
         self.parent.display.blit(label["label"], label["coords"])
         pygame.display.flip()
-        pygame.time.wait(1500)
+        pygame.time.wait(delay)
+
+    def set_message_exit(self, text):
+        label = {
+            "coords": (100, 100),
+            "text": text,
+            "font": self.parent.style["dop_font"]
+        }
+        label["label"] = self.parent.label_text(coords=label["coords"],
+                                                text=label["text"],
+                                                font=label["font"],
+                                                color=(255, 0, 0), type_blit=False)
+        label["coords"], label["label"] = self.parent.align(label["coords"], label["label"],
+                                            inacurr=-20, type_blit=False, type_align="center")
+        type_exit = None
+        def set_type_exit(val): type_exit = val
+        w, h = 80, 50
+        button_OK = {
+            "font": pygame.font.Font(self.base_style["font_path"], 30),
+            "coords": (self.parent.display_w - w, 0, w, h),
+            "text": "...",
+            "color": {
+                "inactive": self.base_style["colors"]["base2"],
+                "hover": self.base_style["colors"]["base1"],
+                "pressed": self.base_style["colors"]["light"],
+                "text": self.base_style["colors"]["light"]
+            },
+            "func": lambda: set_type_exit("ok")
+        }
+        button_OK["button"] = self.parent.button(coords=button_OK["coords"],
+                                                     text=button_OK["text"],
+                                                     color=button_OK["color"],
+                                                     font=button_OK["font"],
+                                                     func=button_OK["func"])
+        bortic = 20
+        coords_rect = (label["coords"][0]-bortic,
+                       label["coords"][1]-bortic,
+                       label["label"].get_width()+bortic,
+                       label["label"].get_height()+bortic)
+        pygame.draw.rect(self.parent.display, (0, 0, 0), coords_rect)
+        while True:
+            self.parent.display.blit(label["label"], label["coords"])
+            pygame.display.flip() # pygame.display.flip()
+            self.parent.update_widgets()
+        del button_OK
 
     def render_objects(self, objects, buttons=None, dop_objects=None, draw_rects=False):
         if dop_objects is not None: all_objects = objects + dop_objects
@@ -457,7 +509,7 @@ class Game:
             self.donats_many -= price
             self.character_energy += val
         else:
-            self.set_message(f"Не хватает денег, нужно {price} монет ")
+            self.set_message(f"Не хватает денег, нужно монет: {price} ")
         self.set_labels()
 
     def check_event(self, event):

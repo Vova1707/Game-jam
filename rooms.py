@@ -8,6 +8,7 @@ TYPE_BUTTONS = {
     "avtomat_green_cord": (15, 33), "avtomat_green_size": (93, 162),
     "tv_ps_cord": (-5, -5), "tv_ps_size": (310, 135),
     "tv_vr_cord": (-5, -5), "tv_vr_size": (110, 60),
+    "reception_table_cord": (2, -5), "reception_table_size": (190, 150),
     "color": {
             "inactive": (0, 0, 0, 0), # (0, 0, 0)
             "hover": (200, 208, 200, 200), # (0, 32, 214)
@@ -197,6 +198,13 @@ class Reception:
                                               size=TYPE_BUTTONS["avtomat_size"],
                                               colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_avtomat_blue)
+        button_reception_table = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["reception_table"],
+                                             layer=self.parent.display,
+                                             func=lambda: self.game.set_discount(discount=20, money=60, delay=2500),
+                                             coords=TYPE_BUTTONS["reception_table_cord"],
+                                             size=TYPE_BUTTONS["reception_table_size"],
+                                             colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_reception_table)
 
 
     def delete_buttons(self):
@@ -208,7 +216,6 @@ class Reception:
 
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
-        print(self.game.character.character["coords"][0], self.game.character.character["coords"][1])
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             # self.game.character.respawn([450, 300])
             self.game.room_change("vr_room")
@@ -220,8 +227,9 @@ class Reception:
             self.game.room_change("comp_room")
         if self.parent.display_h-self.game.character.character["coords"][3] <= self.game.character.character["coords"][1] <= self.parent.display_h and 200 < self.game.character.character["coords"][0] < 500:
             # self.game.character.respawn([None, 150])
-            print("INTO")
-            self.game.room_change("comp_room")
+            print("ВЫХОД")
+            self.game.set_message("Выход из игры", delay=700)
+            self.parent.display_change("menu")
 
 
 
@@ -247,7 +255,7 @@ class Computer_room:
         chair_1 = Object(self.parent, self.game, self.base_style, [300, 110],
                          TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', size_rect=(0, -100))
 
-        chair_2 = Object(self.parent, self.game, self.base_style, [530, 120],
+        chair_2 = Object(self.parent, self.game, self.base_style, [530, 113],
                          TYPE_SPRITES["chair"], 'sprites/_other/chair_2.png', size_rect=(0, -100))
 
         chair_3 = Object(self.parent, self.game, self.base_style, [300, 250],
@@ -271,7 +279,7 @@ class Computer_room:
                             TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
         computer_2 = Object(self.parent, self.game, self.base_style, [250, 110],
                             TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
-        computer_3 = Object(self.parent, self.game, self.base_style, [480, 110],
+        computer_3 = Object(self.parent, self.game, self.base_style, [480, 105],
                             TYPE_SPRITES["comp_size"], self.computer_sprites[4])
         computer_4 = Object(self.parent, self.game, self.base_style, [30, 250],  # 300
                             TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
@@ -286,7 +294,8 @@ class Computer_room:
         computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
                             TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
 
-        self.sprite_computer_for_1 = [1, 0.2, 8]
+        self.sprite_computer_for_1 = [1, 0.05, 8]
+        self.sprite_computer_for_OLD = self.sprite_computer_for_1.copy()
         self.sprite_computer_for_2 = [3, 0.1, 8]
         self.sprite_computer_for_3 = [6, 0.1, 8]
 
@@ -412,9 +421,14 @@ class Computer_room:
         #self.sprite_computer_for_2 = self.game.animate_sprite(self.sprite_computer_for_2, reverse=True)
         #self.sprite_computer_for_3 = self.game.animate_sprite(self.sprite_computer_for_3, reverse=True)
 
-        self.objects["computer_1"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_1[0])])
+        # print(int(self.sprite_computer_for_OLD[0]), int(self.sprite_computer_for_1[0]))
+        if  int(self.sprite_computer_for_OLD[0]) != int(self.sprite_computer_for_1[0]):
+            print("into")
+            self.objects["computer_1"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_1[0])])
         #self.objects["computer_4"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_2[0])])
         #self.objects["computer_6"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_3[0])])
+
+        self.sprite_computer_for_OLD = self.sprite_computer_for_1.copy()
 
 
 class PS_room:
