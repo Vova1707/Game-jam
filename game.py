@@ -345,23 +345,23 @@ class Game:
         type_exit = None
         def set_type_exit(val): type_exit = val
         w, h = 80, 50
-        button_OK = {
+        button_YES = {
             "font": pygame.font.Font(self.base_style["font_path"], 30),
             "coords": (self.parent.display_w - w, 0, w, h),
-            "text": "...",
+            "text": "Да",
             "color": {
                 "inactive": self.base_style["colors"]["base2"],
                 "hover": self.base_style["colors"]["base1"],
                 "pressed": self.base_style["colors"]["light"],
                 "text": self.base_style["colors"]["light"]
             },
-            "func": lambda: set_type_exit("ok")
+            "func": lambda: set_type_exit("yes")
         }
-        button_OK["button"] = self.parent.button(coords=button_OK["coords"],
-                                                     text=button_OK["text"],
-                                                     color=button_OK["color"],
-                                                     font=button_OK["font"],
-                                                     func=button_OK["func"])
+        button_YES["button"] = self.parent.button(coords=button_YES["coords"],
+                                                     text=button_YES["text"],
+                                                     color=button_YES["color"],
+                                                     font=button_YES["font"],
+                                                     func=button_YES["func"])
         bortic = 20
         coords_rect = (label["coords"][0]-bortic,
                        label["coords"][1]-bortic,
@@ -372,7 +372,10 @@ class Game:
             self.parent.display.blit(label["label"], label["coords"])
             pygame.display.flip() # pygame.display.flip()
             self.parent.update_widgets()
-        del button_OK
+            if type_exit != None: break
+        if type_exit == "yes": self.parent.display_change('menu')
+        elif type_exit == "no": self.parent.display_change('menu')
+        del button_YES
 
     def render_objects(self, objects, buttons=None, dop_objects=None, draw_rects=False):
         if dop_objects is not None: all_objects = objects + dop_objects

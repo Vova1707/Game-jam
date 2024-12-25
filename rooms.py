@@ -228,7 +228,7 @@ class Reception:
         if self.parent.display_h-self.game.character.character["coords"][3] <= self.game.character.character["coords"][1] <= self.parent.display_h and 200 < self.game.character.character["coords"][0] < 500:
             # self.game.character.respawn([None, 150])
             print("ВЫХОД")
-            self.game.set_message("Выход из игры", delay=700)
+            self.game.set_message("Выход из игры", delay=700) # set_message_exit("Выйти из игры?")
             self.parent.display_change("menu")
 
 
