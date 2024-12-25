@@ -85,7 +85,7 @@ def curcle(display):
 
 	button = buttonsss(
 		display,  # Surface to place button on
-		100,
+		800,
 		0,  # Y-coordinate of top left corner
 		100,  # Width
 		50,
