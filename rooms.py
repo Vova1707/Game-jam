@@ -264,6 +264,9 @@ class Computer_room:
         chair_4 = Object(self.parent, self.game, self.base_style, [520, 400],
                          TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', size_rect=(0, -100))
 
+        chair_5 = Object(self.parent, self.game, self.base_style, [100, 400],
+                         TYPE_SPRITES["chair"], 'sprites/_other/chair_1.png', size_rect=(0, -100))
+
         sofa_1 = Object(self.parent, self.game, self.base_style, [23, 700],
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/black_sofa.png', size_rect=(0, -40))
         sofa_2 = Object(self.parent, self.game, self.base_style, [211, 700],
@@ -308,7 +311,7 @@ class Computer_room:
         self.buttons = []
         # ------------------
         self.objects = {"title_room": title_room,
-                        'chair_2': chair_2, 'chair_1': chair_1, 'chair_3': chair_3, 'chair_4': chair_4,
+                        'chair_2': chair_2, 'chair_1': chair_1, 'chair_3': chair_3, 'chair_4': chair_4, 'chair_5': chair_5,
                         "computer_1": computer_1, "computer_2": computer_2, "computer_3": computer_3,
                         "computer_4": computer_4, 'computer_5': computer_5, 'computer_6': computer_6,
                         'computer_7': computer_7, 'computer_8': computer_8, 'computer_9': computer_9,
