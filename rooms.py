@@ -421,13 +421,13 @@ class PS_room:
         ps_table = Object(self.parent, self.game, self.base_style, [400, 120], (180, 110), 'sprites/play station/ps_table.png')
         speaker_left = Object(self.parent, self.game, self.base_style, [280, 100],
                         (48, 120), 'sprites/loudspeaker/loudspeaker_1.png', size_rect=(0, 0))
-        speaker_right = Object(self.parent, self.game, self.base_style, [660, 100],
+        speaker_right = Object(self.parent, self.game, self.base_style, [650, 100],
                               (48, 120), 'sprites/loudspeaker/loudspeaker_1.png',  size_rect=(0, 0))
         self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
         self.sprite_cooler_for = [0, 0.1, 8]
-        current_cooler = Object(self.parent, self.game, self.base_style, [140, 100], (40, 140), self.sprite_coolers[0],  size_rect=(0, 0))
+        current_cooler = Object(self.parent, self.game, self.base_style, [140, 110], (40, 140), self.sprite_coolers[0],  size_rect=(0, 0))
 
         walls = self.game.draw_walls(color_left=["black"], color_up=["black"],
                                      color_right=["black", "black"],
@@ -533,6 +533,9 @@ class VR_room:
         title_room = Object(self.parent, self.game, self.base_style, [717, 32], (260, 160),
                               'sprites/titles/vr_room_logo.png')
 
+        play_avtomat = Object(self.parent, self.game, self.base_style, [875, 500], (90, 160),
+                        'sprites/_other/play_game.png', size_rect=(-30, -150))
+
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
@@ -542,7 +545,7 @@ class VR_room:
                         #"avtomat": avtomat,
         "table_1": table_1, "table_2": table_2, "table_3": table_3, "table_4": table_4,
         "screen_1": screen_1, "screen_2": screen_2, "screen_3": screen_3, "screen_4": screen_4,
-                        'sofa_0': sofa_0}
+                        'sofa_0': sofa_0, 'play_avtomat': play_avtomat}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())

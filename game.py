@@ -10,6 +10,7 @@ from dino import dino_game
 from dash_hex import dash_hex
 from D_Game import f as d_games
 from flappy_bird import flappy_bird
+from dash_2 import hyper_dash
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -207,7 +208,8 @@ class Game:
                            'vr_room': VR_room}
 
         self.mini_games = {'comp_room':
-                          {'circle': lambda: curcle(self.parent.display),
+                          {'circle': lambda: hyper_dash(self.parent.display),
+                           #lambda: curcle(self.parent.display),
                            'dash_hex': lambda: dash_hex(self.parent.display),
                            'dino': lambda: flappy_bird(self.parent.display)#lambda: dino_game(self.parent.display),
                            },
