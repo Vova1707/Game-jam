@@ -61,7 +61,7 @@ class Refer:
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                       text=label_title["text"],
                                                       font=label_title["font"])
-        label_title["label"], label_title["coords"] = self.parent.align(label_title["label"], label_title["coords"],
+        label_title["coords"], label_title["label"] = self.parent.align(label_title["coords"], label_title["label"],
                                                                         inacurr=-20, type_blit=False,
                                                                         type_align="horizontal")
         self.labels.append(label_title)

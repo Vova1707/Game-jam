@@ -1,5 +1,7 @@
 import pygame
 
+import time
+
 from rooms import Reception, Computer_room, PS_room, VR_room, Object
 from circle import curcle
 from gost import game_from_ps
@@ -7,6 +9,8 @@ from gost import game_from_ps
 from dino import dino_game
 from dash_hex import dash_hex
 from D_Game import f as d_games
+from flappy_bird import flappy_bird
+from dash_2 import hyper_dash
 
 class Character:
     def __init__(self, parent, game, base_style):
@@ -127,7 +131,7 @@ class Character:
             "speed_TO_freq": {"idle": 20, "sneak": 8, "walk": 7, "run": 4},
             # "key_press_TO_": {[0, 0, 0, 0]: "", "key_up": 0, "key_left": 0, "key_right": 0},
             "val_speed": 4,
-            "coords": [self.parent.display_w // 2, self.parent.display_h // 2, 100, 140], # 50, 70
+            "coords": [self.parent.display_w // 2, self.parent.display_h // 2+100, 100, 140], # 50, 70
             "coords_rect": [7, 0, 82, 20]
         }
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
@@ -167,7 +171,7 @@ class Game:
         self.base_style = base_style
         self.parent = parent
 
-        self.donats_many = 10
+        self.donats_many = 80
         self.character_energy = 30
         self.labels = []
         self.set_labels()
@@ -204,14 +208,16 @@ class Game:
                            'vr_room': VR_room}
 
         self.mini_games = {'comp_room':
-                          {'circle': lambda: curcle(self.parent.display),
+                          {'circle': lambda: hyper_dash(self.parent.display),
+                           'hyper_dash': lambda: curcle(self.parent.display),
                            'dash_hex': lambda: dash_hex(self.parent.display),
                            'dino': lambda: dino_game(self.parent.display),
                            },
                       'ps_room':
                           {'ps': lambda: game_from_ps(self.parent.display)},
                       'vr_room':
-                          {'d_game': lambda: d_games(self.parent.display, pygame.Surface((900, 600)))},
+                          {'d_game': lambda: d_games(self.parent.display, pygame.Surface((900, 600))),
+                           'flappy_bird': lambda: flappy_bird(self.parent.display)},
                       }
         self.flag_mini_games = False
 
@@ -241,12 +247,15 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def change_game(self, name_game):
-        if self.character_energy-3 > 0 and not self.flag_mini_games:
-            self.flag_mini_games = True
-            update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
-            self.donats_many += update_manu_for_mini_game
-            self.character_energy -= 3
-            self.flag_mini_games = False
+        if not self.flag_mini_games:
+            if self.character_energy - 3 > 0:
+                self.flag_mini_games = True
+                update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
+                self.donats_many += update_manu_for_mini_game
+                self.character_energy -= 3
+                self.flag_mini_games = False
+            else:
+                self.set_message(f"Не хватает денег, нужно {3 + 1} энергии ")
         self.set_labels()
 
     def room_change(self, type_room):
@@ -261,19 +270,9 @@ class Game:
             self.room_now = self.list_rooms[self.type_room](self.parent, self, self.base_style)
             self.room_now.enter_rooms()
         self.parent.display.blit(self.floor, (0, 0))
-        # self.parent.display.fill(self.base_style["colors"]["black"])
         self.room_now.draw()
+        # if self.flag_message_energy == 1: self.set_message()
         for i in self.labels: self.parent.display.blit(i["label"], i["coords"])
-        # -------------------------------------------------------------------------------
-        # if self.character.room == 'main_room':
-        #     self.parent.display.fill((255, 255, 255))
-        # if self.character.room == 'vr_room':
-        #     self.parent.display.fill((255, 200, 100))
-        #
-        # if self.character.room == 'ps_room':
-        #     self.parent.display.fill((200, 255, 100))
-        # self.parent.display.blit(self.floor, (0, 0))
-        # self.character.udpate()
 
     def set_labels(self):
         self.labels = []
@@ -300,6 +299,83 @@ class Game:
                                                       color=(255, 0, 0))
         print(label_title["text"])
         self.labels.append(label_title)
+
+    def set_discount(self, discount, money, delay):
+        if self.donats_many - money >= 0:
+            self.donats_many -= money
+            self.set_message(f"вы получили скидку {discount}% в клубе", delay)
+        else:
+            self.set_message(f"Не хватает денег, для скидки: {discount}% нужно монет: {money} ", delay)
+        self.set_labels()
+
+    def set_message(self, text, delay=1500):
+        label = {
+            "coords": (100, 100),
+            "text": text,
+            "font": self.parent.style["dop_font"]
+        }
+        label["label"] = self.parent.label_text(coords=label["coords"],
+                                                text=label["text"],
+                                                font=label["font"],
+                                                color=(255, 0, 0), type_blit=False)
+        label["coords"], label["label"] = self.parent.align(label["coords"], label["label"],
+                                            inacurr=-20, type_blit=False, type_align="center")
+        bortic = 20
+        coords_rect = (label["coords"][0]-bortic,
+                       label["coords"][1]-bortic,
+                       label["label"].get_width()+bortic,
+                       label["label"].get_height()+bortic)
+        pygame.draw.rect(self.parent.display, (0, 0, 0), coords_rect)
+        self.parent.display.blit(label["label"], label["coords"])
+        pygame.display.flip()
+        pygame.time.wait(delay)
+
+    def set_message_exit(self, text):
+        label = {
+            "coords": (100, 100),
+            "text": text,
+            "font": self.parent.style["dop_font"]
+        }
+        label["label"] = self.parent.label_text(coords=label["coords"],
+                                                text=label["text"],
+                                                font=label["font"],
+                                                color=(255, 0, 0), type_blit=False)
+        label["coords"], label["label"] = self.parent.align(label["coords"], label["label"],
+                                            inacurr=-20, type_blit=False, type_align="center")
+        type_exit = None
+        def set_type_exit(val): type_exit = val
+        w, h = 80, 50
+        button_YES = {
+            "font": pygame.font.Font(self.base_style["font_path"], 30),
+            "coords": (self.parent.display_w - w, 0, w, h),
+            "text": "Да",
+            "color": {
+                "inactive": self.base_style["colors"]["base2"],
+                "hover": self.base_style["colors"]["base1"],
+                "pressed": self.base_style["colors"]["light"],
+                "text": self.base_style["colors"]["light"]
+            },
+            "func": lambda: set_type_exit("yes")
+        }
+        button_YES["button"] = self.parent.button(coords=button_YES["coords"],
+                                                     text=button_YES["text"],
+                                                     color=button_YES["color"],
+                                                     font=button_YES["font"],
+                                                     func=button_YES["func"])
+        bortic = 20
+        coords_rect = (label["coords"][0]-bortic,
+                       label["coords"][1]-bortic,
+                       label["label"].get_width()+bortic,
+                       label["label"].get_height()+bortic)
+        pygame.draw.rect(self.parent.display, (0, 0, 0), coords_rect)
+        while True:
+            self.parent.display.blit(label["label"], label["coords"])
+            pygame.display.flip() # pygame.display.flip()
+            self.parent.update_widgets()
+            if type_exit != None: break
+        if type_exit == "yes": self.parent.display_change('menu')
+        elif type_exit == "no": self.parent.display_change('menu')
+        del button_YES
 
     def render_objects(self, objects, buttons=None, dop_objects=None, draw_rects=False):
         if dop_objects is not None: all_objects = objects + dop_objects
@@ -420,12 +496,15 @@ class Game:
             self.character.flag_walk = 1
             # print(self.character["flags"], self.character["cond"])
 
-    def animate_sprite(self, for_data):
+    def animate_sprite(self, for_data, reverse=False):
         for_data[0] += for_data[1]
         # print(for_data[2])
-        if for_data[0] > for_data[2]:
-            for_data[0] = 0
-        for_data[0] = for_data[0]
+        if for_data[0] > for_data[2] or for_data[0] < 0:
+            if reverse:
+                for_data[1] = -for_data[1]
+                for_data[0] += for_data[1]
+            else:
+                for_data[0] = 0
         return for_data
 
     def energy_character_up(self, price, val):
@@ -433,7 +512,7 @@ class Game:
             self.donats_many -= price
             self.character_energy += val
         else:
-            print("Не хватает денег")
+            self.set_message(f"Не хватает денег, нужно монет: {price} ")
         self.set_labels()
 
     def check_event(self, event):
