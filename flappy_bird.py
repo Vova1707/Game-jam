@@ -207,7 +207,7 @@ def flappy_bird(display):
 
 	button = buttonsss(
 		display,  # Surface to place button on
-		600,
+		488,
 		0,  # Y-coordinate of top left corner
 		100,  # Width
 		50,

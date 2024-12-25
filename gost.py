@@ -731,7 +731,7 @@ class Ghost(pygame.sprite.Sprite):
 
 
 SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 800
+SCREEN_HEIGHT = 288
 MARGIN_LEFT = 300
 WIDTH = SCREEN_WIDTH + MARGIN_LEFT
 HEIGHT = SCREEN_HEIGHT
@@ -796,7 +796,7 @@ RED = (255, 25, 25)
 
 
 def game_from_ps(display):
-	WIDTH, HEIGHT = 900, 800
+	WIDTH, HEIGHT = 900, 400
 	win = pygame.Surface((WIDTH, HEIGHT))
 	TILE_SIZE = 16
 	pygame.mixer.init()
@@ -929,9 +929,9 @@ def game_from_ps(display):
 
 	button = buttonsss(
 		display,  # Surface to place button on
-		900,
-		100,  # Y-coordinate of top left corner
-		100,  # Width
+		0,
+		400,  # Y-coordinate of top left corner
+		900,  # Width
 		50,
 		colour=(255, 0, 0),
 		text='X',  # Heigh

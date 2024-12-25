@@ -352,6 +352,15 @@ class Computer_room:
                                     size=TYPE_BUTTONS["comp_size"],
                                     colors=TYPE_BUTTONS["color"])
         self.buttons.append(button_computer_1)
+
+        button_computer_8 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["computer_8"],
+                                          layer=self.parent.display,
+                                          # self.game.layer_buttons_1
+                                          func=lambda: self.game.change_game('hyper_dash'),
+                                          coords=TYPE_BUTTONS["comp_cord"],
+                                          size=TYPE_BUTTONS["comp_size"],
+                                          colors=TYPE_BUTTONS["color"])
+        self.buttons.append(button_computer_8)
         button_computer_4 = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects["computer_4"], layer=self.parent.display,
                                     # self.game.layer_buttons_1
                                     func=lambda: self.game.change_game('circle'), coords=TYPE_BUTTONS["comp_cord"],
@@ -572,7 +581,14 @@ class VR_room:
                                       func=lambda: self.game.change_game('d_game'), coords=TYPE_BUTTONS["tv_vr_cord"],
                                       size=TYPE_BUTTONS["tv_vr_size"],
                                       colors=TYPE_BUTTONS["color"])
+
+            button_tv = Hitbox_Button(parent=self.parent, game=self.game, object=self.objects['play_avtomat'],
+                                      layer=self.parent.display,
+                                      func=lambda: self.game.change_game('flappy_bird'), coords=(0, -5),
+                                      size=(95, 165),
+                                      colors=TYPE_BUTTONS["color"])
             self.buttons.append(button_screen)
+            self.buttons.append(button_tv)
 
     def delete_buttons(self):
         for j in range(len(self.buttons) - 1, -1, -1):

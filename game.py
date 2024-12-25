@@ -209,14 +209,15 @@ class Game:
 
         self.mini_games = {'comp_room':
                           {'circle': lambda: hyper_dash(self.parent.display),
-                           #lambda: curcle(self.parent.display),
+                           'hyper_dash': lambda: curcle(self.parent.display),
                            'dash_hex': lambda: dash_hex(self.parent.display),
-                           'dino': lambda: flappy_bird(self.parent.display)#lambda: dino_game(self.parent.display),
+                           'dino': lambda: dino_game(self.parent.display),
                            },
                       'ps_room':
                           {'ps': lambda: game_from_ps(self.parent.display)},
                       'vr_room':
-                          {'d_game': lambda: d_games(self.parent.display, pygame.Surface((900, 600)))},
+                          {'d_game': lambda: d_games(self.parent.display, pygame.Surface((900, 600))),
+                           'flappy_bird': lambda: flappy_bird(self.parent.display)},
                       }
         self.flag_mini_games = False
 
