@@ -286,7 +286,7 @@ class Computer_room:
         computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
                             TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
 
-        self.sprite_computer_for_1 = [1, 0.2, 8]
+        self.sprite_computer_for_1 = [1, 0.3, 8]
         self.sprite_computer_for_2 = [3, 0.1, 8]
         self.sprite_computer_for_3 = [6, 0.1, 8]
 
@@ -412,7 +412,7 @@ class Computer_room:
         #self.sprite_computer_for_2 = self.game.animate_sprite(self.sprite_computer_for_2, reverse=True)
         #self.sprite_computer_for_3 = self.game.animate_sprite(self.sprite_computer_for_3, reverse=True)
 
-        self.objects["computer_1"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_1[0])])
+        self.objects["computer_2"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_1[0])])
         #self.objects["computer_4"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_2[0])])
         #self.objects["computer_6"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_3[0])])
 
@@ -427,11 +427,23 @@ class PS_room:
         avtomat = Object(self.parent, self.game, self.base_style, [30, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"], 'sprites/avtomat/avtomat_1.png',  size_rect=(0, 0))
         ps_room_logo = Object(self.parent, self.game, self.base_style, [690, 30], (250, 150), 'sprites/titles/ps_room_logo.png')
         tv = Object(self.parent, self.game, self.base_style, [340, 50], (300, 125), 'sprites/comp/TV_for_PS.png')
-        ps_table = Object(self.parent, self.game, self.base_style, [400, 120], (180, 110), 'sprites/play station/ps_table.png')
+        ps_table = Object(self.parent, self.game, self.base_style, [400, 150], (180, 110), 'sprites/play station/ps_table.png')
         speaker_left = Object(self.parent, self.game, self.base_style, [280, 100],
                         (48, 120), 'sprites/loudspeaker/loudspeaker_1.png', size_rect=(0, 0))
         speaker_right = Object(self.parent, self.game, self.base_style, [650, 100],
                               (48, 120), 'sprites/loudspeaker/loudspeaker_1.png',  size_rect=(0, 0))
+        tables = Object(self.parent, self.game, self.base_style, [200, 600],
+                              (500, 120), 'sprites/_other/tables.png', size_rect=(0, -100))
+        pufik1 = Object(self.parent, self.game, self.base_style, [570, 320],
+                              (70, 70), 'sprites/_other/pufik.png')
+        pufik2 = Object(self.parent, self.game, self.base_style, [475, 335],
+                        (70, 70), 'sprites/_other/pufik.png')
+        pufik3 = Object(self.parent, self.game, self.base_style, [340, 335],
+                        (70, 70), 'sprites/_other/pufik.png')
+        pufik4 = Object(self.parent, self.game, self.base_style, [400, 285],
+                        (70, 70), 'sprites/_other/pufik.png')
+        pufik5 = Object(self.parent, self.game, self.base_style, [485, 255],
+                        (70, 70), 'sprites/_other/pufik.png')
         self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
@@ -448,7 +460,8 @@ class PS_room:
         # ------------------
         self.objects = {"avtomat": avtomat, "ps_room_logo": ps_room_logo, "tv": tv, "ps_table": ps_table,
                         "cooler": current_cooler,
-                        "speaker_left": speaker_left, "speaker_right": speaker_right}
+                        "speaker_left": speaker_left, "speaker_right": speaker_right, "tables": tables,
+                        "pufik1": pufik1, "pufik2": pufik2, "pufik3": pufik3, "pufik4": pufik4, "pufik5": pufik5}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
