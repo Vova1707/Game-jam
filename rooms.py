@@ -500,8 +500,8 @@ class VR_room:
         self.parent = parent
         self.game = game
 
-        avtomat = Object(self.parent, self.game, self.base_style, [300, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"],
-                         'sprites/avtomat/avtomat_1.png')
+        #avtomat = Object(self.parent, self.game, self.base_style, [300, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"],
+                         #'sprites/avtomat/avtomat_1.png')
 
         walls = self.game.draw_walls(color_left=["black", "black"], color_up=["black"],
                                      color_right=["black"],
@@ -525,6 +525,11 @@ class VR_room:
         screen_4 = Object(self.parent, self.game, self.base_style, [600, 75], (100, 50),
                           'sprites/comp/TV_for_PS.png')
 
+        # Еще объекты
+        sofa_0 = Object(self.parent, self.game, self.base_style, [750, 145], (200, 91),
+                        'sprites/_other/sofa.png', size_rect=(0, 0))
+
+
         title_room = Object(self.parent, self.game, self.base_style, [717, 32], (260, 160),
                               'sprites/titles/vr_room_logo.png')
 
@@ -536,7 +541,8 @@ class VR_room:
         self.objects = {"title_room": title_room,
                         #"avtomat": avtomat,
         "table_1": table_1, "table_2": table_2, "table_3": table_3, "table_4": table_4,
-        "screen_1": screen_1, "screen_2": screen_2, "screen_3": screen_3, "screen_4": screen_4}
+        "screen_1": screen_1, "screen_2": screen_2, "screen_3": screen_3, "screen_4": screen_4,
+                        'sofa_0': sofa_0}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())

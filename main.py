@@ -129,6 +129,7 @@ class Main:
             elif len(inacurr) == 2: inacurr_w, inacurr_h = inacurr
         # print(type(obj))
         # if type(obj) == pygame.surface.Surface:
+        print(obj)
         if type_align == "horizontal":
             coords[0] = (self.display.get_width() - obj.get_width()) // 2 + inacurr_w
         elif type_align == "vertical":
@@ -180,9 +181,16 @@ class Main:
                                     'refer': Refer}
         self.holst = self.list_active_surface[self.type_display](self, self.style)
         self.changes_holst = 0
+        mus_game = 'musik/dream_pix.mp3'
+        menu_musik = 'musik/menu_musik.mp3'
+        pygame.mixer.music.load(menu_musik)
+        pygame.mixer.music.play(-1)
         while self.running:
             self.events = pygame.event.get()
             if self.changes_holst:
+                if self.type_display == 'game':
+                    pygame.mixer.music.load(mus_game)
+                    pygame.mixer.music.play(-1)
                 self.holst.delete_all()
                 self.holst = self.list_active_surface[self.type_display](self, self.style)
                 self.changes_holst = 0
@@ -191,6 +199,7 @@ class Main:
                 if event.type == pygame.QUIT: self.running = False
                 if self.type_display == "game":
                     self.holst.check_event(event)
+
             if self.type_display == "refer":
                 self.holst.draw_donut()
             self.clock.tick(self.FPS)

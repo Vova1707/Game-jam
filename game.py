@@ -244,14 +244,15 @@ class Game:
         self.buttons.append(button_ToMenu)
 
     def change_game(self, name_game):
-        if self.character_energy-3 > 0 and not self.flag_mini_games:
-            self.flag_mini_games = True
-            update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
-            self.donats_many += update_manu_for_mini_game
-            self.character_energy -= 3
-            self.flag_mini_games = False
-        else:
-            self.set_message(f"Не хватает денег, нужно {3+1} энергии ")
+        if not self.flag_mini_games:
+            if self.character_energy - 3 > 0:
+                self.flag_mini_games = True
+                update_manu_for_mini_game = self.mini_games[self.type_room][name_game]()
+                self.donats_many += update_manu_for_mini_game
+                self.character_energy -= 3
+                self.flag_mini_games = False
+            else:
+                self.set_message(f"Не хватает денег, нужно {3 + 1} энергии ")
         self.set_labels()
 
     def room_change(self, type_room):
