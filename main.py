@@ -181,21 +181,21 @@ class Main:
                                     'refer': Refer}
         self.holst = self.list_active_surface[self.type_display](self, self.style)
         self.changes_holst = 0
-        mus_game = 'musik/dream_pix.mp3'
-        menu_musik = 'musik/menu_musik.mp3'
-        pygame.mixer.music.load(menu_musik)
-        pygame.mixer.music.play(-1)
+        #mus_game = 'musik/dream_pix.mp3'
+        #menu_musik = 'musik/menu_musik.mp3'
+        #pygame.mixer.music.load(menu_musik)
+        #pygame.mixer.music.play(-1)
         games = 0
         while self.running:
             self.events = pygame.event.get()
             if self.changes_holst:
                 if self.type_display == 'game':
-                    pygame.mixer.music.load(mus_game)
-                    pygame.mixer.music.play(-1)
+                    #pygame.mixer.music.load(mus_game)
+                    #pygame.mixer.music.play(-1)
                     games = 1
                 elif games:
-                    pygame.mixer.music.load(menu_musik)
-                    pygame.mixer.music.play(-1)
+                    #pygame.mixer.music.load(menu_musik)
+                    #pygame.mixer.music.play(-1)
                     games = 0
 
                 self.holst.delete_all()
