@@ -129,7 +129,7 @@ class Main:
             elif len(inacurr) == 2: inacurr_w, inacurr_h = inacurr
         # print(type(obj))
         # if type(obj) == pygame.surface.Surface:
-        print(obj)
+        #print(obj)
         if type_align == "horizontal":
             coords[0] = (self.display.get_width() - obj.get_width()) // 2 + inacurr_w
         elif type_align == "vertical":

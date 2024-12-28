@@ -216,7 +216,7 @@ class Reception:
 
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
-        print(self.game.character.character["coords"][0], self.game.character.character["coords"][1])
+        #print(self.game.character.character["coords"][0], self.game.character.character["coords"][1])
         if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
             # self.game.character.respawn([450, 300])
             self.game.room_change("vr_room")
@@ -228,7 +228,7 @@ class Reception:
             self.game.room_change("comp_room")
         if self.parent.display_h-self.game.character.character["coords"][3] <= self.game.character.character["coords"][1] <= self.parent.display_h and 200 < self.game.character.character["coords"][0] < 500:
             # self.game.character.respawn([None, 150])
-            print("ВЫХОД")
+            #print("ВЫХОД")
             self.game.set_message("Выход из игры", delay=700) # set_message_exit("Выйти из игры?")
             self.parent.display_change("menu")
 
@@ -427,7 +427,7 @@ class Computer_room:
 
         # print(int(self.sprite_computer_for_OLD[0]), int(self.sprite_computer_for_1[0]))
         if  int(self.sprite_computer_for_OLD[0]) != int(self.sprite_computer_for_1[0]):
-            print("into")
+            #print("into")
             self.objects["computer_1"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_1[0])])
         #self.objects["computer_4"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_2[0])])
         #self.objects["computer_6"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_3[0])])
@@ -451,17 +451,31 @@ class PS_room:
         speaker_right = Object(self.parent, self.game, self.base_style, [650, 100],
                               (48, 120), 'sprites/loudspeaker/loudspeaker_1.png',  size_rect=(0, 0))
         tables = Object(self.parent, self.game, self.base_style, [200, 600],
-                              (500, 120), 'sprites/_other/tables.png', size_rect=(0, -100))
-        pufik1 = Object(self.parent, self.game, self.base_style, [570, 320],
-                              (70, 70), 'sprites/_other/pufik.png')
+                              (500, 120), 'sprites/_other/tables.png')
+        chair1 = Object(self.parent, self.game, self.base_style, [140, 590],
+                        (50, 100), 'sprites/_other/chair_left_side.png')
+        chair2 = Object(self.parent, self.game, self.base_style, [235, 520],
+                              (50, 100), 'sprites/_other/chair_front_side.png')
+        chair3 = Object(self.parent, self.game, self.base_style, [360, 520],
+                        (50, 100), 'sprites/_other/chair_front_side.png')
+        chair4 = Object(self.parent, self.game, self.base_style, [485, 520],
+                        (50, 100), 'sprites/_other/chair_front_side.png')
+        chair5 = Object(self.parent, self.game, self.base_style, [610, 520],
+                        (50, 100), 'sprites/_other/chair_front_side.png')
+        chair6 = Object(self.parent, self.game, self.base_style, [710, 590],
+                        (50, 100), 'sprites/_other/chair_right_side.png')
+
+
+        rotated_armchair = Object(self.parent, self.game, self.base_style, [570, 320],
+                              (70, 70), 'sprites/_other/rotated_armchair.png')
         pufik2 = Object(self.parent, self.game, self.base_style, [475, 335],
                         (70, 70), 'sprites/_other/pufik.png')
-        pufik3 = Object(self.parent, self.game, self.base_style, [340, 335],
-                        (70, 70), 'sprites/_other/pufik.png')
+        armchair = Object(self.parent, self.game, self.base_style, [340, 335],
+                        (70, 70), 'sprites/_other/armchair.png')
         pufik4 = Object(self.parent, self.game, self.base_style, [400, 285],
-                        (70, 70), 'sprites/_other/pufik.png')
+                        (70, 70), 'sprites/_other/back_side_pufik.png')
         pufik5 = Object(self.parent, self.game, self.base_style, [485, 255],
-                        (70, 70), 'sprites/_other/pufik.png')
+                        (70, 70), 'sprites/_other/back_side_pufik.png')
         self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
@@ -479,7 +493,9 @@ class PS_room:
         self.objects = {"avtomat": avtomat, "ps_room_logo": ps_room_logo, "tv": tv, "ps_table": ps_table,
                         "cooler": current_cooler,
                         "speaker_left": speaker_left, "speaker_right": speaker_right, "tables": tables,
-                        "pufik1": pufik1, "pufik2": pufik2, "pufik3": pufik3, "pufik4": pufik4, "pufik5": pufik5}
+                        "rotated_armchair": rotated_armchair, "pufik2": pufik2, "armchair": armchair, "pufik4": pufik4,
+                        "pufik5": pufik5, "chair1": chair1, "chair2": chair2, "chair3": chair3, "chair4": chair4,
+                        "chair5": chair5, "chair6": chair6}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
@@ -576,6 +592,9 @@ class VR_room:
         play_avtomat = Object(self.parent, self.game, self.base_style, [875, 500], (90, 160),
                         'sprites/_other/play_game.png', size_rect=(-30, -150))
 
+        racing_armchair = Object(self.parent, self.game, self.base_style, [65, 550], (220, 170),
+                        'sprites/_other/pixel_driving_armchair.png')
+
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
@@ -585,7 +604,7 @@ class VR_room:
                         #"avtomat": avtomat,
         "table_1": table_1, "table_2": table_2, "table_3": table_3, "table_4": table_4,
         "screen_1": screen_1, "screen_2": screen_2, "screen_3": screen_3, "screen_4": screen_4,
-                        'sofa_0': sofa_0, 'play_avtomat': play_avtomat}
+                        'sofa_0': sofa_0, 'play_avtomat': play_avtomat, 'racing_chair': racing_armchair}
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())

@@ -116,14 +116,18 @@ class Drawing:
         self.sc.blit(self.sc_map, MAP_POS)
 
 text_map = [
-    'WWWWWWWWWWWW',
-    'W..........W',
-    'W..W....W..W',
-    'W..W....W..W',
-    'W..W....W..W',
-    'W...WWWW...W',
-    'W..........W',
-    'WWWWWWWWWWWW'
+    'WWWWWWWWWWWWWWW',
+    'W.............W',
+    'W.....WWWWWW..W'
+    'W.......W..W..W',
+    'W...WW.....W..W',
+    'W....W.....W..W',
+    'WWWWWW.....WWWW',
+    'W.............W',
+    'W..W....WWW...W',
+    'W..W.....W....W',
+    'W..W.....WWWWWW'
+    'WWWWWWWWWWWWWWW'
 ]
 
 world_map = set()

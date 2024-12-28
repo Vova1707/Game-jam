@@ -39,7 +39,7 @@ class Character:
             }
         }
         self.commands = self.parent.format_commands(self.commands)
-        print("CHARACTER: ", self.commands)
+        #print("CHARACTER: ", self.commands)
 
     def set_flag(self, key, val):
         self.character["flags"][key] = val
@@ -86,7 +86,7 @@ class Character:
 
     def init_shell(self):
         part_file_path = r"sprites/character/base_choice" + '/'
-        print(part_file_path)
+       # print(part_file_path)
         self.character = {
             "type_cond": {
                 # !!! Написать позже отдельную функцию загрузку спрайтов под нужны направления (dir) и cond
@@ -142,7 +142,7 @@ class Character:
             elif self.character["coords_rect"][i] < 0:
                 self.character["coords_rect"][i] = self.character["coords"][i] - abs(self.character["coords_rect"][i])
         self.set_sprite()
-        print(self.character)
+        #print(self.character)
         self.character["coords"][0] -= self.character["coords"][2] / 2
         self.character["coords"][1] -= self.character["coords"][3] / 2
 
@@ -190,7 +190,7 @@ class Game:
             }
         }
         self.commands = self.parent.format_commands(self.commands)
-        print("GAME: ", self.commands)
+        #print("GAME: ", self.commands)
         self.list_comands = [self.commands, self.character.commands]
 
         self.buttons = []
@@ -255,11 +255,11 @@ class Game:
                 self.character_energy -= 3
                 self.flag_mini_games = False
             else:
-                self.set_message(f"Не хватает денег, нужно {3 + 1} энергии ")
+                self.set_message(f"Не хватает энергии, нужно ещё {3 + 1} ")
         self.set_labels()
 
     def room_change(self, type_room):
-        print(self.type_room, "->", type_room)
+        #print(self.type_room, "->", type_room)
         self.type_room = type_room
         self.flag_change_room = 1
 
@@ -285,7 +285,7 @@ class Game:
                                                       text=label_title["text"],
                                                       font=label_title["font"],
                                                       color=(255, 0, 0))
-        print(label_title["text"])
+        #print(label_title["text"])
         self.labels.append(label_title)
 
         label_title = {
@@ -297,7 +297,7 @@ class Game:
                                                       text=label_title["text"],
                                                       font=label_title["font"],
                                                       color=(255, 0, 0))
-        print(label_title["text"])
+        #print(label_title["text"])
         self.labels.append(label_title)
 
     def set_discount(self, discount, money, delay):
