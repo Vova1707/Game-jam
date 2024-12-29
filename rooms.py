@@ -443,7 +443,7 @@ class PS_room:
 
 
         avtomat = Object(self.parent, self.game, self.base_style, [30, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"], 'sprites/avtomat/avtomat_1.png',  size_rect=(0, 0))
-        ps_room_logo = Object(self.parent, self.game, self.base_style, [690, 30], (250, 150), 'sprites/titles/ps_room_logo.png')
+        ps_room_logo = Object(self.parent, self.game, self.base_style, [710, 30], (250, 150), 'sprites/titles/ps_room_logo.png')
         tv = Object(self.parent, self.game, self.base_style, [340, 50], (300, 125), 'sprites/comp/TV_for_PS.png')
         ps_table = Object(self.parent, self.game, self.base_style, [400, 150], (180, 110), 'sprites/play station/ps_table.png')
         speaker_left = Object(self.parent, self.game, self.base_style, [280, 100],
@@ -468,13 +468,13 @@ class PS_room:
 
         rotated_armchair = Object(self.parent, self.game, self.base_style, [570, 320],
                               (70, 70), 'sprites/_other/rotated_armchair.png')
-        pufik2 = Object(self.parent, self.game, self.base_style, [475, 335],
+        pufik1 = Object(self.parent, self.game, self.base_style, [475, 335],
                         (70, 70), 'sprites/_other/pufik.png')
         armchair = Object(self.parent, self.game, self.base_style, [340, 335],
                         (70, 70), 'sprites/_other/armchair.png')
-        pufik4 = Object(self.parent, self.game, self.base_style, [400, 285],
+        pufik2 = Object(self.parent, self.game, self.base_style, [400, 285],
                         (70, 70), 'sprites/_other/back_side_pufik.png')
-        pufik5 = Object(self.parent, self.game, self.base_style, [485, 255],
+        pufik3 = Object(self.parent, self.game, self.base_style, [485, 255],
                         (70, 70), 'sprites/_other/back_side_pufik.png')
         self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
@@ -493,8 +493,8 @@ class PS_room:
         self.objects = {"avtomat": avtomat, "ps_room_logo": ps_room_logo, "tv": tv, "ps_table": ps_table,
                         "cooler": current_cooler,
                         "speaker_left": speaker_left, "speaker_right": speaker_right, "tables": tables,
-                        "rotated_armchair": rotated_armchair, "pufik2": pufik2, "armchair": armchair, "pufik4": pufik4,
-                        "pufik5": pufik5, "chair1": chair1, "chair2": chair2, "chair3": chair3, "chair4": chair4,
+                        "rotated_armchair": rotated_armchair, "pufik1": pufik1, "armchair": armchair, "pufik2": pufik2,
+                        "pufik3": pufik3, "chair1": chair1, "chair2": chair2, "chair3": chair3, "chair4": chair4,
                         "chair5": chair5, "chair6": chair6}
         for k, v in walls.items():
             self.objects[k] = v
@@ -586,7 +586,7 @@ class VR_room:
                         'sprites/_other/sofa.png', size_rect=(0, 0))
 
 
-        title_room = Object(self.parent, self.game, self.base_style, [717, 32], (260, 160),
+        title_room = Object(self.parent, self.game, self.base_style, [717, 24], (260, 160),
                               'sprites/titles/vr_room_logo.png')
 
         play_avtomat = Object(self.parent, self.game, self.base_style, [875, 500], (90, 160),
