@@ -65,8 +65,10 @@ class Character:
         self.character["rect"].y = self.character["coords"][1] + self.character["coords"][3] - self.character["coords_rect"][3] - self.character["coords_rect"][1]
         self.character["rect"].w = self.character["coords_rect"][2]
         self.character["rect"].h = self.character["coords_rect"][3] # self.character["coords"][3]
+        self.character["absolute_coords_rect"] = (self.character["rect"].x + self.character["rect"].w // 2, self.character["rect"].y + self.character["rect"].h // 2)
+        # self.character["center_coords"] = (self.character["coords"][0] + self.character["coords"][2]//2, self.character["coords"][1] + self.character["coords"][3]//2)
 
-    def udpate(self, objects, draw_rects):
+    def update(self, objects, draw_rects):
         # !!! Если нужно будет, перепишем алгос коллизии в отдельный метод
 
         # print(set(dir_collides))
@@ -129,10 +131,11 @@ class Character:
             "counter_sprite": 0,
             "speed": {"idle": 0, "sneak": 2, "walk": 4, "run": 6},
             "speed_TO_freq": {"idle": 20, "sneak": 8, "walk": 7, "run": 4},
-            # "key_press_TO_": {[0, 0, 0, 0]: "", "key_up": 0, "key_left": 0, "key_right": 0},
             "val_speed": 4,
             "coords": [self.parent.display_w // 2, self.parent.display_h // 2+100, 100, 140], # 50, 70
-            "coords_rect": [7, 0, 82, 20]
+            # "center_coords": [0, 0],
+            "coords_rect": [7, 0, 82, 20],
+            "absolute_center_coords_rect": [0, 0]
         }
         self.character["sprite"] = self.character["type_cond"][self.character["cond"]][self.character["dir"]][self.character["number_sprite"]]
         self.character["rect"] = self.character["sprite"].get_rect()
@@ -150,14 +153,15 @@ class Character:
         # print(self.character["coords"])
         # self.character["rect"] = pygame.Rect(self.character["coords"])
         # Максимально плохая проверка на то что спрайт на вышел за границы
-        if self.character["coords"][0] + self.character["coords"][2] > 1000:
-            self.character["coords"][0] = 1000 - self.character["coords"][2]
-        if self.character["coords"][1] + self.character["coords"][3] > 800:
-            self.character["coords"][1] = 800 - self.character["coords"][3]
-        if self.character["coords"][0] < 0:
-            self.character["coords"][0] = 0
-        if self.character["coords"][1] < 0:
-            self.character["coords"][1] = 0
+        # if self.character["coords"][0] + self.character["coords"][2] > 1000:
+        #     self.character["coords"][0] = 1000 - self.character["coords"][2]
+        # if self.character["coords"][1] + self.character["coords"][3] > 800:
+        #     self.character["coords"][1] = 800 - self.character["coords"][3]
+        # if self.character["coords"][0] < 0:
+        #     self.character["coords"][0] = 0
+        #     self.character["coords"][0] = 0
+        # if self.character["coords"][1] < 0:
+        #     self.character["coords"][1] = 0
 
         # self.floor.blit(self.default_floor, (0, 0))
         self.parent.display.blit(self.character["sprite"], self.character["coords"])
@@ -370,10 +374,12 @@ class Game:
         pygame.draw.rect(self.parent.display, (0, 0, 0), coords_rect)
         while True:
             self.parent.display.blit(label["label"], label["coords"])
-            pygame.display.flip() # pygame.display.flip()
-            self.parent.update_widgets()
             if type_exit != None: break
-        if type_exit == "yes": self.parent.display_change('menu')
+            self.parent.pygame_widgets.update(pygame.event.get())
+            display.blit(win, (0, 0))
+            clock.tick(FPS)
+            pygame.display.update()
+        if type_exit == "yes": print("YESSS") # self.parent.display_change('menu')
         elif type_exit == "no": self.parent.display_change('menu')
         del button_YES
 
@@ -403,7 +409,7 @@ class Game:
             self.parent.display.blit(self.layer_buttons_1, (0, 0))
         for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 1, objects)), key=lambda obj: (obj.data["rect"].y, obj.data["rect"].h)):
             obj.draw()
-        self.character.udpate(all_objects, draw_rects)
+        self.character.update(all_objects, draw_rects)
         if buttons is not None:
             self.parent.display.blit(self.layer_buttons_2, (0, 0))
         for obj in sorted(list(filter(lambda obj: obj.data["type_render"] == 0, objects)), key=lambda obj: (obj.data["rect"].y, obj.data["rect"].h)):
@@ -416,11 +422,18 @@ class Game:
                 self.layer_buttons_2.fill(pygame.Color(0, 0, 0, 0))
         self.old_data_layers = self.data_layers.copy()
 
-    def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door):
+    def draw_walls(self, color_left, color_up, color_right, thinkess, height, width_door, down="wall"):
+        # down="wall" - только стена
+        # down="pass" - только проход
+        # down="wall, pass" - и стена, и проход
+        # down="wall and pass" - и стена, и проход
+        # down="wall РАЗДЕЛИТЕЛЬ pass" - и стена, и проход
+        # down="passwall" - и стена, и проход
+        # ----------------
         # print(color_left, color_up, color_right)
+        coords_passage = {}
         walls = {}
-        def append(key, obj):
-            walls[key] = obj
+        def append(key, obj): walls[key] = obj
         if len(color_up) == 1: # передняя - нет двери
             append("wall_up", Object(self.parent, self, self.base_style, [0, 0],
                       (self.parent.display_w, height), f'sprites/walls/front_{color_up[0]}_wall.png', size_rect=(0, 0)))
@@ -429,6 +442,7 @@ class Game:
                       ((self.parent.display_w-width_door)//2, height), f'sprites/walls/front_{color_up[0]}_wall.png', size_rect=(0, 0)))
             append("wall_up_2", Object(self.parent, self, self.base_style, [(self.parent.display_w+width_door)//2, 0],
                       ((self.parent.display_w+width_door)//2, height), f'sprites/walls/front_{color_up[1]}_wall.png', size_rect=(0, 0)))
+            coords_passage["up"] = [[(self.parent.display_w-width_door)//2, (self.parent.display_w+width_door)//2], 0]
 
         if len(color_left) == 1: # левая - нет двери
             append("wall_left", Object(self.parent, self, self.base_style, [0, 0],
@@ -438,6 +452,7 @@ class Game:
                                 (thinkess, (self.parent.display_h + width_door) // 2), f'sprites/walls/side_{color_left[0]}_wall.png', size_rect=(0, 0)))
             append("wall_left_2", Object(self.parent, self, self.base_style, [0, 0],
                                 (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_left[1]}_wall.png', size_rect=(0, 0)))
+            coords_passage["left"] = [0, [(self.parent.display_h-width_door)//2, (self.parent.display_h+width_door) // 2]]
 
         if len(color_right) == 1: # правая - нет двери
             append("wall_right", Object(self.parent, self, self.base_style, [self.parent.display_w-thinkess, 0],
@@ -447,7 +462,19 @@ class Game:
                                 (thinkess, (self.parent.display_h-width_door)//2), f'sprites/walls/side_{color_right[0]}_wall.png', size_rect=(0, 0)))
             append("wall_right_2", Object(self.parent, self, self.base_style, [self.parent.display_w - thinkess, (self.parent.display_h+width_door)//2],
                                 (thinkess, (self.parent.display_h+width_door)//2), f'sprites/walls/side_{color_right[1]}_wall.png', size_rect=(0, 0)))
-        return walls
+            coords_passage["right"] = [self.parent.display_w, [(self.parent.display_h - width_door) // 2, (self.parent.display_h + width_door) // 2]]
+
+        # print(down, "wall" in down, "pass" in down)
+        if "wall" in down:
+            append("wall_down", Object(self.parent, self, self.base_style, [0, self.parent.display_h],
+                                        (self.parent.display_w, thinkess),
+                                        image=None, size_rect=(0, 0)))
+        if "pass" in down:
+            coords_passage["down"] = [[(self.parent.display_w-width_door)//2, (self.parent.display_w+width_door)//2], self.parent.display_h-20]
+        if len(coords_passage) == 0:
+            return walls
+        else:
+            return walls, coords_passage
 
     def func_collide_other_obj(self, objects, draw_rects):
         if draw_rects: pygame.draw.rect(self.parent.display, (255, 0, 0), self.character.character["rect"])

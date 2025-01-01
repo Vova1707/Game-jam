@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import Rect
 
 THIKNESS_WALL = 30
 HEIGHT_WALL = 200
@@ -34,7 +35,7 @@ TYPE_ENERGY = {
 
 
 class Object:
-    def __init__(self, parent, game, base_style, coords, size, image, size_rect=(0, 20), coords_rect=(0, 0)):
+    def __init__(self, parent, game, base_style, coords, size, image=None, size_rect=(0, 20), absolute_coords_rect=(0, 0)):
         self.base_style = base_style
         self.parent = parent
         self.game = game
@@ -43,7 +44,7 @@ class Object:
 
         self.coords = coords
         self.size_rect = list(size_rect)
-        self.coords_rect = coords_rect
+        self.absolute_coords_rect = absolute_coords_rect
         self.init_data()
 
     def init_data(self):
@@ -51,11 +52,14 @@ class Object:
             "color": self.base_style["colors"]["light"],
             "coords": [self.coords[0], self.coords[1], self.size[0], self.size[1]],  # 50, 70
             "size_rect": self.size_rect,
-            "coords_rect": self.coords_rect,
+            "absolute_coords_rect": self.absolute_coords_rect,
             "type_render": 1
         }
-        self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
-        self.data["rect"] = self.data["sprite"].get_rect()
+        if self.img == None:
+            self.data["rect"] = Rect(self.coords[0], self.coords[1], self.size[0], self.size[1])
+        else:
+            self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
+            self.data["rect"] = self.data["sprite"].get_rect()
         for i in range(len(self.size_rect)):
             if self.data["size_rect"][i] == 0:
                 self.data["size_rect"][i] = self.size[i]
@@ -63,26 +67,29 @@ class Object:
                 self.data["size_rect"][i] = self.size[i] - abs(self.size_rect[i])
             else:
                 self.data["size_rect"][i] = self.size_rect[i]
-        # if self.data["coords_rect"][0] <= 0:
-        #     self.data["coords_rect"][0] = self.data["coords"][0] + self.size[0]
+        # if self.data["absolute_coords_rect"][0] <= 0:
+        #     self.data["absolute_coords_rect"][0] = self.data["coords"][0] + self.size[0]
         # else:
-        #     self.data["coords_rect"][0] = self.data["coords_rect"][0]
+        #     self.data["absolute_coords_rect"][0] = self.data["absolute_coords_rect"][0]
         self.set_sprite()
 
     def set_sprite(self):
-        self.data["sprite"] = pygame.transform.scale(self.data["sprite"],(self.data["coords"][2], self.data["coords"][3]))
-        self.data["rect"].x = self.data["coords"][0] + self.data["coords_rect"][0]
-        self.data["rect"].y = self.data["coords"][1] + self.data["coords"][3] - self.data["size_rect"][1] - self.data["coords_rect"][1]
+        if self.img != None:
+            self.data["sprite"] = pygame.transform.scale(self.data["sprite"],(self.data["coords"][2], self.data["coords"][3]))
+        self.data["rect"].x = self.data["coords"][0] + self.data["absolute_coords_rect"][0]
+        self.data["rect"].y = self.data["coords"][1] + self.data["coords"][3] - self.data["size_rect"][1] - self.data["absolute_coords_rect"][1]
         self.data["rect"].w = self.data["size_rect"][0] # self.data["coords"][2]
         self.data["rect"].h = self.data["size_rect"][1] # self.character["coords"][3]
 
     def update_sprite(self, img):
-        self.img = img
-        self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
-        self.set_sprite()
+        if self.img != None:
+            self.img = img
+            self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
+            self.set_sprite()
 
     def draw(self):
-        self.parent.display.blit(self.data["sprite"], self.data["coords"])
+        if self.img != None:
+            self.parent.display.blit(self.data["sprite"], self.data["coords"])
 
 
 
@@ -154,8 +161,9 @@ class Reception:
         sofa_4 = Object(self.parent, self.game, self.base_style, [780, 700],
                          TYPE_SPRITES["sofa_size"], 'sprites/sofas/green_sofa.png', size_rect=(0, -40))
 
-        walls = self.game.draw_walls(color_left=["black", "blue"], color_up=["blue", "black"],  color_right=["black", "black"],
-                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+        walls, self.passages = self.game.draw_walls(color_left=["black", "blue"], color_up=["blue", "black"],  color_right=["black", "black"],
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150, down="wall, pass")
+        print("reception passages", *self.passages.items())
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up_1", "wall_up_2"], walls.items())))
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
@@ -163,7 +171,9 @@ class Reception:
         # ------------------
         self.objects = {"avtomat_1": avtomat_1, "avtomat_2": avtomat_2, "title_room": title_room,
                         "reception_table": reception_table,
-                        "plant_1": plant_1, "sofa_1": sofa_1, "sofa_2": sofa_2, "sofa_3": sofa_3, "sofa_4": sofa_4}
+                        "plant_1": plant_1,
+                        "sofa_1": sofa_1, "sofa_2": sofa_2, "sofa_3": sofa_3, "sofa_4": sofa_4
+        }
         for k, v in walls.items():
             self.objects[k] = v
         self.list_objects = list(self.objects.values())
@@ -216,20 +226,20 @@ class Reception:
 
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
-        #print(self.game.character.character["coords"][0], self.game.character.character["coords"][1])
-        if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
+        # print(self.game.character.character["absolute_coords_rect"], " | ", self.game.character.character["absolute_coords_rect"][0] <= self.passages["left"][0], self.passages["left"][1][0] < self.game.character.character["absolute_coords_rect"][1] < self.passages["left"][1][1])
+        if self.game.character.character["absolute_coords_rect"][0] >= self.passages["right"][0] and self.passages["right"][1][0] < self.game.character.character["absolute_coords_rect"][1] < self.passages["right"][1][1]:
             # self.game.character.respawn([450, 300])
             self.game.room_change("vr_room")
-        if self.game.character.character["coords"][0] == 0 and 200 < self.game.character.character["coords"][1] < 500:
+        if self.game.character.character["absolute_coords_rect"][0] <= self.passages["left"][0] and self.passages["left"][1][0] < self.game.character.character["absolute_coords_rect"][1] < self.passages["left"][1][1]:
             # self.game.character.respawn([100, 330])
             self.game.room_change("ps_room")
-        if self.game.character.character["coords"][1] == 0 and 200 < self.game.character.character["coords"][0] < 500:
+        if self.passages["up"][0][0] < self.game.character.character["absolute_coords_rect"][0] < self.passages["up"][0][1] and self.game.character.character["absolute_coords_rect"][1] <= self.passages["up"][1]:
             # self.game.character.respawn([None, 150])
             self.game.room_change("comp_room")
-        if self.parent.display_h-self.game.character.character["coords"][3] <= self.game.character.character["coords"][1] <= self.parent.display_h and 200 < self.game.character.character["coords"][0] < 500:
+        if self.passages["down"][0][0] < self.game.character.character["absolute_coords_rect"][0] < self.passages["down"][0][1] and self.game.character.character["absolute_coords_rect"][1] >= self.passages["down"][1]:
             # self.game.character.respawn([None, 150])
             #print("ВЫХОД")
-            self.game.set_message("Выход из игры", delay=700) # set_message_exit("Выйти из игры?")
+            self.game.set_message("Выход из игры", delay=700) # set_message_exit("Выйти из игры?") #
             self.parent.display_change("menu")
 
 
@@ -298,14 +308,38 @@ class Computer_room:
         computer_9 = Object(self.parent, self.game, self.base_style, [480, 400],  # 300
                             TYPE_SPRITES["comp_size"], self.computer_sprites[4], size_rect=(0, -100))
 
-        self.sprite_computer_for_1 = [1, 0.05, 8]
-        self.sprite_computer_for_OLD = self.sprite_computer_for_1.copy()
+        self.sprite_computer_for_1 = [1, 0.1, 8]
+        self.sprite_computer_isprite_1 = self.sprite_computer_for_1[0]
+        self.sprite_computer_isprite_1_OLD = self.sprite_computer_isprite_1
         self.sprite_computer_for_2 = [3, 0.1, 8]
-        self.sprite_computer_for_3 = [6, 0.1, 8]
+        self.sprite_computer_isprite_2 = self.sprite_computer_for_2[0]
+        self.sprite_computer_isprite_2_OLD = self.sprite_computer_isprite_2
+        self.sprite_computer_for_3 = [2, 0.1, 8]
+        self.sprite_computer_isprite_3 = self.sprite_computer_for_3[0]
+        self.sprite_computer_isprite_3_OLD = self.sprite_computer_isprite_3
+        self.sprite_computer_for_4 = [4, 0.1, 8]
+        self.sprite_computer_isprite_4 = self.sprite_computer_for_4[0]
+        self.sprite_computer_isprite_4_OLD = self.sprite_computer_isprite_4
+        self.sprite_computer_for_5 = [9, 0.1, 8]
+        self.sprite_computer_isprite_5 = self.sprite_computer_for_5[0]
+        self.sprite_computer_isprite_5_OLD = self.sprite_computer_isprite_5
+        self.sprite_computer_for_6 = [7, 0.1, 8]
+        self.sprite_computer_isprite_6 = self.sprite_computer_for_6[0]
+        self.sprite_computer_isprite_6_OLD = self.sprite_computer_isprite_6
+        self.sprite_computer_for_7 = [8, 0.1, 8]
+        self.sprite_computer_isprite_7 = self.sprite_computer_for_7[0]
+        self.sprite_computer_isprite_7_OLD = self.sprite_computer_isprite_7
+        self.sprite_computer_for_8 = [6, 0.1, 8]
+        self.sprite_computer_isprite_8 = self.sprite_computer_for_8[0]
+        self.sprite_computer_isprite_8_OLD = self.sprite_computer_isprite_8
+        self.sprite_computer_for_9 = [5, 0.1, 8]
+        self.sprite_computer_isprite_9 = self.sprite_computer_for_9[0]
+        self.sprite_computer_isprite_9_OLD = self.sprite_computer_isprite_9
 
-        walls = self.game.draw_walls(color_left=["black"], color_up=["blue"],
+        walls, self.passages = self.game.draw_walls(color_left=["black"], color_up=["blue"],
                                      color_right=["black"],
-                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150, down="wall, pass")
+        print("comp passages", *self.passages.items())
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
@@ -416,23 +450,65 @@ class Computer_room:
     def draw(self):
         self.animate_computer_sprites()
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects, draw_rects=False)
-        if self.game.character.character["coords"][1] == 800 - self.game.character.character["coords"][3] and 300 < self.game.character.character["coords"][0] < 700:
+        if self.passages["down"][0][0] < self.game.character.character["absolute_coords_rect"][0] < self.passages["down"][0][1] and self.game.character.character["absolute_coords_rect"][1] >= self.passages["down"][1]:
             self.game.character.respawn([self.parent.display_w // 2, HEIGHT_WALL])
             self.game.room_change("reception")
 
     def animate_computer_sprites(self):
         self.sprite_computer_for_1 = self.game.animate_sprite(self.sprite_computer_for_1, reverse=True)
-        #self.sprite_computer_for_2 = self.game.animate_sprite(self.sprite_computer_for_2, reverse=True)
-        #self.sprite_computer_for_3 = self.game.animate_sprite(self.sprite_computer_for_3, reverse=True)
+        self.sprite_computer_isprite_1 = int(self.sprite_computer_for_1[0])
+        if  self.sprite_computer_isprite_1 != self.sprite_computer_isprite_1_OLD:
+            self.objects["computer_1"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_1])
+        self.sprite_computer_isprite_1_OLD = self.sprite_computer_isprite_1
 
-        # print(int(self.sprite_computer_for_OLD[0]), int(self.sprite_computer_for_1[0]))
-        if  int(self.sprite_computer_for_OLD[0]) != int(self.sprite_computer_for_1[0]):
-            #print("into")
-            self.objects["computer_1"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_1[0])])
-        #self.objects["computer_4"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_2[0])])
-        #self.objects["computer_6"].update_sprite(self.computer_sprites[int(self.sprite_computer_for_3[0])])
+        self.sprite_computer_for_2 = self.game.animate_sprite(self.sprite_computer_for_2, reverse=True)
+        self.sprite_computer_isprite_2 = int(self.sprite_computer_for_2[0])
+        if self.sprite_computer_isprite_2 != self.sprite_computer_isprite_2_OLD:
+            self.objects["computer_2"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_2])
+        self.sprite_computer_isprite_2_OLD = self.sprite_computer_isprite_2
 
-        self.sprite_computer_for_OLD = self.sprite_computer_for_1.copy()
+        self.sprite_computer_for_3 = self.game.animate_sprite(self.sprite_computer_for_3, reverse=True)
+        self.sprite_computer_isprite_3 = int(self.sprite_computer_for_3[0])
+        if self.sprite_computer_isprite_3 != self.sprite_computer_isprite_3_OLD:
+            self.objects["computer_3"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_3])
+        self.sprite_computer_isprite_3_OLD = self.sprite_computer_isprite_3
+
+        self.sprite_computer_for_4 = self.game.animate_sprite(self.sprite_computer_for_4, reverse=True)
+        self.sprite_computer_isprite_4 = int(self.sprite_computer_for_4[0])
+        if self.sprite_computer_isprite_4 != self.sprite_computer_isprite_4_OLD:
+            self.objects["computer_4"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_4])
+        self.sprite_computer_isprite_4_OLD = self.sprite_computer_isprite_4
+
+        self.sprite_computer_for_5 = self.game.animate_sprite(self.sprite_computer_for_4, reverse=True)
+        self.sprite_computer_isprite_5 = int(self.sprite_computer_for_5[0])
+        if self.sprite_computer_isprite_5 != self.sprite_computer_isprite_5_OLD:
+            self.objects["computer_5"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_5])
+        self.sprite_computer_isprite_5_OLD = self.sprite_computer_isprite_5
+
+        self.sprite_computer_for_6 = self.game.animate_sprite(self.sprite_computer_for_6, reverse=True)
+        self.sprite_computer_isprite_6 = int(self.sprite_computer_for_6[0])
+        if self.sprite_computer_isprite_6 != self.sprite_computer_isprite_6_OLD:
+            self.objects["computer_6"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_6])
+        self.sprite_computer_isprite_6_OLD = self.sprite_computer_isprite_6
+
+        self.sprite_computer_for_7 = self.game.animate_sprite(self.sprite_computer_for_7, reverse=True)
+        self.sprite_computer_isprite_7 = int(self.sprite_computer_for_7[0])
+        if self.sprite_computer_isprite_7 != self.sprite_computer_isprite_7_OLD:
+            self.objects["computer_7"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_7])
+        self.sprite_computer_isprite_7_OLD = self.sprite_computer_isprite_7
+
+        self.sprite_computer_for_8 = self.game.animate_sprite(self.sprite_computer_for_8, reverse=True)
+        self.sprite_computer_isprite_8 = int(self.sprite_computer_for_8[0])
+        if self.sprite_computer_isprite_8 != self.sprite_computer_isprite_8_OLD:
+            self.objects["computer_8"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_8])
+        self.sprite_computer_isprite_8_OLD = self.sprite_computer_isprite_8
+
+        self.sprite_computer_for_9 = self.game.animate_sprite(self.sprite_computer_for_9, reverse=True)
+        self.sprite_computer_isprite_9 = int(self.sprite_computer_for_9[0])
+        if self.sprite_computer_isprite_9 != self.sprite_computer_isprite_9_OLD:
+            self.objects["computer_9"].update_sprite(self.computer_sprites[self.sprite_computer_isprite_9])
+        self.sprite_computer_isprite_9_OLD = self.sprite_computer_isprite_9
+
 
 
 class PS_room:
@@ -476,15 +552,19 @@ class PS_room:
                         (70, 70), 'sprites/_other/back_side_pufik.png')
         pufik3 = Object(self.parent, self.game, self.base_style, [485, 255],
                         (70, 70), 'sprites/_other/back_side_pufik.png')
+
         self.sprite_coolers = ['sprites/kuler/1.png', 'sprites/kuler/2.png', 'sprites/kuler/3.png', 'sprites/kuler/4.png',
                         'sprites/kuler/5.png', 'sprites/kuler/6.png', 'sprites/kuler/7.png', 'sprites/kuler/8.png',
                         'sprites/kuler/9.png']
-        self.sprite_cooler_for = [0, 0.1, 8]
+        self.sprite_cooler_for = [1, 0.1, 8]
+        self.sprite_cooler_isprite = self.sprite_cooler_for[0]
+        self.sprite_cooler_isprite_OLD = self.sprite_cooler_isprite
         current_cooler = Object(self.parent, self.game, self.base_style, [140, 110], (40, 140), self.sprite_coolers[0],  size_rect=(0, 0))
 
-        walls = self.game.draw_walls(color_left=["black"], color_up=["black"],
+        walls, self.passages = self.game.draw_walls(color_left=["black"], color_up=["black"],
                                      color_right=["black", "black"],
-                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150, down="wall")
+        print("ps passages", *self.passages.items())
         dop_walls = dict(list(filter(lambda x: x[0] in ["wall_up"], walls.items())))
         walls = dict(list(filter(lambda x: x[0] not in dop_walls.keys(), walls.items())))
 
@@ -542,9 +622,14 @@ class PS_room:
 
     def draw(self):
         self.sprite_cooler_for = self.game.animate_sprite(self.sprite_cooler_for)
-        self.objects["cooler"].update_sprite(self.sprite_coolers[int(self.sprite_cooler_for[0])])
+        self.sprite_cooler_isprite = int(self.sprite_cooler_for[0])
+        if self.sprite_cooler_isprite != self.sprite_cooler_isprite_OLD:
+            self.objects["cooler"].update_sprite(self.sprite_coolers[self.sprite_cooler_isprite])
+        self.sprite_cooler_isprite_OLD = self.sprite_cooler_isprite
+
+
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
-        if self.game.character.character["coords"][0] == 1000 - self.game.character.character["coords"][2] and 200 < self.game.character.character["coords"][1] < 500:
+        if self.game.character.character["absolute_coords_rect"][0] >= self.passages["right"][0] and self.passages["right"][1][0] < self.game.character.character["absolute_coords_rect"][1] < self.passages["right"][1][1]:
             self.game.character.respawn([self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")
 
@@ -559,9 +644,10 @@ class VR_room:
         #avtomat = Object(self.parent, self.game, self.base_style, [300, TYPE_SPRITES["avtomat_y_up"]], TYPE_SPRITES["avtomat_size"],
                          #'sprites/avtomat/avtomat_1.png')
 
-        walls = self.game.draw_walls(color_left=["black", "black"], color_up=["black"],
+        walls, self.passages = self.game.draw_walls(color_left=["black", "black"], color_up=["black"],
                                      color_right=["black"],
-                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150)
+                                     thinkess=THIKNESS_WALL, height=HEIGHT_WALL, width_door=150, down="wall")
+        print("ps passages", *self.passages.items())
 
         table_1 = Object(self.parent, self.game, self.base_style, [45, 145], (150, 100),
                          'sprites/vr_room/vr_table_1.png', size_rect=(0, 0))
@@ -649,6 +735,6 @@ class VR_room:
 
     def draw(self):
         self.game.render_objects(self.list_objects, buttons=self.buttons, dop_objects=self.list_dop_objects)
-        if self.game.character.character["coords"][0] == 0 and 200 < self.game.character.character["coords"][1] < 500:
+        if self.game.character.character["absolute_coords_rect"][0] <= self.passages["left"][0] and self.passages["left"][1][0] < self.game.character.character["absolute_coords_rect"][1] < self.passages["left"][1][1]:
             self.game.character.respawn([self.parent.display_w - self.game.character.character["coords"][2], self.parent.display_h // 2])
             self.game.room_change("reception")

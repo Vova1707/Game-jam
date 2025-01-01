@@ -72,7 +72,7 @@ class Refer:
             label_title = {
                 "coords": (25, 80 + i * 30),
                 "text": mini_t,
-                "font": pygame.font.Font(self.base_style["font_path"], 15)
+                "font": pygame.font.Font(self.base_style["font_path"], 25)
             }
             label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                           text=label_title["text"],
@@ -105,7 +105,7 @@ class Refer:
 
     ##############################Donut-Time#######################################
     def draw_donut(self):
-        print("donut time")
+        # print("donut time")
         z = [0] * self.screen_size
         b = [' '] * self.screen_size
 

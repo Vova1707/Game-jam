@@ -35,7 +35,7 @@ class Main:
                 "dark": (10, 10, 10),
                 "black": (0, 0, 0)
             },
-            "font_path": "fonts111/pixel/DotGothic16-Regular.ttf",
+            "font_path": "fonts111/pixel/EpilepsySansBold.ttf",
             "dop_font": pygame.font.SysFont('Arial', 40, bold=True)
             # "fonts111/pixel/DotGothic16-Regular.ttf" - для латиницы слишком растянутый шрифт
             # fonts111/pixel/EpilepsySans.ttf - слишком сжатый текст, особенно при большом масштабе

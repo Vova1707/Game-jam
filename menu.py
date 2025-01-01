@@ -45,7 +45,6 @@ class Menu:
                                                       text=label_title["text"],
                                                       font=label_title["font"])
         # label_title["text"] = self.parent.add_distance_between_letters(label_title["text"], 2)
-        print(label_title["text"])
         self.labels.append(label_title)
 
 
