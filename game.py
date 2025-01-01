@@ -288,7 +288,7 @@ class Game:
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                       text=label_title["text"],
                                                       font=label_title["font"],
-                                                      color=(255, 0, 0))
+                                                      color=(252, 244, 0))
         #print(label_title["text"])
         self.labels.append(label_title)
 
@@ -300,7 +300,7 @@ class Game:
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                       text=label_title["text"],
                                                       font=label_title["font"],
-                                                      color=(255, 0, 0))
+                                                      color=(127, 0, 255))
         #print(label_title["text"])
         self.labels.append(label_title)
 
