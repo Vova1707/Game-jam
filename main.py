@@ -181,27 +181,36 @@ class Main:
                                     'refer': Refer}
         self.holst = self.list_active_surface[self.type_display](self, self.style)
         self.changes_holst = 0
-        #mus_game = 'musik/dream_pix.mp3'
-        #menu_musik = 'musik/menu_musik.mp3'
-        #pygame.mixer.music.load(menu_musik)
-        #pygame.mixer.music.play(-1)
+        list_musik = {'game_musik': 'musik/dream_pix.mp3',
+                      'menu_musik': 'musik/menu_musik.mp3'}
         games = 0
+        self.musik_play = True
+        pygame.mixer.music.load(list_musik['menu_musik'])
+        pygame.mixer.music.play(-1)
         while self.running:
-            self.events = pygame.event.get()
             if self.changes_holst:
                 if self.type_display == 'game':
-                    #pygame.mixer.music.load(mus_game)
-                    #pygame.mixer.music.play(-1)
+                    if self.musik_play:
+                        pygame.mixer.music.load(list_musik['game_musik'])
+                        pygame.mixer.music.play(-1)
                     games = 1
                 elif games:
-                    #pygame.mixer.music.load(menu_musik)
-                    #pygame.mixer.music.play(-1)
+                    if self.musik_play:
+                        pygame.mixer.music.load(list_musik['menu_musik'])
+                        pygame.mixer.music.play(-1)
                     games = 0
-
                 self.holst.delete_all()
                 self.holst = self.list_active_surface[self.type_display](self, self.style)
                 self.changes_holst = 0
+
+            self.events = pygame.event.get()
+
+            if not self.musik_play:
+                pygame.mixer.music.pause()
+            else:
+                pygame.mixer.music.unpause()
             self.holst.draw()
+
             for event in self.events:
                 if event.type == pygame.QUIT: self.running = False
                 if self.type_display == "game":
@@ -212,6 +221,10 @@ class Main:
             self.clock.tick(self.FPS)
             self.update_widgets()
             pygame.display.update()
+
+    def musik_off_or_on(self):
+        self.musik_play = not self.musik_play
+        print(self.musik_play)
 
 if __name__ == "__main__":
     menu = Main()

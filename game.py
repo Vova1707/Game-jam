@@ -545,6 +545,7 @@ class Game:
     def check_event(self, event):
         for commands in self.list_comands:
             if event.type in commands.keys() and event.key in commands[event.type].keys():
+                print(event.type, event.key)
                 commands[event.type][event.key]()
 
     def delete_all(self):
