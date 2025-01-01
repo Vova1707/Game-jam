@@ -1,5 +1,5 @@
 import pygame
-
+import pygame_widgets
 import time
 
 from rooms import Reception, Computer_room, PS_room, VR_room, Object
@@ -288,7 +288,7 @@ class Game:
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                       text=label_title["text"],
                                                       font=label_title["font"],
-                                                      color=(252, 244, 0))
+                                                      color=self.base_style["colors"]["light"])
         #print(label_title["text"])
         self.labels.append(label_title)
 
@@ -300,7 +300,7 @@ class Game:
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                       text=label_title["text"],
                                                       font=label_title["font"],
-                                                      color=(127, 0, 255))
+                                                      color=self.base_style["colors"]["light"])
         #print(label_title["text"])
         self.labels.append(label_title)
 
@@ -316,13 +316,13 @@ class Game:
         label = {
             "coords": (100, 100),
             "text": text,
-            "font": self.parent.style["dop_font"]
+            "font": pygame.font.Font(self.base_style["font_path"], 50)  # self.base_style["dop_font"]
         }
         label["label"] = self.parent.label_text(coords=label["coords"],
                                                 text=label["text"],
                                                 font=label["font"],
-                                                color=(255, 0, 0), type_blit=False)
-        label["coords"], label["label"] = self.parent.align(label["coords"], label["label"],
+                                                color=self.base_style["colors"]["light"], type_blit=False)
+        label["label"], label["coords"] = self.parent.align(label["label"], label["coords"],
                                             inacurr=-20, type_blit=False, type_align="center")
         bortic = 20
         coords_rect = (label["coords"][0]-bortic,
@@ -344,14 +344,14 @@ class Game:
                                                 text=label["text"],
                                                 font=label["font"],
                                                 color=(255, 0, 0), type_blit=False)
-        label["coords"], label["label"] = self.parent.align(label["coords"], label["label"],
+        label["label"], label["coords"] = self.parent.align(label["label"], label["coords"],
                                             inacurr=-20, type_blit=False, type_align="center")
         type_exit = None
         def set_type_exit(val): type_exit = val
         w, h = 80, 50
         button_YES = {
             "font": pygame.font.Font(self.base_style["font_path"], 30),
-            "coords": (self.parent.display_w - w, 0, w, h),
+            "coords": (self.parent.display_w//2, self.parent.display_h//2, w, h),
             "text": "Да",
             "color": {
                 "inactive": self.base_style["colors"]["base2"],
@@ -375,9 +375,8 @@ class Game:
         while True:
             self.parent.display.blit(label["label"], label["coords"])
             if type_exit != None: break
-            self.parent.pygame_widgets.update(pygame.event.get())
-            display.blit(win, (0, 0))
-            clock.tick(FPS)
+            pygame_widgets.update(pygame.event.get())
+            self.parent.clock.tick(self.parent.FPS)
             pygame.display.update()
         if type_exit == "yes": print("YESSS") # self.parent.display_change('menu')
         elif type_exit == "no": self.parent.display_change('menu')
@@ -479,9 +478,10 @@ class Game:
     def func_collide_other_obj(self, objects, draw_rects):
         if draw_rects: pygame.draw.rect(self.parent.display, (255, 0, 0), self.character.character["rect"])
         dir_collides = []
-        for obj_rect in list(map(lambda x: x.data["rect"], objects)):
-            if draw_rects: pygame.draw.rect(self.parent.display, (255, 255, 255), obj_rect)
-            if self.character.character["rect"].colliderect(obj_rect):
+        for obj in objects:
+            if draw_rects: pygame.draw.rect(self.parent.display, (255, 255, 255), obj.data["rect"])
+            if self.character.character["rect"].colliderect(obj.data["rect"]):
+                obj_rect = obj.data["rect"]
                 collision_area = self.character.character["rect"].clip(obj_rect)
                 if collision_area.width > collision_area.height:
                     if self.character.character["rect"].centery < obj_rect.centery:
@@ -493,6 +493,7 @@ class Game:
                         dir_collides.append("right")
                     else:
                         dir_collides.append("left")
+
         if dir_collides == []: dir_collides = [None]
         dir_collides = list(set(dir_collides))
         flag_change = 0

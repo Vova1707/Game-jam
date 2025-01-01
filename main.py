@@ -83,6 +83,7 @@ class Main:
         for k, v in check_keys.items():
             if k not in color.keys():
                 color[k] = v
+        # print(*color.items())
         return Button(
             layer,  # Surface to place button array on
             coords[0], coords[1], coords[2], coords[3],
@@ -93,7 +94,7 @@ class Main:
             inactiveColour=color["inactive"],
             hoverColour=color["hover"],  # Colour of button when being hovered over
             pressedColour=color["pressed"],  # Colour of button when being clicked
-            textColour=color["hover"],
+            textColour=color["text"],
             onClick=func
         )
 
@@ -119,7 +120,7 @@ class Main:
         borderThickness=bd)
         return textbox
 
-    def align(self, coords, obj, inacurr=(0, 0), type_blit=False, type_align="center"):
+    def align(self, obj, coords, inacurr=(0, 0), type_blit=False, type_align="center"):
         if type(coords) == tuple: coords = list(coords)
         inacurr_w, inacurr_h = 0, 0
         if type(inacurr) == int: inacurr_w = inacurr
@@ -142,7 +143,7 @@ class Main:
         if type_blit == True:
             if type(obj) == pygame.surface.Surface:
                 self.display.blit(obj, coords)
-        return coords, obj
+        return obj, coords
 
     def format_commands(self, commands):
         res_commands = {}

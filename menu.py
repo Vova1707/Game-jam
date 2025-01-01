@@ -41,8 +41,8 @@ class Menu:
             "coords": (900, 720, 80, 50),
             "text": "муз",
             "color": {
-                "inactive": self.base_style["colors"]["base2"],
-                "hover": self.base_style["colors"]["base1"],
+                "inactive": self.base_style["colors"]["base1"],
+                "hover": self.base_style["colors"]["base2"],
                 "pressed": self.base_style["colors"]["light"],
                 "text": self.base_style["colors"]["light"]
             },
@@ -58,13 +58,14 @@ class Menu:
     def init_label_title(self):
         label_title = {
             "coords": (350, 80),
-            "text": "Ultimate",
+            "text": " Ultimate",
             "font": pygame.font.Font(self.base_style["font_path"], 80)
         }
         label_title["label"] = self.parent.label_text(coords=label_title["coords"],
                                                       text=label_title["text"],
                                                       font=label_title["font"])
-        # label_title["text"] = self.parent.add_distance_between_letters(label_title["text"], 2)
+        label_title["label"], label_title["coords"] = self.parent.align(label_title["label"], label_title["coords"],
+                                                            type_blit=False, type_align="horizontal")
         self.labels.append(label_title)
 
 

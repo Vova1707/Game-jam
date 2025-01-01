@@ -35,38 +35,39 @@ TYPE_ENERGY = {
 
 
 class Object:
-    def __init__(self, parent, game, base_style, coords, size, image=None, size_rect=(0, 20), absolute_coords_rect=(0, 0)):
+    def __init__(self, parent, game, base_style, coords, size, image=None, size_rect=(0, 20), type_collide="rect"): #absolute_coords_rect=(0, 0)
         self.base_style = base_style
         self.parent = parent
         self.game = game
-        self.img = image
-        self.size = size
+        self.image = image
 
-        self.coords = coords
-        self.size_rect = list(size_rect)
-        self.absolute_coords_rect = absolute_coords_rect
-        self.init_data()
+        size_rect = list(size_rect)
 
-    def init_data(self):
         self.data = {
             "color": self.base_style["colors"]["light"],
-            "coords": [self.coords[0], self.coords[1], self.size[0], self.size[1]],  # 50, 70
-            "size_rect": self.size_rect,
-            "absolute_coords_rect": self.absolute_coords_rect,
-            "type_render": 1
+            "coords": [coords[0], coords[1], size[0], size[1]],  # 50, 70
+            "size_rect": size_rect,
+            # "absolute_coords_rect": absolute_coords_rect,
+            "type_render": 1, # тип слоя, на котором будет отрисовка
+            # "type_collide": type_collide
+            # "mask" - коллизия по маске
+            # "rect" - коллизия по прямоугольнику
         }
-        if self.img == None:
-            self.data["rect"] = Rect(self.coords[0], self.coords[1], self.size[0], self.size[1])
+        if self.image == None:
+            self.data["rect"] = Rect(coords[0], coords[1], size[0], size[1])
         else:
-            self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
+            self.data["sprite"] = pygame.image.load(self.image).convert_alpha()
+            self.data["sprite"] = pygame.transform.scale(self.data["sprite"],
+                                                         (self.data["coords"][2], self.data["coords"][3]))
+            self.data["mask"] = pygame.mask.from_surface(self.data["sprite"])
             self.data["rect"] = self.data["sprite"].get_rect()
-        for i in range(len(self.size_rect)):
+        for i in range(len(size_rect)):
             if self.data["size_rect"][i] == 0:
-                self.data["size_rect"][i] = self.size[i]
+                self.data["size_rect"][i] = size[i]
             elif self.data["size_rect"][i] < 0:
-                self.data["size_rect"][i] = self.size[i] - abs(self.size_rect[i])
+                self.data["size_rect"][i] = size[i] - abs(size_rect[i])
             else:
-                self.data["size_rect"][i] = self.size_rect[i]
+                self.data["size_rect"][i] = size_rect[i]
         # if self.data["absolute_coords_rect"][0] <= 0:
         #     self.data["absolute_coords_rect"][0] = self.data["coords"][0] + self.size[0]
         # else:
@@ -74,21 +75,20 @@ class Object:
         self.set_sprite()
 
     def set_sprite(self):
-        if self.img != None:
-            self.data["sprite"] = pygame.transform.scale(self.data["sprite"],(self.data["coords"][2], self.data["coords"][3]))
-        self.data["rect"].x = self.data["coords"][0] + self.data["absolute_coords_rect"][0]
-        self.data["rect"].y = self.data["coords"][1] + self.data["coords"][3] - self.data["size_rect"][1] - self.data["absolute_coords_rect"][1]
+        self.data["rect"].x = self.data["coords"][0] # + self.data["absolute_coords_rect"][0]
+        self.data["rect"].y = self.data["coords"][1] + self.data["coords"][3] - self.data["size_rect"][1] # - self.data["absolute_coords_rect"][1]
         self.data["rect"].w = self.data["size_rect"][0] # self.data["coords"][2]
         self.data["rect"].h = self.data["size_rect"][1] # self.character["coords"][3]
 
-    def update_sprite(self, img):
-        if self.img != None:
-            self.img = img
-            self.data["sprite"] = pygame.image.load(self.img).convert_alpha()
+    def update_sprite(self, image):
+        if self.image != None:
+            self.image = image
+            self.data["sprite"] = pygame.image.load(self.image).convert_alpha()
+            self.data["sprite"] = pygame.transform.scale(self.data["sprite"],(self.data["coords"][2], self.data["coords"][3]))
             self.set_sprite()
 
     def draw(self):
-        if self.img != None:
+        if self.image != None:
             self.parent.display.blit(self.data["sprite"], self.data["coords"])
 
 
@@ -239,7 +239,7 @@ class Reception:
         if self.passages["down"][0][0] < self.game.character.character["absolute_coords_rect"][0] < self.passages["down"][0][1] and self.game.character.character["absolute_coords_rect"][1] >= self.passages["down"][1]:
             # self.game.character.respawn([None, 150])
             #print("ВЫХОД")
-            self.game.set_message("Выход из игры", delay=700) # set_message_exit("Выйти из игры?") #
+            self.game.set_message("Выход из игры", delay=700) # set_message_exit("Выйти из игры?")
             self.parent.display_change("menu")
 
 
